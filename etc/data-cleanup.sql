@@ -1,0 +1,22 @@
+---- CleanUp script --
+DELETE FROM [AppExperienceStepSkills];
+DELETE FROM [AppEducationStepSkills];
+DELETE FROM [AppExperienceSteps];
+DELETE FROM [AppEducationSteps];
+DELETE FROM [AppResumeSkills];
+DELETE FROM [AppResumes];
+DELETE FROM [AppSkills];
+DELETE FROM [AppCommentReactions];
+DELETE FROM [AppComments];
+DELETE FROM [AppPostReactions];
+DELETE FROM [AppPosts];
+DELETE FROM [AppConnectionRequests];
+DELETE FROM [AppConnections];
+DELETE FROM [AppChatMemberships];
+DELETE FROM [AppMessages];
+DELETE FROM [AppChats];
+DELETE FROM [AppJobApplications];
+DELETE FROM [AppJobAdvertisements];
+DELETE FROM [AbpUserRoles];
+DELETE FROM [AbpUsers];
+DELETE FROM [AbpRoles];

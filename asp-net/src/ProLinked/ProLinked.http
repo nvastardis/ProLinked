@@ -1,0 +1,6 @@
+@ProLinked_HostAddress = http://localhost:5283
+
+GET {{ProLinked_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

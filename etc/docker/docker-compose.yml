@@ -1,0 +1,6 @@
+﻿services:
+  prolinked:
+    image: prolinked
+    build:
+      context: .
+      dockerfile: Dockerfile
