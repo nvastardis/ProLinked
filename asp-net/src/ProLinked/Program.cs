@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Text;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,8 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProLinked.Data;
 using ProLinked.Domain.Identity;
-using ProLinked.Infrastructure.Auth;
 using ProLinked.Infrastructure.BlobStorage;
+using ProLinked.Infrastructure.Identity.Auth;
+using ProLinked.Infrastructure.Identity.Manage;
 using ProLinked.Infrastructure.Localization;
 
 namespace ProLinked;
@@ -28,6 +28,7 @@ public class Program
         ConfigureIdentity(builder.Services);
         ConfigureAuthentication(builder.Services, builder.Configuration);
         ConfigureAuthorization(builder.Services);
+        builder.Services.AddControllers();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         ConfigureSwagger(builder.Services);
@@ -42,10 +43,10 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.MapControllers();
 
         app.UseAuthentication();
         app.UseAuthorization();
-
 
         app.Run();
     }
@@ -86,6 +87,8 @@ public class Program
             options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             options.User.RequireUniqueEmail = true;
+
+            options.SignIn.RequireConfirmedAccount = false;
         });
 
     }
@@ -114,6 +117,7 @@ public class Program
     {
 
         AuthSettings.PrivateKey = configurationManager["JwtKey"]!;
+        AuthSettings.RefreshKey = configurationManager["JwtRefreshKey"]!;
         AuthSettings.Issuer = configurationManager["JwtSettings:Issuer"]!;
         AuthSettings.Audience = configurationManager["JwtSettings:Audience"]!;
 
@@ -141,7 +145,9 @@ public class Program
                     };
             });
 
-        serviceCollection.AddTransient<AuthService>();
+        serviceCollection.AddTransient<IAuthService, AuthService>();
+        serviceCollection.AddTransient<ManageService>();
+        serviceCollection.AddTransient<JwtTokenManager>();
     }
 
     private static void ConfigureAuthorization(IServiceCollection serviceCollection)
@@ -154,6 +160,10 @@ public class Program
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddSwaggerGen(c =>
         {
+            c.MapType<DateOnly>(() => new OpenApiSchema {
+                Type = "string",
+                Format = "date" });
+
             c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "ProLinked Web Api",

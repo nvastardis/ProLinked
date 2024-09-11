@@ -10,7 +10,7 @@ public class ProLinkedLocalizer: IStringLocalizer
 
     public ProLinkedLocalizer(string[]? filePaths = null)
     {
-        var paths = filePaths ?? ["Shared\\Localization\\ProLinked\\en.json"];
+        var paths = filePaths ?? ["Infrastructure\\Localization\\ProLinked\\en.json"];
         foreach (var filePath in paths)
         {
             var jsonAsString = File.ReadAllText(filePath);
@@ -75,6 +75,11 @@ public class ProLinkedLocalizer: IStringLocalizer
     {
         var resource = LocalizationList.
             FirstOrDefault(l => l.Culture == CultureInfo.CurrentCulture.Name);
-        return resource?.Dictionary!.GetValueOrDefault(name, null);
+        if (resource?.Dictionary is null || !resource.Dictionary.TryGetValue(name, out var result))
+        {
+            return null;
+        }
+
+        return result;
     }
 }

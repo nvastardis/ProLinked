@@ -1,24 +1,37 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ProLinked.Domain.Identity;
 
-namespace ProLinked.Infrastructure.Auth;
+namespace ProLinked.Infrastructure.Identity.Auth;
 
-public class AuthService
+public class JwtTokenManager
 {
-    private UserManager<AppUser> _userManager;
-    public AuthService(UserManager<AppUser> userManager)
+    private readonly UserManager<AppUser> _userManager;
+
+    public JwtTokenManager(UserManager<AppUser> userManager)
     {
         _userManager = userManager;
     }
 
-    public async Task<string> GenerateTokenAsync(AppUser user)
+    public async Task<string> GenerateRefreshTokenAsync(AppUser user)
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+    }
+
+    public async Task<string> GenerateAccessTokenAsync(AppUser user)
+    {
+        return await GenerateTokenAsync(user, AuthSettings.PrivateKey, AuthSettings.PrivateKeyExpirationInHours);
+    }
+
+
+    private async Task<string> GenerateTokenAsync(AppUser user, string secret, int hours)
     {
         var handler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(AuthSettings.PrivateKey);
+        var key = Encoding.ASCII.GetBytes(secret);
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(key),
             SecurityAlgorithms.HmacSha256Signature);
@@ -26,8 +39,10 @@ public class AuthService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = await GenerateClaimsAsync(user),
-            Expires = DateTime.UtcNow.AddMinutes(15),
+            Expires = DateTime.UtcNow.AddHours(hours),
             SigningCredentials = credentials,
+            Issuer = AuthSettings.Issuer,
+            Audience = AuthSettings.Audience
         };
 
         var token = handler.CreateToken(tokenDescriptor);

@@ -1,5 +1,5 @@
 {
-  "culture": "en",
+  "culture": "en-US",
   "dictionary": {
     "Menu:Home": "Home",
     "Welcome": "Welcome",
@@ -30,6 +30,8 @@
     "Permission:ResumeManagement": "Resume Management",
     "Permission:Upload": "Upload",
     "Permission:View": "View",
-    "ValidationError:UnableToLocateChat": "Unable to locate chat. Please check the chatId and targetUseId parameters."
+    "ValidationError:UnableToLocateChat": "Unable to locate chat. Please check the chatId and targetUseId parameters.",
+    "Error:UserNotFound": "Unable to login. User not found.",
+    "Error:InvalidToken": "Invalid Token"
   }
 }

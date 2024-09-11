@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProLinked.Data;
 
@@ -11,9 +12,11 @@ using ProLinked.Data;
 namespace ProLinked.Migrations
 {
     [DbContext(typeof(ProLinkedDbContext))]
-    partial class ProLinkedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911162331_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,8 +362,7 @@ namespace ProLinked.Migrations
                     b.Property<Guid?>("CurriculumVitaeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DateOfBirth")
-                        .IsRequired()
+                    b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
@@ -404,13 +406,6 @@ namespace ProLinked.Migrations
 
                     b.Property<Guid?>("PhotographId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RefreshToken")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime?>("RefreshTokenExpirationDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

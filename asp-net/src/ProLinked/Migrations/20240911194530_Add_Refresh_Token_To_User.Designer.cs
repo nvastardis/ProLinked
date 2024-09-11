@@ -12,8 +12,8 @@ using ProLinked.Data;
 namespace ProLinked.Migrations
 {
     [DbContext(typeof(ProLinkedDbContext))]
-    [Migration("20240910213308_Initial")]
-    partial class Initial
+    [Migration("20240911194530_Add_Refresh_Token_To_User")]
+    partial class Add_Refresh_Token_To_User
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -363,7 +363,8 @@ namespace ProLinked.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .IsRequired()
+                        .HasColumnType("date");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -406,6 +407,13 @@ namespace ProLinked.Migrations
 
                     b.Property<Guid?>("PhotographId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("RefreshTokenExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

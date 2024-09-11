@@ -5,8 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-      <UserSecretsId>8bbe3755-2897-4349-9664-a26599ab4308</UserSecretsId>
-  </PropertyGroup>
+        <UserSecretsId>8bbe3755-2897-4349-9664-a26599ab4308</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.21.2" />
@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+      <Folder Include="Shared\Localization\" />
     </ItemGroup>
 
 </Project>
