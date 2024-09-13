@@ -146,8 +146,8 @@ public class Program
             });
 
         serviceCollection.AddTransient<IAuthService, AuthService>();
-        serviceCollection.AddTransient<ManageService>();
-        serviceCollection.AddTransient<JwtTokenManager>();
+        serviceCollection.AddTransient<IManageService, ManageService>();
+        serviceCollection.AddTransient<IJwtTokenService, JwtTokenService>();
     }
 
     private static void ConfigureAuthorization(IServiceCollection serviceCollection)

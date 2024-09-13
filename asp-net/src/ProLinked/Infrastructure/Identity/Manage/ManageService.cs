@@ -8,7 +8,7 @@ using InfoResponse = ProLinked.Infrastructure.Identity.DTOs.InfoResponse;
 
 namespace ProLinked.Infrastructure.Identity.Manage;
 
-public class ManageService
+public class ManageService: IManageService
 {
     private UserManager<AppUser> _userManager;
     private readonly EmailAddressAttribute _emailAddressAttribute = new();
