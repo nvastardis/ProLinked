@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ProLinked.Application\ProLinked.Application.csproj" />
+      <ProjectReference Include="..\ProLinked.Domain\ProLinked.Domain.csproj" />
     </ItemGroup>
 
 </Project>

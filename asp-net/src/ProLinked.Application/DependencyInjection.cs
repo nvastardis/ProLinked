@@ -1,27 +1,61 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProLinked.Application.Managers;
-using ProLinked.Application.Services.Blobs;
-using ProLinked.Application.Services.Chats;
-using ProLinked.Application.Services.Connections;
-using ProLinked.Application.Services.Notifications;
-using ProLinked.Application.Services.Posts;
-using ProLinked.Application.Services.Resumes;
-using ProLinked.Domain.Services.Jobs;
+using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
+using ProLinked.Application.Contracts.Identity;
+using ProLinked.Application.Localization;
+using ProLinked.Application.Services.Identity;
+using ProLinked.Infrastructure.Identity.Auth;
 
 
 namespace ProLinked.Application;
 
 public static class DependencyInjection
 {
-    public static void AddDomainServices(this IServiceCollection serviceCollection)
+    public static void AddProLinkedLocalization(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<IBlobManager, BlobManager>();
-        serviceCollection.AddTransient<IChatManager, ChatManager>();
-        serviceCollection.AddTransient<IConnectionManager, ConnectionManager>();
-        serviceCollection.AddTransient<IJobManager, JobManager>();
-        serviceCollection.AddTransient<INotificationManager, NotificationManager>();
-        serviceCollection.AddTransient<IPostManager, PostManager>();
-        serviceCollection.AddTransient<IResumeManager, ResumeManager>();
+        serviceCollection.AddSingleton<IStringLocalizerFactory, ProLinkedLocalizerFactory>();
+        serviceCollection.AddSingleton<IStringLocalizer, ProLinkedLocalizer>();
+        serviceCollection.AddLocalization(options =>
+            options.ResourcesPath = @"Shared\Localization\ProLinked\en.json");
     }
 
+    public static void AddProLinkedAuthentication(this IServiceCollection serviceCollection, ConfigurationManager configurationManager)
+    {
+        AuthSettings.PrivateKey = configurationManager["JwtKey"]!;
+        AuthSettings.RefreshKey = configurationManager["JwtRefreshKey"]!;
+        AuthSettings.Issuer = configurationManager["JwtSettings:Issuer"]!;
+        AuthSettings.Audience = configurationManager["JwtSettings:Audience"]!;
+
+
+        serviceCollection.
+            AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).
+            AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters =
+                    new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configurationManager["JwtKey"]!)),
+                        ValidIssuer = configurationManager["JwtSettings:Issuer"],
+                        ValidAudience = configurationManager["JwtSettings:Audience"]
+                    };
+            });
+
+        serviceCollection.AddTransient<IAuthService, AuthService>();
+        serviceCollection.AddTransient<IManageService, ManageService>();
+        serviceCollection.AddTransient<IJwtTokenService, JwtTokenService>();
+    }
 }

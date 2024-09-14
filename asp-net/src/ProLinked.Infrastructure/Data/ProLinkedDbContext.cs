@@ -32,7 +32,7 @@ public class ProLinkedDbContext: IdentityDbContext<AppUser, IdentityRole<Guid>, 
     public DbSet<ConnectionRequest> ConnectionRequests { get; set; }
     public DbSet<Blob> Blobs { get; set; }
     public DbSet<Advertisement> JobAdvertisements { get; set; }
-    public DbSet<Domain.Entities.Jobs.Application> JobApplications { get; set; }
+    public DbSet<Application> JobApplications { get; set; }
     public DbSet<Notification> Notifications { get; set; }
 
     public ProLinkedDbContext(
@@ -45,7 +45,6 @@ public class ProLinkedDbContext: IdentityDbContext<AppUser, IdentityRole<Guid>, 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
         builder.ConfigureBlobs();
         builder.ConfigureNotifications();
         builder.ConfigurePostEntities();

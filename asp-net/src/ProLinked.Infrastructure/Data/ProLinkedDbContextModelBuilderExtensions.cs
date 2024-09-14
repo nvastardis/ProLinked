@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProLinked.Domain;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Entities.Connections;
