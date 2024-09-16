@@ -4,11 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
+using ProLinked.Application.Contracts.Blobs;
+using ProLinked.Application.Contracts.Chats;
+using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Application.Localization;
+using ProLinked.Application.Services.Blobs;
+using ProLinked.Application.Services.Chats;
+using ProLinked.Application.Services.Connections;
 using ProLinked.Application.Services.Identity;
-using ProLinked.Infrastructure.Identity.Auth;
-
 
 namespace ProLinked.Application;
 
@@ -57,5 +61,20 @@ public static class DependencyInjection
         serviceCollection.AddTransient<IAuthService, AuthService>();
         serviceCollection.AddTransient<IManageService, ManageService>();
         serviceCollection.AddTransient<IJwtTokenService, JwtTokenService>();
+    }
+
+    public static void AddAutoMapper(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddAutoMapper(config =>
+        {
+            config.AddProfile<ProLinkedAutoMapperProfile>();
+        });
+    }
+
+    public static void AddApplicationServices(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddTransient<IBlobService, BlobService>();
+        serviceCollection.AddTransient<IChatService, ChatService>();
+        serviceCollection.AddTransient<IConnectionService, ConnectionService>();
     }
 }

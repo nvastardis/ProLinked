@@ -1,4 +1,4 @@
-﻿namespace ProLinked.Infrastructure.Identity.DTOs;
+﻿namespace ProLinked.Application.DTOs.Identity;
 
 public class InfoResponse
 {

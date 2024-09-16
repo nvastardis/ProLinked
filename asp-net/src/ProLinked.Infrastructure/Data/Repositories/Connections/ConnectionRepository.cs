@@ -3,9 +3,8 @@ using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Entities.Connections;
-using ProLinked.Domain.Extensions;
-using ProLinked.Infrastructure.Data;
 using System.Linq.Dynamic.Core;
+using ProLinked.Domain.Extensions;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Connections;
 
@@ -42,10 +41,10 @@ public class ConnectionRepository: ProLinkedBaseRepository<Connection, Guid>, IC
                     connection.UserAId == userId
                         ? connection.UserB.JobTitle ?? string.Empty
                         : connection.UserA.JobTitle ?? string.Empty,
-                PhotoId =
+                ProfilePhotoId =
                     connection.UserAId == userId
-                        ? connection.UserB.PhotographId ?? Guid.Empty
-                        : connection.UserA.PhotographId ?? Guid.Empty,
+                        ? connection.UserB.PhotographId
+                        : connection.UserA.PhotographId,
             };
         query =
             query.

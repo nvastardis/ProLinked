@@ -11,15 +11,15 @@ namespace ProLinked.Domain.Services;
 
 public class BlobManager: IBlobManager
 {
-    private readonly IBlobService _blobService;
+    private readonly IAzureBlobService _azureBlobService;
     private readonly IRepository<Blob, Guid> _blobRepository;
     private readonly Dictionary<string, BlobTypeEnum> _extensionToTypeMap;
 
     public BlobManager(
-        IBlobService blobService,
+        IAzureBlobService azureBlobService,
         IRepository<Blob, Guid> blobRepository)
     {
-        _blobService = blobService;
+        _azureBlobService = azureBlobService;
         _blobRepository = blobRepository;
         _extensionToTypeMap = new Dictionary<string, BlobTypeEnum>()
         {
@@ -52,7 +52,7 @@ public class BlobManager: IBlobManager
                 .WithData(nameof(Blob.Extension), extension);
         }
 
-        await _blobService.SaveAsync(storageFileName, byteArray, cancellationToken);
+        await _azureBlobService.SaveAsync(storageFileName, byteArray, cancellationToken);
         var blob = new Blob(
             blobId,
             userId,
@@ -74,14 +74,14 @@ public class BlobManager: IBlobManager
                 .WithData(nameof(Blob.Id), blobId);
         }
 
-        if ( !await _blobService.ExistsAsync(blob.StorageFileName, cancellationToken))
+        if ( !await _azureBlobService.ExistsAsync(blob.StorageFileName, cancellationToken))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.BlobNotFound)
                 .WithData(nameof(Blob.StorageFileName), blob.StorageFileName)
-                .WithData("StorageName", nameof(IBlobService.ContainerName));
+                .WithData("StorageName", nameof(IAzureBlobService.ContainerName));
         }
 
-        var data = await _blobService.GetAsync(blob.StorageFileName, cancellationToken);
+        var data = await _azureBlobService.GetAsync(blob.StorageFileName, cancellationToken);
 
         return new BlobWithData(blob, data);
     }
@@ -97,26 +97,26 @@ public class BlobManager: IBlobManager
                 .WithData("BlobId", blobId);
         }
 
-        if ( !await _blobService.ExistsAsync(blob.StorageFileName, cancellationToken))
+        if ( !await _azureBlobService.ExistsAsync(blob.StorageFileName, cancellationToken))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.BlobNotFound)
                 .WithData("StorageFileName", blob.StorageFileName)
-                .WithData("StorageName", nameof(IBlobService.ContainerName));
+                .WithData("StorageName", nameof(IAzureBlobService.ContainerName));
         }
-        return await _blobService.GetAsync(blob.StorageFileName, cancellationToken);
+        return await _azureBlobService.GetAsync(blob.StorageFileName, cancellationToken);
     }
 
     public async Task<byte[]> GetAllBytesAsync(
         string storageFileName,
         CancellationToken cancellationToken = default)
     {
-        if ( !await _blobService.ExistsAsync(storageFileName, cancellationToken))
+        if ( !await _azureBlobService.ExistsAsync(storageFileName, cancellationToken))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.BlobNotFound)
                 .WithData("StorageFileName", storageFileName)
-                .WithData("StorageName", nameof(IBlobService.ContainerName));
+                .WithData("StorageName", nameof(IAzureBlobService.ContainerName));
         }
-        var result =  await _blobService.GetAsync(storageFileName, cancellationToken);
+        var result =  await _azureBlobService.GetAsync(storageFileName, cancellationToken);
         return await result.GetAllBytesAsync(cancellationToken);
 
     }
@@ -125,6 +125,6 @@ public class BlobManager: IBlobManager
         string storageFileName,
         CancellationToken cancellationToken = default)
     {
-        await _blobService.DeleteAsync(storageFileName, cancellationToken);
+        await _azureBlobService.DeleteAsync(storageFileName, cancellationToken);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ProLinked.Domain.Azure;
 
-public interface IBlobService
+public interface IAzureBlobService
 {
     string ContainerName { get; }
 

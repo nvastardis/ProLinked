@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using ProLinked.Application.DTOs.Identity;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
-using ProLinked.Infrastructure.Identity.DTOs;
 
 namespace ProLinked.Application.Services.Identity;
 

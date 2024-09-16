@@ -58,6 +58,7 @@ public class ProLinkedDataSeeder
             if (await _userManager.FindByIdAsync(seedObj.Id.ToString()) is null)
             {
                 await _userManager.CreateAsync(seedObj);
+                await _userManager.AddPasswordAsync(seedObj, "1q2w3E*");
             }
         }
         _logger.LogInformation($"Succeeded Seeding Entity: {entityName}");

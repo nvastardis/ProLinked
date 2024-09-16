@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -14,6 +15,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ProLinked.Domain\ProLinked.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DTOs\Chats\" />
+      <Folder Include="DTOs\Connections\" />
+      <Folder Include="DTOs\Filtering\" />
+      <Folder Include="Services\Connections\" />
     </ItemGroup>
 
 </Project>

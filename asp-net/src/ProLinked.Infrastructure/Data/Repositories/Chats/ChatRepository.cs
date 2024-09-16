@@ -5,7 +5,6 @@ using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
-using ProLinked.Infrastructure.Data;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Chats;
 
@@ -88,7 +87,7 @@ public class ChatRepository: ProLinkedBaseRepository<Chat, Guid>, IChatRepositor
                 UserId = user.Id,
                 CreationTime = member.CreationTime,
                 UserFullName = user.Name + " " + user.Surname,
-                PhotoId = user.PhotographId ?? Guid.Empty
+                ProfilePictureId = user.PhotographId
             };
         var result = ApplyMembersPagination(query, skipCount, maxResultCount);
         return await result.ToListAsync(cancellationToken);

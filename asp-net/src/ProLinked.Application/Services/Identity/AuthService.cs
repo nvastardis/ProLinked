@@ -5,13 +5,12 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using ProLinked.Application.Contracts.Identity;
+using ProLinked.Application.DTOs.Identity;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
-using ProLinked.Infrastructure.Identity.Auth;
-using ProLinked.Infrastructure.Identity.DTOs;
-using LoginRequest = ProLinked.Infrastructure.Identity.DTOs.LoginRequest;
-using RefreshRequest = ProLinked.Infrastructure.Identity.DTOs.RefreshRequest;
-using RegisterRequest = ProLinked.Infrastructure.Identity.DTOs.RegisterRequest;
+using LoginRequest = ProLinked.Application.DTOs.Identity.LoginRequest;
+using RefreshRequest = ProLinked.Application.DTOs.Identity.RefreshRequest;
+using RegisterRequest = ProLinked.Application.DTOs.Identity.RegisterRequest;
 
 namespace ProLinked.Application.Services.Identity;
 

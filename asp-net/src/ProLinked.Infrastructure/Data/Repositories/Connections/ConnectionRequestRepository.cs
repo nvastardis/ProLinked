@@ -5,7 +5,6 @@ using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Entities.Connections;
 using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Connections;
-using ProLinked.Infrastructure.Data;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Connections;
 
@@ -36,7 +35,7 @@ public class ConnectionRequestRepository: ProLinkedBaseRepository<ConnectionRequ
                 UserFullName = $"{request.Sender.Name} {request.Sender.Surname}",
                 CreationTime = request.CreationTime,
                 JobTitle = request.Sender.JobTitle ?? string.Empty,
-                PhotoId = request.Sender.PhotographId ?? Guid.Empty
+                ProfilePhotoId = request.Sender.PhotographId
             };
         query =
             query.

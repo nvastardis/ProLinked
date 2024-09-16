@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Identity;
-using ProLinked.Infrastructure.Identity.DTOs;
+using ProLinked.Application.DTOs.Identity;
 
 namespace ProLinked.API.Controllers.Identity;
 
 [ApiController]
-[Route("identity/auth")]
-public class AuthController: Controller
+[Route("api/identity/auth")]
+public class AuthController: ControllerBase
 {
     private readonly IAuthService _authService;
 
@@ -61,7 +61,6 @@ public class AuthController: Controller
         }
         return result;
     }
-
 
 
     private void SetRefreshTokenCookie(string token)

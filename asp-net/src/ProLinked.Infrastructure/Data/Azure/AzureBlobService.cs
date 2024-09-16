@@ -5,7 +5,7 @@ using ProLinked.Domain.Shared.Exceptions;
 
 namespace ProLinked.Infrastructure.Data.Azure;
 
-public class AzureBlobService: IBlobService
+public class AzureBlobService: IAzureBlobService
 {
     public string ContainerName { get; } = "pro-linked";
 

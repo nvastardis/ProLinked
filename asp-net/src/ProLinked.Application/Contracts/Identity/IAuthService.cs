@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http.HttpResults;
-using ProLinked.Infrastructure.Identity.DTOs;
+using ProLinked.Application.DTOs.Identity;
 
 namespace ProLinked.Application.Contracts.Identity;
 

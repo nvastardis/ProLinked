@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Services.Identity;
-using InfoResponse = ProLinked.Infrastructure.Identity.DTOs.InfoResponse;
+using InfoResponse = ProLinked.Application.DTOs.Identity.InfoResponse;
 
 namespace ProLinked.API.Controllers.Identity;
 
 [ApiController]
-[Route("identity/manage")]
-public class ManageController: Controller
+[Route("api/identity/manage")]
+public class ManageController: ControllerBase
 {
     private readonly ManageService _manageService;
 

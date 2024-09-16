@@ -12,21 +12,22 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddProLinkedLocalization();
-        builder.Services.AddProLinkedAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
         builder.Services.AddControllers();
         builder.Services.AddAzureBlobStoring(
             builder.Configuration.GetValue<string>("AzureStorageAccountSettings:ConnectionString") ?? throw new KeyNotFoundException()
         );
-
         builder.Services.AddDbConnection(
             builder.Configuration.GetConnectionString("Default") ?? throw new KeyNotFoundException()
         );
         builder.Services.AddIdentity();
         builder.Services.AddRepositories();
-
         builder.Services.AddDomainServices();
+        builder.Services.AddProLinkedLocalization();
+        builder.Services.AddProLinkedAuthentication(builder.Configuration);
+        builder.Services.AddAutoMapper();
+        builder.Services.AddApplicationServices();
+
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         ConfigureSwagger(builder.Services);

@@ -48,7 +48,7 @@ public static class DependencyInjection
             azureConnectionString,
             ContainerConsts.ContainerName));
 
-        serviceCollection.AddScoped<IBlobService, AzureBlobService>();
+        serviceCollection.AddScoped<IAzureBlobService, AzureBlobService>();
     }
 
     public static void AddDbConnection(this IServiceCollection serviceCollection, string connectionString)
@@ -65,6 +65,7 @@ public static class DependencyInjection
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ProLinkedDbContext>()
             .AddApiEndpoints();
+        serviceCollection.AddDataProtection();
 
         serviceCollection.Configure<IdentityOptions>(options =>
         {

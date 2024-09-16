@@ -1,4 +1,4 @@
-﻿namespace ProLinked.Infrastructure.Identity.Auth;
+﻿namespace ProLinked.Application;
 
 public static class AuthSettings
 {

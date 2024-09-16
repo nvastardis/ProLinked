@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Domain.Entities.Identity;
-using ProLinked.Infrastructure.Identity.Auth;
 
 namespace ProLinked.Application.Services.Identity;
 

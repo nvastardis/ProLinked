@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Domain.Entities.Identity;
-using InfoResponse = ProLinked.Infrastructure.Identity.DTOs.InfoResponse;
+using InfoResponse = ProLinked.Application.DTOs.Identity.InfoResponse;
 
 namespace ProLinked.Application.Services.Identity;
 
