@@ -13,12 +13,10 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
     where TEntity: Entity
 {
     protected readonly TDbContext DbContext;
-    protected readonly DbSet<TEntity> DbSet;
     protected EfCoreRepository(
         TDbContext dbContext)
     {
         DbContext = dbContext;
-        DbSet = DbContext.Set<TEntity>();
     }
 
     public async Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
@@ -26,9 +24,9 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         return await Task.Run(() => DbContext, cancellationToken);
     }
 
-    public async Task<DbContext> GetDbSetAsync(CancellationToken cancellationToken = default)
+    public async Task<DbSet<TEntity>> GetDbSetAsync(CancellationToken cancellationToken = default)
     {
-        return await Task.Run(() => DbContext, cancellationToken);
+        return await Task.Run(() => DbContext.Set<TEntity>(), cancellationToken);
     }
 
     public async Task<TEntity> InsertAsync(
@@ -36,7 +34,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         bool autoSave = true,
         CancellationToken cancellationToken = default)
     {
-        var savedEntity = (await DbSet.AddAsync(entity, cancellationToken)).Entity;
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        var savedEntity = (await dbSet.AddAsync(entity, cancellationToken)).Entity;
         if (autoSave)
         {
             await DbContext.SaveChangesAsync(cancellationToken);
@@ -49,7 +48,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         bool autoSave = true,
         CancellationToken cancellationToken = default)
     {
-        await DbSet.AddRangeAsync(entities, cancellationToken);
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        await dbSet.AddRangeAsync(entities, cancellationToken);
         if (autoSave)
         {
             await DbContext.SaveChangesAsync(cancellationToken);
@@ -111,7 +111,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
     public async Task<long> GetCountAsync(
         CancellationToken cancellationToken = default)
     {
-        return await DbSet.AsQueryable().LongCountAsync(cancellationToken);
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        return await dbSet.AsQueryable().LongCountAsync(cancellationToken);
     }
 
     public async Task<List<TEntity>> GetPagedListAsync(
@@ -161,7 +162,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
             return;
         }
 
-        DbSet.UpdateRange(enumerable);
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        dbSet.UpdateRange(enumerable);
 
         if (autoSave)
         {
@@ -174,7 +176,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         bool autoSave = true,
         CancellationToken cancellationToken = default)
     {
-        DbSet.Remove(entity);
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        dbSet.Remove(entity);
         if (autoSave)
         {
             await DbContext.SaveChangesAsync(cancellationToken);
@@ -207,7 +210,8 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
             return;
         }
 
-        DbSet.RemoveRange(enumerable);
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        dbSet.RemoveRange(enumerable);
 
         if (autoSave)
         {
@@ -215,19 +219,20 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         }
     }
 
-    public virtual Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await GetQueryableAsync(cancellationToken);
     }
 
-    public virtual Task<IQueryable<TEntity>> WithDetailsAsync(Expression<Func<TEntity, object>>[] propertySelectors, CancellationToken cancellationToken = default)
+    public virtual async Task<IQueryable<TEntity>> WithDetailsAsync(Expression<Func<TEntity, object>>[] propertySelectors, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await GetQueryableAsync(cancellationToken);
     }
 
-    public virtual Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var dbSet = await GetDbSetAsync(cancellationToken);
+        return await Task.FromResult(dbSet.AsQueryable());
     }
 }
 
@@ -287,8 +292,9 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> : EfCoreRepository<TDbC
         bool autoSave = true,
         CancellationToken cancellationToken = default)
     {
+        var dbSet = await GetDbSetAsync(cancellationToken);
         var entities =
-            DbSet.
+            dbSet.
                 AsQueryable().
                 Where(x => ids.Contains(x.Id)).
                 AsEnumerable();

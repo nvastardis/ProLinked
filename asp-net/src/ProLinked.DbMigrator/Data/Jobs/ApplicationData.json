@@ -1,0 +1,15 @@
+[
+	{"id": "d74282cb-d605-4928-bc05-c3bb9ded1b43", "advertisementId": "1dbfbc07-ae6d-45b9-b541-90272b11985a", "userId": "56015969-a7a9-4e4e-a730-178c9882c2a7", "status": 1, "creationTime": "2022-02-04T02:05:04"},
+	{"id": "2af259c8-cf6a-457e-981b-cb2d9da0e310", "advertisementId": "022a4490-b92b-4c01-bfe9-43dabcb2510d", "userId": "6227fe89-a2f8-4959-b964-2e1f92500051", "status": 3, "creationTime": "2023-05-07T06:01:51"},
+	{"id": "207e5844-4cc1-422e-8317-bdc2b99700d4", "advertisementId": "ea6aaa72-d1c4-469a-a8e3-3366ca3470e4", "userId": "57ee0215-3d1c-4047-9514-a664f4d54889", "status": 2, "creationTime": "2022-04-16T08:57:21"},
+	{"id": "2678e730-beac-49af-8ceb-107f536b3098", "advertisementId": "027fd8b3-3aa3-47c6-bba8-04eba0b19508", "userId": "7dd08571-2b56-4c66-963d-b295c34888f7", "status": 3, "creationTime": "2020-08-29T17:38:52"},
+	{"id": "b990e879-7fa8-46a6-a07a-af7ecff3a308", "advertisementId": "16eb57a4-9a84-454c-bd55-193b8b7274c8", "userId": "833f068a-2053-4add-bda4-f0d14b3fbaa4", "status": 3, "creationTime": "2024-08-27T11:00:52"},
+	{"id": "6a017742-e656-440a-9b6a-5d197f4f0ace", "advertisementId": "d6aae820-8370-48f0-98fa-f5048553b3c2", "userId": "3abb1f4b-df9d-404f-b776-c89bd151c0ae", "status": 2, "creationTime": "2023-08-02T15:25:49"},
+	{"id": "21e7ef5d-517b-40b4-9704-f4dde57455a1", "advertisementId": "d337b2f5-5cc7-4410-9d8e-783cecfe6bd8", "userId": "42e1db12-9b4b-495d-bd53-e7e3703a8a4f", "status": 2, "creationTime": "2020-06-17T10:42:22"},
+	{"id": "e3af4abd-dea4-4175-a3ac-8b5afdddb333", "advertisementId": "d63bf294-0438-48c4-b697-854f61db2d15", "userId": "2678c9dd-1323-4f1a-984c-70362e6b50da", "status": 3, "creationTime": "2022-10-20T15:44:14"},
+	{"id": "fe846fc5-f3c3-4d88-aae8-1349431f6cf1", "advertisementId": "e439da33-5ed1-47d6-abdc-755842dbebb4", "userId": "a90a04e2-3811-4fa0-99c7-63daf1ccad40", "status": 3, "creationTime": "2022-02-23T08:43:28"},
+	{"id": "6baa30c6-5a65-4571-a70d-23b274885207", "advertisementId": "5633e410-0d03-4aee-86a8-1d7b5f22e4a7", "userId": "28ea8064-eaf0-4bb7-8567-5283b1646bf0", "status": 3, "creationTime": "2024-11-12T06:07:41"},
+	{"id": "a481b50a-9328-4550-a6ff-a962883dfd7b", "advertisementId": "66aa3d14-80e9-488e-baf7-feea2d9ec5cd", "userId": "84a47174-5789-4f1f-be5c-e6ca1dc3214e", "status": 3, "creationTime": "2024-05-27T14:02:47"},
+	{"id": "e50c7574-f3fd-4fd3-b8b1-65af23c22aeb", "advertisementId": "874c6708-1c02-48b0-9937-4ca76fcd3d6b", "userId": "4f68cc0a-a3de-49e1-b36a-b0b6aa14e08f", "status": 3, "creationTime": "2021-05-01T22:07:24"},
+	{"id": "d299ec20-759e-4e80-af8d-ac38608557d7", "advertisementId": "773927de-1ce0-4b69-8b32-c84e49d93fd2", "userId": "243e632d-07e4-4d7e-a83c-2d527400144e", "status": 1, "creationTime": "2020-12-30T05:23:23"}
+]

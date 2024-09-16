@@ -7,7 +7,6 @@ using Microsoft.Extensions.Localization;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
-using ProLinked.Infrastructure.Identity;
 using ProLinked.Infrastructure.Identity.Auth;
 using ProLinked.Infrastructure.Identity.DTOs;
 using LoginRequest = ProLinked.Infrastructure.Identity.DTOs.LoginRequest;

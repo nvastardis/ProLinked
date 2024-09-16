@@ -1,0 +1,6 @@
+﻿services:
+  prolinked.dbmigrator:
+    image: prolinked.dbmigrator
+    build:
+      context: .
+      dockerfile: src/ProLinked.DbMigrator/Dockerfile

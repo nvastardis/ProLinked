@@ -18,7 +18,7 @@ public class ProLinkedDbContextFactory: IDesignTimeDbContextFactory<ProLinkedDbC
     private static IConfigurationRoot BuildConfiguration()
     {
         var builder = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory()))
+            .SetBasePath(Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "../ProLinked.DbMigrator/")))
             .AddJsonFile("appsettings.json", optional: false);
 
         return builder.Build();
