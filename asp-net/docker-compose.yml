@@ -1,4 +1,9 @@
 ﻿services:
+  prolinked.api:
+    image: prolinked.api
+    build:
+      context: .
+      dockerfile: src/ProLinked.API/Dockerfile
   prolinked.dbmigrator:
     image: prolinked.dbmigrator
     build:
