@@ -23,7 +23,7 @@ public static class UserManagerExtensions
     {
         cancellationToken.ThrowIfCancellationRequested();
         Check.NotNull(user, nameof(user));
-        return Task.FromResult(user.Name);
+        return Task.FromResult(user.Surname);
     }
 
     public static Task<DateTime?> GetDateOfBirthAsync(

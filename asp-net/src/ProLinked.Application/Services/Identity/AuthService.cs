@@ -8,6 +8,7 @@ using ProLinked.Application.Contracts.Identity;
 using ProLinked.Application.DTOs.Identity;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
+using System.Security.Claims;
 using LoginRequest = ProLinked.Application.DTOs.Identity.LoginRequest;
 using RefreshRequest = ProLinked.Application.DTOs.Identity.RefreshRequest;
 using RegisterRequest = ProLinked.Application.DTOs.Identity.RegisterRequest;
@@ -107,6 +108,7 @@ public class AuthService: IAuthService
         );
     }
 
+    //TODO: Handle JWT logout
     public async Task<Results<Ok, ProblemHttpResult>> LogoutAsync()
     {
         try
@@ -121,10 +123,11 @@ public class AuthService: IAuthService
     }
 
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> RefreshAsync(
-            RefreshRequest refreshRequest)
+        ClaimsPrincipal claimsPrincipal,
+        RefreshRequest refreshRequest)
     {
 
-        var user = await _userManager.FindByIdAsync(refreshRequest.UserId.ToString());
+        var user = await _userManager.GetUserAsync(claimsPrincipal);
         if (user is null)
         {
             return TypedResults.Problem(_l["Error:UserNotFound"], statusCode: StatusCodes.Status401Unauthorized);

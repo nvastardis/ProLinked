@@ -34,33 +34,30 @@ public static class DependencyInjection
         AuthSettings.Audience = configurationManager["JwtSettings:Audience"]!;
 
 
-        serviceCollection.
-            AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).
-            AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters =
-                    new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+        serviceCollection.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(x =>
+        {
+            x.TokenValidationParameters =
+                new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configurationManager["JwtSettings:Issuer"],
+                    ValidAudience = configurationManager["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configurationManager["JwtKey"]!))
+                };
+        });
 
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(configurationManager["JwtKey"]!)),
-                        ValidIssuer = configurationManager["JwtSettings:Issuer"],
-                        ValidAudience = configurationManager["JwtSettings:Audience"]
-                    };
-            });
-
-        serviceCollection.AddTransient<IAuthService, AuthService>();
-        serviceCollection.AddTransient<IManageService, ManageService>();
-        serviceCollection.AddTransient<IJwtTokenService, JwtTokenService>();
+        serviceCollection.AddScoped<IAuthService, AuthService>();
+        serviceCollection.AddScoped<IManageService, ManageService>();
+        serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 
     public static void AddAutoMapper(this IServiceCollection serviceCollection)
@@ -73,8 +70,8 @@ public static class DependencyInjection
 
     public static void AddApplicationServices(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<IBlobService, BlobService>();
-        serviceCollection.AddTransient<IChatService, ChatService>();
-        serviceCollection.AddTransient<IConnectionService, ConnectionService>();
+        serviceCollection.AddScoped<IBlobService, BlobService>();
+        serviceCollection.AddScoped<IChatService, ChatService>();
+        serviceCollection.AddScoped<IConnectionService, ConnectionService>();
     }
 }

@@ -44,17 +44,17 @@ public class AuthController: ControllerBase
 
     [HttpPost]
     [Route("logout")]
-    [ValidateAntiForgeryToken]
+    [Authorize]
     public async Task<Results<Ok, ProblemHttpResult>> Logout() =>
         await _authService.LogoutAsync();
 
     [HttpPost]
     [Route("refresh")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> Refresh(
         [FromBody] RefreshRequest refreshRequest)
     {
-        var result = await _authService.RefreshAsync(refreshRequest);
+        var result = await _authService.RefreshAsync(User, refreshRequest);
         if (result.Result is Ok<AccessTokenResponse> accessTokenResponse)
         {
             SetRefreshTokenCookie(accessTokenResponse.Value!.RefreshToken);

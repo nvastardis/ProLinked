@@ -60,8 +60,7 @@ public static class DependencyInjection
     public static void AddIdentity(this IServiceCollection serviceCollection)
     {
         serviceCollection
-            .AddIdentityCore<AppUser>(
-                options => options.SignIn.RequireConfirmedAccount = true)
+            .AddIdentityCore<AppUser>()
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ProLinkedDbContext>()
             .AddApiEndpoints();

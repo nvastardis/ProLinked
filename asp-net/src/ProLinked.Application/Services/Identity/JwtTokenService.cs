@@ -53,7 +53,10 @@ public class JwtTokenService : IJwtTokenService
     private async Task<ClaimsIdentity> GenerateClaimsAsync(AppUser user)
     {
         var claims = new ClaimsIdentity();
-        claims.AddClaim(new Claim(ClaimTypes.Name, user.Email ?? string.Empty));
+        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+        claims.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
+        claims.AddClaim(new Claim(ClaimTypes.Name, user.Name));
+        claims.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
 
         var roles = await _userManager.GetRolesAsync(user);
         foreach (var role in roles)

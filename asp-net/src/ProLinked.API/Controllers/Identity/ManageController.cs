@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using ProLinked.Application.Services.Identity;
+using ProLinked.Application.Contracts.Identity;
 using InfoResponse = ProLinked.Application.DTOs.Identity.InfoResponse;
 
 namespace ProLinked.API.Controllers.Identity;
@@ -11,16 +11,16 @@ namespace ProLinked.API.Controllers.Identity;
 [Route("api/identity/manage")]
 public class ManageController: ControllerBase
 {
-    private readonly ManageService _manageService;
+    private readonly IManageService _manageService;
 
-    public ManageController(ManageService manageService)
+    public ManageController(IManageService manageService)
     {
         _manageService = manageService;
     }
 
     [HttpGet]
     [Route("info")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> Info()
     {
         return await _manageService.InfoAsync(User);
@@ -28,7 +28,7 @@ public class ManageController: ControllerBase
 
     [HttpPost]
     [Route("update")]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> Update(
         [FromBody] InfoRequest input)
     {

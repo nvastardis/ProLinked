@@ -67,11 +67,12 @@ public class Program
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                Description = @"JWT Authorization header using the Bearer scheme.
+                              Enter your token in the text input below."
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                 {
