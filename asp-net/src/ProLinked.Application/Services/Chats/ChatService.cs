@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Chats;
 using ProLinked.Application.DTOs.Chats;
 using ProLinked.Application.DTOs.Filtering;
@@ -23,11 +24,12 @@ public class ChatService: ProLinkedServiceBase, IChatService
 
     public ChatService(
         IMapper mapper,
+        ILogger<IChatService> logger,
         IChatManager chatManager,
         IChatRepository chatRepository,
         IBlobManager blobManager,
         IRepository<Blob, Guid> blobRepository)
-        : base(mapper)
+        : base(mapper, logger)
     {
         ChatManager = chatManager;
         ChatRepository = chatRepository;

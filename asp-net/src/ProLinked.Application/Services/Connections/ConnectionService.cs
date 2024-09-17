@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
-using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
 using System.ComponentModel.DataAnnotations;
@@ -13,18 +13,16 @@ public class ConnectionService: ProLinkedServiceBase, IConnectionService
 {
     private IConnectionManager ConnectionManager { get; }
     private IConnectionRepository ConnectionRepository { get; }
-    private IBlobManager BlobManager { get; }
 
     public ConnectionService(
         IMapper mapper,
+        ILogger<IConnectionService> logger,
         IConnectionManager connectionManager,
-        IConnectionRepository connectionRepository,
-        IBlobManager blobManager)
-        : base(mapper)
+        IConnectionRepository connectionRepository)
+        : base(mapper, logger)
     {
         ConnectionManager = connectionManager;
         ConnectionRepository = connectionRepository;
-        BlobManager = blobManager;
     }
 
     public async Task<IReadOnlyList<ConnectionLookUpDto>> GetListAsync(

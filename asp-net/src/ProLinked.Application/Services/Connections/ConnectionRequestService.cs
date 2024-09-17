@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
@@ -17,10 +18,11 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
 
     public ConnectionRequestService(
         IMapper mapper,
+        ILogger<IConnectionRequestService> logger,
         IConnectionManager connectionManager,
         IConnectionRepository connectionRepository,
         IConnectionRequestRepository connectionRequestRepository)
-        : base(mapper)
+        : base(mapper, logger)
     {
         ConnectionManager = connectionManager;
         ConnectionRepository = connectionRepository;

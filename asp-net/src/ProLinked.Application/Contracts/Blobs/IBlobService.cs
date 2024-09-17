@@ -12,18 +12,18 @@ public interface IBlobService
     Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetManyAsync(
         [Length(1,10)] Guid[] input,
         CancellationToken cancellationToken = default);
-    Task PostAsync(
+    Task<Results<NoContent, ProblemHttpResult>> PostAsync(
         [Required] IFormFile input,
         [Required] Guid userId,
         CancellationToken cancellationToken = default);
-    Task PostManyAsync(
+    Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
         [Length(1,10)] IFormFileCollection input,
         [Required] Guid userId,
         CancellationToken cancellationToken = default);
-    Task<Results<Ok, ProblemHttpResult>> DeleteAsync(
+    Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default);
-    Task<Results<Ok, ProblemHttpResult>> DeleteManyAsync(
+    Task<Results<NoContent, ProblemHttpResult>> DeleteManyAsync(
         [Length(1,10)] Guid[] blobIds,
         CancellationToken cancellationToken = default);
 }

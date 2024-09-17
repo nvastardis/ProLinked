@@ -10,7 +10,6 @@ public class AzureBlobService: IAzureBlobService
     public string ContainerName { get; } = "pro-linked";
 
     private readonly BlobContainerClient _blobContainerClient;
-    private BlobContainerInfo? _blobContainerInfo;
 
     public AzureBlobService(
         BlobContainerClient blobContainerClient)
@@ -22,7 +21,10 @@ public class AzureBlobService: IAzureBlobService
 
     public async Task<bool> ExistsAsync(string storageFileName, CancellationToken cancellationToken = default)
     {
-        await GetOrCreateContainerIfNotExistsAsync(cancellationToken);
+        if (!await _blobContainerClient.ExistsAsync(cancellationToken))
+        {
+            await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+        }
         var blobClient = _blobContainerClient.GetBlobClient(storageFileName);
         return await blobClient.ExistsAsync(cancellationToken);
     }
@@ -30,7 +32,11 @@ public class AzureBlobService: IAzureBlobService
     public async Task SaveAsync(string storageFileName, byte[] byteArray,
         CancellationToken cancellationToken = default)
     {
-        await GetOrCreateContainerIfNotExistsAsync(cancellationToken);
+        if (!await _blobContainerClient.ExistsAsync(cancellationToken))
+        {
+            await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+        }
+
         var blobClient = _blobContainerClient.GetBlobClient(storageFileName);
         var ms = new MemoryStream(byteArray);
         await blobClient.UploadAsync(ms, true, cancellationToken);
@@ -38,9 +44,9 @@ public class AzureBlobService: IAzureBlobService
 
     public async Task<Stream?> FindAsync(string storageFileName, CancellationToken cancellationToken = default)
     {
-        if (_blobContainerInfo is null)
+        if (! await _blobContainerClient.ExistsAsync(cancellationToken))
         {
-            _blobContainerInfo = (await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken)).Value;
+            await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
             return null;
         }
 
@@ -49,9 +55,9 @@ public class AzureBlobService: IAzureBlobService
 
     public async Task<Stream> GetAsync(string storageFileName, CancellationToken cancellationToken = default)
     {
-        if (_blobContainerInfo is null)
+        if (! await _blobContainerClient.ExistsAsync(cancellationToken))
         {
-            _blobContainerInfo = (await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken)).Value;
+            await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
             throw new BlobNotFoundException();
         }
 
@@ -64,11 +70,6 @@ public class AzureBlobService: IAzureBlobService
         var result =
             await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken:cancellationToken);
         return result.HasValue && result.Value;
-    }
-
-    private async Task GetOrCreateContainerIfNotExistsAsync(CancellationToken cancellationToken)
-    {
-        _blobContainerInfo = (await _blobContainerClient.CreateIfNotExistsAsync(cancellationToken:cancellationToken)).Value;
     }
 
     private async Task<Stream> DownloadToStreamAsync(string storageFileName, CancellationToken cancellationToken)

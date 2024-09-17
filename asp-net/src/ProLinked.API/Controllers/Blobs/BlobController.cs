@@ -30,9 +30,9 @@ public class BlobController: Controller
 
     [HttpGet]
     [Authorize]
-    [Route("list")]
+    [Route("list/")]
     public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetListAsync(
-        [FromBody] [Length(1,10)] Guid[] ids,
+        [FromQuery, Length(1,10)] Guid[] ids,
         CancellationToken cancellationToken = default) =>
         await _blobService.GetManyAsync(
             ids,
@@ -41,29 +41,29 @@ public class BlobController: Controller
     [HttpPost]
     [Route("upload")]
     [Authorize]
-    public async Task Upload(
-        [FromBody] [Required] IFormFile input,
+    public async Task<Results<NoContent, ProblemHttpResult>> Upload(
+        [Required] IFormFile input,
         CancellationToken cancellationToken = default)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
-        await _blobService.PostAsync(input, userId, cancellationToken);
+        return await _blobService.PostAsync(input, userId, cancellationToken);
     }
 
     [HttpPost]
     [Route("upload/list")]
     [Authorize]
-    public async Task PostManyAsync(
-        [FromBody] [Length(1, 10)] IFormFileCollection input,
+    public async Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
+        [Required, Length(1, 10)] IFormFileCollection input,
         CancellationToken cancellationToken = default)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
-        await _blobService.PostManyAsync(input, userId, cancellationToken);
+        return await _blobService.PostManyAsync(input, userId, cancellationToken);
     }
 
     [HttpDelete]
     [Route("delete/{id}")]
     [Authorize]
-    public async Task DeleteAsync(
+    public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default) =>
         await _blobService.DeleteAsync(id, cancellationToken);
@@ -71,8 +71,8 @@ public class BlobController: Controller
     [HttpDelete]
     [Route("delete/list")]
     [Authorize]
-    public async Task DeleteListAsync(
-        [FromBody] [Length(1,10)] Guid[] ids,
+    public async Task<Results<NoContent, ProblemHttpResult>> DeleteListAsync(
+        [FromQuery, Length(1,10)] Guid[] ids,
         CancellationToken cancellationToken = default) =>
         await _blobService.DeleteManyAsync(ids, cancellationToken);
 }

@@ -204,7 +204,7 @@ public class EfCoreRepository<TDbContext, TEntity>: IRepository<TEntity>
         bool autoSave = true,
         CancellationToken cancellationToken = default)
     {
-        var enumerable = entities as TEntity[] ?? [];
+        var enumerable = entities.ToArray();
         if (enumerable.IsNullOrEmpty())
         {
             return;
