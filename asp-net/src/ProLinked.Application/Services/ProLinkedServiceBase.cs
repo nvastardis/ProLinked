@@ -13,6 +13,6 @@ public abstract class ProLinkedServiceBase
         ILogger logger)
     {
         ObjectMapper = objectMapper;
-        Logger = logger;
+
     }
 }

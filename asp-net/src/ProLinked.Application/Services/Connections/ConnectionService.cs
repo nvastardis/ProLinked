@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
+using ProLinked.Application.DTOs;
 using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Connections;
@@ -25,7 +26,7 @@ public class ConnectionService: ProLinkedServiceBase, IConnectionService
         ConnectionRepository = connectionRepository;
     }
 
-    public async Task<IReadOnlyList<ConnectionLookUpDto>> GetListAsync(
+    public async Task<PagedAndSortedResultList<ConnectionLookUpDto>> GetListAsync(
         [Required] UserFilterDto input,
         CancellationToken cancellationToken = default)
     {
@@ -35,8 +36,9 @@ public class ConnectionService: ProLinkedServiceBase, IConnectionService
             input.SkipCount,
             input.MaxResultCount,
             cancellationToken);
-        var result = ObjectMapper.Map<List<ConnectionLookUp>, List<ConnectionLookUpDto>>(queryResult);
-        return result.AsReadOnly();
+        var itmes = ObjectMapper.Map<List<ConnectionLookUp>, List<ConnectionLookUpDto>>(queryResult);
+        var itemCount = itmes.Count;
+        return new PagedAndSortedResultList<ConnectionLookUpDto>(itemCount, itmes.AsReadOnly());
     }
 
     public async Task DeleteAsync(

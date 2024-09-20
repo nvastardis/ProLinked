@@ -30,6 +30,7 @@ public class ConnectionRepository: ProLinkedBaseRepository<Connection, Guid>, IC
             where (connection.UserAId == userId || connection.UserBId == userId)
             select new ConnectionLookUp()
             {
+                Id = connection.Id,
                 UserId =
                     connection.UserAId == userId ? connection.UserBId : connection.UserAId,
                 UserFullName =

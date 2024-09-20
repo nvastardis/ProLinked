@@ -2,10 +2,10 @@
 
 namespace ProLinked.Application.DTOs.Filtering;
 
-public class ListFilterDto
+public record ListFilterDto
 {
     public bool IncludeDetails = false;
-    public string? Sorting = null;
-    public int SkipCount = ProLinkedConsts.SkipCountDefaultValue;
-    public int MaxResultCount = ProLinkedConsts.MaxResultCountDefaultValue;
+    public string? Sorting;
+    public int SkipCount;
+    public int MaxResultCount;
 }

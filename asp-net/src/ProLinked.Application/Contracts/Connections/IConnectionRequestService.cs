@@ -1,4 +1,5 @@
-﻿using ProLinked.Application.DTOs.Connections;
+﻿using ProLinked.Application.DTOs;
+using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,13 +7,14 @@ namespace ProLinked.Application.Contracts.Connections;
 
 public interface IConnectionRequestService
 {
-    Task<IReadOnlyList<ConnectionRequestLookUpDto>> GetListPendingAsync(
+    Task<PagedAndSortedResultList<ConnectionRequestLookUpDto>> GetListPendingAsync(
         [Required] ListFilterDto input,
         [Required] Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<ConnectionRequestSearchResultDto> FindPendingByUserAsync(
-        [Required] Guid userId,
+    Task<ConnectionRequestSearchResultDto> FindPendingForUserAsync(
+        [Required] Guid currentUserId,
+        [Required] Guid targetUserId,
         CancellationToken cancellationToken = default);
 
     Task CreateAsync(

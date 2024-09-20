@@ -73,5 +73,6 @@ public static class DependencyInjection
         serviceCollection.AddScoped<IBlobService, BlobService>();
         serviceCollection.AddScoped<IChatService, ChatService>();
         serviceCollection.AddScoped<IConnectionService, ConnectionService>();
+        serviceCollection.AddScoped<IConnectionRequestService, ConnectionRequestService>();
     }
 }

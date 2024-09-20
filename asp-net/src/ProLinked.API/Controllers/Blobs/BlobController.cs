@@ -9,7 +9,7 @@ namespace ProLinked.API.Controllers.Blobs;
 
 [ApiController]
 [Route("api/blob")]
-public class BlobController: Controller
+public class BlobController: ProLinkedController
 {
     private readonly IBlobService _blobService;
 
@@ -45,7 +45,7 @@ public class BlobController: Controller
         [Required] IFormFile input,
         CancellationToken cancellationToken = default)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
+        var userId = GetCurrentUserId();
         return await _blobService.PostAsync(input, userId, cancellationToken);
     }
 
@@ -56,7 +56,7 @@ public class BlobController: Controller
         [Required, Length(1, 10)] IFormFileCollection input,
         CancellationToken cancellationToken = default)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
+        var userId = GetCurrentUserId();
         return await _blobService.PostManyAsync(input, userId, cancellationToken);
     }
 

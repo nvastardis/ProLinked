@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
+using ProLinked.Application.DTOs;
 using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Connections;
@@ -29,7 +30,7 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
         ConnectionRequestRepository = connectionRequestRepository;
     }
 
-    public async Task<IReadOnlyList<ConnectionRequestLookUpDto>> GetListPendingAsync(
+    public async Task<PagedAndSortedResultList<ConnectionRequestLookUpDto>> GetListPendingAsync(
         [Required] ListFilterDto input,
         [Required] Guid userId,
         CancellationToken cancellationToken = default)
@@ -40,18 +41,21 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
             input.SkipCount,
             input.MaxResultCount,
             cancellationToken);
-        var result = ObjectMapper.Map<List<ConnectionRequestLookUp>, List<ConnectionRequestLookUpDto>>(queryResult);
-        return result.AsReadOnly();
+        var items = ObjectMapper.Map<List<ConnectionRequestLookUp>, List<ConnectionRequestLookUpDto>>(queryResult);
+        var itemCount = items.Count;
+        return new PagedAndSortedResultList<ConnectionRequestLookUpDto>(itemCount, items.AsReadOnly());
     }
 
-    public async Task<ConnectionRequestSearchResultDto> FindPendingByUserAsync(
-        [Required] Guid userId,
+    public async Task<ConnectionRequestSearchResultDto> FindPendingForUserAsync(
+        [Required] Guid currentUserId,
+        [Required] Guid targetUserId,
         CancellationToken cancellationToken = default)
     {
         var requestFound = await ConnectionRequestRepository.FindAsync(
-            e =>
-                e.SenderId == userId &&
-                e.TargetId == userId &&
+            e =>(
+                    (e.SenderId == currentUserId && e.TargetId == targetUserId) ||
+                    (e.SenderId == targetUserId && e.TargetId == currentUserId)
+                ) &&
                 e.Status == ConnectionRequestStatus.PENDING,
             true,
             cancellationToken);
@@ -62,7 +66,8 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
                 Found = requestFound is not null,
                 RequestId = requestFound?.Id,
                 CreationTime = requestFound?.CreationTime,
-                Status = requestFound?.Status
+                Status = requestFound?.Status,
+                SenderId = requestFound?.SenderId
             };
 
         return result;

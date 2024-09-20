@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.Application.DTOs.Chats;
 
-public class ChatListFilterDto: ListFilterDto
+public record ChatListFilterDto: ListFilterDto
 {
     [Required]
     public Guid ChatId { get; set; }
