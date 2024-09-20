@@ -7,7 +7,6 @@ using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Shared.Connections;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.Application.Services.Connections;
 
@@ -15,24 +14,21 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
 {
     private IConnectionManager ConnectionManager { get; }
     private IConnectionRequestRepository ConnectionRequestRepository { get; }
-    private IConnectionRepository ConnectionRepository { get; }
 
     public ConnectionRequestService(
         IMapper mapper,
         ILogger<IConnectionRequestService> logger,
         IConnectionManager connectionManager,
-        IConnectionRepository connectionRepository,
         IConnectionRequestRepository connectionRequestRepository)
         : base(mapper, logger)
     {
         ConnectionManager = connectionManager;
-        ConnectionRepository = connectionRepository;
         ConnectionRequestRepository = connectionRequestRepository;
     }
 
     public async Task<PagedAndSortedResultList<ConnectionRequestLookUpDto>> GetListPendingAsync(
-        [Required] ListFilterDto input,
-        [Required] Guid userId,
+        ListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var queryResult = await ConnectionRequestRepository.GetListByUserAsTargetAsync(
@@ -47,8 +43,8 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
     }
 
     public async Task<ConnectionRequestSearchResultDto> FindPendingForUserAsync(
-        [Required] Guid currentUserId,
-        [Required] Guid targetUserId,
+        Guid currentUserId,
+        Guid targetUserId,
         CancellationToken cancellationToken = default)
     {
         var requestFound = await ConnectionRequestRepository.FindAsync(
@@ -74,53 +70,45 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
     }
 
     public async Task CreateAsync(
-        [Required] ConnectionRequestCreateDto input,
-        [Required] Guid userId,
+        ConnectionRequestCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
-        var request = await ConnectionManager.CreateConnectionRequestAsync(
+        await ConnectionManager.CreateConnectionRequestAsync(
             userId,
             input.TargetId,
             cancellationToken);
-
-        await ConnectionRequestRepository.InsertAsync(request, autoSave: true, cancellationToken);
     }
 
     public async Task AcceptAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var requestToAccept = await ConnectionManager.GetRequestAsync(id, userId, cancellationToken);
-        var requestInfo = await ConnectionManager.UpdateRequestAsync(
+        await ConnectionManager.UpdateRequestAsync(
             requestToAccept,
             ConnectionRequestStatus.ACCEPTED,
             cancellationToken);
-
-        await ConnectionRequestRepository.UpdateAsync(requestInfo.Request, autoSave: true, cancellationToken);
-        await ConnectionRepository.InsertAsync(requestInfo.Connection! , autoSave: true, cancellationToken);
     }
 
     public async Task RejectAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var requestToReject = await ConnectionManager.GetRequestAsync(id, userId, cancellationToken);
-        var requestInfo = await ConnectionManager.UpdateRequestAsync(
+        await ConnectionManager.UpdateRequestAsync(
             requestToReject,
             ConnectionRequestStatus.REJECTED,
             cancellationToken);
-
-        await ConnectionRequestRepository.UpdateAsync(requestInfo.Request, autoSave: true, cancellationToken);
     }
 
     public async Task DeleteAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
-        var requestToDelete = await ConnectionManager.GetRequestAsync(id, userId, cancellationToken);
-        await ConnectionRequestRepository.DeleteAsync(requestToDelete, autoSave: true, cancellationToken);
+        await ConnectionManager.DeleteRequestAsync(id, userId, cancellationToken);
     }
 }

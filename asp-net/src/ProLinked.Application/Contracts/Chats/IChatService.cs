@@ -1,69 +1,74 @@
-﻿using ProLinked.Application.DTOs.Chats;
+﻿using ProLinked.Application.DTOs;
+using ProLinked.Application.DTOs.Chats;
 using ProLinked.Application.DTOs.Filtering;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.Application.Contracts.Chats;
 
 public interface IChatService
 {
-    Task<IReadOnlyList<ChatLookUpDto>> GetListLookUpAsync(
-        [Required] ListFilterDto input,
-        [Required] Guid userId,
+    Task<PagedAndSortedResultList<ChatLookUpDto>> GetListLookUpAsync(
+        ListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<MessageLookUpDto>> GetMessageListAsync(
-        [Required] ChatListFilterDto input,
-        [Required] Guid userId,
+    Task<PagedAndSortedResultList<MessageLookUpDto>> GetMessageListAsync(
+        ChatListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<ChatMembershipLookUpDto>> GetMemberListAsync(
-        [Required] ChatListFilterDto input,
-        [Required] Guid userId,
+    Task<PagedAndSortedResultList<ChatMembershipLookUpDto>> GetMemberListAsync(
+        ChatListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task<ChatWithDetailsDto> GetDetailsAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task AddMessageByChatAsync(
-        [Required] MessageCreateByChatDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        MessageCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task AddMessageByUserAsync(
-        [Required] MessageCreateByUserDto input,
-        [Required] Guid userId,
+        Guid targetUserId,
+        MessageCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task AddMemberAsync(
-        [Required] MemberCreateDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        MemberCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task DeleteMemberAsync(
-        [Required] Guid chatId,
-        [Required] Guid userId,
-        [Required] Guid memberId,
+        Guid chatId,
+        Guid userId,
+        Guid memberId,
         CancellationToken cancellationToken = default);
 
     Task CreateAsync(
-        [Required] ChatCreateDto input,
-        [Required] Guid userId,
+        ChatCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task UpdateTitleAsync(
-        [Required] ChatUpdateTitleDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        ChatUpdateTitleDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task UpdateImageAsync(
-        [Required] ChatUpdateImageDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        ChatUpdateImageDto input,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task DeleteAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default);
 }

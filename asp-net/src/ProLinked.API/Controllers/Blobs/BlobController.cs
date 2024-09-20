@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using ProLinked.Application.Contracts.Blobs;
 using System.ComponentModel.DataAnnotations;
 

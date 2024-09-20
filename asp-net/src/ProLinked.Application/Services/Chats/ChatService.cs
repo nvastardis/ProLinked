@@ -2,16 +2,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Chats;
+using ProLinked.Application.DTOs;
 using ProLinked.Application.DTOs.Chats;
 using ProLinked.Application.DTOs.Filtering;
-using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Contracts.Chats;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Extensions;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.Application.Services.Chats;
 
@@ -20,26 +19,23 @@ public class ChatService: ProLinkedServiceBase, IChatService
     private IChatManager ChatManager { get; }
     private IChatRepository ChatRepository { get; }
     private IBlobManager BlobManager { get; }
-    private IRepository<Blob, Guid> BlobRepository { get; }
 
     public ChatService(
         IMapper mapper,
         ILogger<IChatService> logger,
         IChatManager chatManager,
         IChatRepository chatRepository,
-        IBlobManager blobManager,
-        IRepository<Blob, Guid> blobRepository)
+        IBlobManager blobManager)
         : base(mapper, logger)
     {
         ChatManager = chatManager;
         ChatRepository = chatRepository;
         BlobManager = blobManager;
-        BlobRepository = blobRepository;
     }
 
-    public async Task<IReadOnlyList<ChatLookUpDto>> GetListLookUpAsync(
-        [Required] ListFilterDto input,
-        [Required] Guid userId,
+    public async Task<PagedAndSortedResultList<ChatLookUpDto>> GetListLookUpAsync(
+        ListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var queryResult = await ChatRepository.GetLookUpListByUserOrderedByLastMessageAsync(
@@ -48,13 +44,14 @@ public class ChatService: ProLinkedServiceBase, IChatService
             input.MaxResultCount,
             cancellationToken);
 
-        var result = ObjectMapper.Map<List<ChatLookUp>, List<ChatLookUpDto>>(queryResult);
-        return result.AsReadOnly();
+        var items = ObjectMapper.Map<List<ChatLookUp>, List<ChatLookUpDto>>(queryResult);
+        var itemCount = items.Count;
+        return new PagedAndSortedResultList<ChatLookUpDto>(itemCount, items.AsReadOnly());
     }
 
-    public async Task<IReadOnlyList<MessageLookUpDto>> GetMessageListAsync(
-        [Required] ChatListFilterDto input,
-        [Required] Guid userId,
+    public async Task<PagedAndSortedResultList<MessageLookUpDto>> GetMessageListAsync(
+        ChatListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         _ = await ChatManager.GetChatAsync(userId, input.ChatId,cancellationToken);
@@ -65,13 +62,14 @@ public class ChatService: ProLinkedServiceBase, IChatService
             input.MaxResultCount,
             cancellationToken);
 
-        var result = ObjectMapper.Map<List<MessageWithDetails>, List<MessageLookUpDto>>(messageList);
-        return result.AsReadOnly();
+        var items = ObjectMapper.Map<List<MessageWithDetails>, List<MessageLookUpDto>>(messageList);
+        var itemCount = items.Count;
+        return new PagedAndSortedResultList<MessageLookUpDto>(itemCount, items);
     }
 
-    public async Task<IReadOnlyList<ChatMembershipLookUpDto>> GetMemberListAsync(
-        [Required] ChatListFilterDto input,
-        [Required] Guid userId,
+    public async Task<PagedAndSortedResultList<ChatMembershipLookUpDto>> GetMemberListAsync(
+        ChatListFilterDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         _ = await ChatManager.GetChatAsync(userId, input.ChatId,cancellationToken);
@@ -82,15 +80,15 @@ public class ChatService: ProLinkedServiceBase, IChatService
             input.MaxResultCount,
             cancellationToken);
 
-        var result = ObjectMapper.
+        var items = ObjectMapper.
             Map<List<ChatMembershipLookUp>, List<ChatMembershipLookUpDto>>(membersList);
-
-        return result.AsReadOnly();
+        var itemCount = items.Count;
+        return new PagedAndSortedResultList<ChatMembershipLookUpDto>(itemCount, items);
     }
 
     public async Task<ChatWithDetailsDto> GetDetailsAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var chat = await ChatManager.GetChatAsync(userId, id, cancellationToken);
@@ -101,139 +99,120 @@ public class ChatService: ProLinkedServiceBase, IChatService
     }
 
     public async Task AddMessageByUserAsync(
-        [Required] MessageCreateByUserDto input,
-        [Required] Guid userId,
+        Guid targetUserId,
+        MessageCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var newBlob = input.Media is not null
             ? await UploadBlobAsync(userId, input.Media, cancellationToken)
             : null;
 
-        var currentDate = DateTime.Now;
         var chat = await ChatManager.CreateAsync(
-            [userId, input.TargetUserId],
+            [userId, targetUserId],
             cancellationToken: cancellationToken);
 
-        var result = await ChatManager.AddMessageAsync(
+        await ChatManager.AddMessageAsync(
                 chat,
                 userId,
                 input.ParentId,
                 input.Text,
                 newBlob,
                 cancellationToken);
-        if (currentDate >= chat.CreationTime)
-        {
-            await ChatRepository.UpdateAsync(result, autoSave: true, cancellationToken);
-            return;
-        }
-        await ChatRepository.InsertAsync(result, autoSave: true, cancellationToken);
-
     }
 
     public async Task AddMessageByChatAsync(
-        [Required] MessageCreateByChatDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        MessageCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var newBlob = input.Media is not null
             ? await UploadBlobAsync(userId, input.Media, cancellationToken)
             : null ;
-        var chat = await ChatManager.GetChatAsync(userId, input.ChatId, cancellationToken);
+        var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
 
-        var result = await ChatManager.AddMessageAsync(
+        await ChatManager.AddMessageAsync(
                 chat,
                 userId,
                 input.ParentId,
                 input.Text,
                 newBlob,
                 cancellationToken);
-
-        await ChatRepository.UpdateAsync(result, autoSave:true, cancellationToken);
     }
 
     public async Task AddMemberAsync(
-        [Required] MemberCreateDto input,
-        [Required] Guid userId,
-        CancellationToken cancellationToken = default)
-    {
-        var chat = await ChatManager.GetChatAsync(userId, input.ChatId, cancellationToken);
-
-        var result = await ChatManager.AddMemberAsync(chat, input.UserId, cancellationToken);
-        await ChatRepository.UpdateAsync(result, autoSave: true, cancellationToken);
-    }
-
-    public async Task DeleteMemberAsync(
-        [Required] Guid chatId,
-        [Required] Guid userId,
-        [Required] Guid memberId,
+        Guid chatId,
+        MemberCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
 
-        var result = await ChatManager.RemoveMemberAsync(chat, memberId, cancellationToken);
-        if (result is not null)
-        {
-            await ChatRepository.UpdateAsync(result, autoSave: true, cancellationToken);
-        }
+        await ChatManager.AddMemberAsync(chat, input.UserId, cancellationToken);
+    }
+
+    public async Task DeleteMemberAsync(
+        Guid chatId,
+        Guid userId,
+        Guid memberId,
+        CancellationToken cancellationToken = default)
+    {
+        var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
+
+        await ChatManager.RemoveMemberAsync(chat, memberId, cancellationToken);
     }
 
     public async Task CreateAsync(
-        [Required] ChatCreateDto input,
-        [Required] Guid userId,
+        ChatCreateDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var newBlob = input.Image is not null
             ? await UploadBlobAsync(userId, input.Image, cancellationToken)
             : null;
-        var currentDate = DateTime.Now;
+
         if (!input.UserIds.Contains(userId))
         {
             input.UserIds.Add(userId);
         }
 
-        var result = await ChatManager.CreateAsync(
+        await ChatManager.CreateAsync(
             input.UserIds,
             input.Title,
             newBlob,
             cancellationToken);
-        if (result.CreationTime >= currentDate)
-        {
-            await ChatRepository.InsertAsync(result, autoSave: true, cancellationToken);
-        }
-
     }
 
     public async Task UpdateTitleAsync(
-        [Required] ChatUpdateTitleDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        ChatUpdateTitleDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
-        var chat = await ChatManager.GetChatAsync(userId, input.Id, cancellationToken);
-
-        var result = await ChatManager.UpdateTitleAsync(chat, input.Title, cancellationToken);
-        await ChatRepository.UpdateAsync(result, autoSave: true, cancellationToken);
+        var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
+        await ChatManager.UpdateTitleAsync(chat, input.Title, cancellationToken);
     }
 
     public async Task UpdateImageAsync(
-        [Required] ChatUpdateImageDto input,
-        [Required] Guid userId,
+        Guid chatId,
+        ChatUpdateImageDto input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var newBlob = await UploadBlobAsync(userId, input.Image, cancellationToken);
-        var chat = await ChatManager.GetChatAsync(userId, input.Id, cancellationToken);
+        var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
         if (chat.Image is not null)
         {
-            await BlobManager.DeleteAsync(chat.Image.StorageFileName, cancellationToken);
-            await BlobRepository.DeleteAsync(chat.Image, autoSave:true, cancellationToken);
+            await BlobManager.DeleteAsync(chat.Image, cancellationToken);
         }
 
-        var result = await ChatManager.UpdateImageAsync(chat, newBlob, cancellationToken);
-        await ChatRepository.UpdateAsync(result, autoSave: true, cancellationToken);
+        await ChatManager.UpdateImageAsync(chat, newBlob, cancellationToken);
     }
 
     public async Task DeleteAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var chat = await ChatManager.GetChatAsync(userId, id, cancellationToken);
@@ -253,7 +232,6 @@ public class ChatService: ProLinkedServiceBase, IChatService
             fileByteArray,
             cancellationToken: cancellationToken);
 
-        await BlobRepository.InsertAsync(newBlob, autoSave:true, cancellationToken);
         return newBlob;
     }
 }

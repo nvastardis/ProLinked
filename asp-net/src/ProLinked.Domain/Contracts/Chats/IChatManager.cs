@@ -43,4 +43,9 @@ public interface IChatManager
         Guid userId,
         Guid chatId,
         CancellationToken cancellationToken = default);
+
+    Task DeleteAsync(
+        Guid chatId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
 }

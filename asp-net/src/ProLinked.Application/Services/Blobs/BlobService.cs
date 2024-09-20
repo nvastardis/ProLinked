@@ -3,40 +3,34 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Blobs;
-using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Extensions;
-using System.ComponentModel.DataAnnotations;
 using System.IO.Compression;
-using PLBlob = ProLinked.Domain.Entities.Blobs.Blob;
 
 namespace ProLinked.Application.Services.Blobs;
 
 public class BlobService: ProLinkedServiceBase, IBlobService
 {
     private IBlobManager BlobManager { get; }
-    private IRepository<PLBlob,Guid> BlobRepository { get; }
 
     public BlobService(
         IMapper mapper,
         ILogger<IBlobService> logger,
-        IBlobManager blobManager,
-        IRepository<PLBlob, Guid> blobRepository)
+        IBlobManager blobManager)
         : base(mapper, logger)
     {
         BlobManager = blobManager;
-        BlobRepository = blobRepository;
     }
 
     public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetAsync(
-        [Required] Guid id,
+        Guid id,
         CancellationToken cancellationToken = default)
     {
         return await DownloadFileAsync(id, cancellationToken);
     }
 
     public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetManyAsync(
-        [Length(1,10)] Guid[] input,
+        Guid[] input,
         CancellationToken cancellationToken = default)
     {
         try
@@ -64,8 +58,8 @@ public class BlobService: ProLinkedServiceBase, IBlobService
     }
 
     public async Task<Results<NoContent, ProblemHttpResult>> PostAsync(
-        [Required] IFormFile input,
-        [Required] Guid userId,
+        IFormFile input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         try
@@ -83,8 +77,8 @@ public class BlobService: ProLinkedServiceBase, IBlobService
     }
 
     public async Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
-        [Required] IFormFileCollection input,
-        [Required] Guid userId,
+        IFormFileCollection input,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         try
@@ -105,14 +99,13 @@ public class BlobService: ProLinkedServiceBase, IBlobService
     }
 
     public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
-        [Required] Guid id,
+        Guid id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var blob = await BlobRepository.GetAsync(id, cancellationToken: cancellationToken);
-            await BlobManager.DeleteAsync(blob.StorageFileName, cancellationToken);
-            await BlobRepository.DeleteAsync(blob, autoSave: true, cancellationToken);
+            var blobWithData = await BlobManager.GetAsync(id, cancellationToken: cancellationToken);
+            await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
             return TypedResults.NoContent();
         }
         catch (Exception ex)
@@ -123,24 +116,16 @@ public class BlobService: ProLinkedServiceBase, IBlobService
     }
 
     public async Task<Results<NoContent, ProblemHttpResult>> DeleteManyAsync(
-        [Length(1,10)] Guid[] input,
+        Guid[] input,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var blobs = await BlobRepository.FindManyAsync(e => input.Contains(e.Id),
-                cancellationToken: cancellationToken);
-            if (blobs is null)
+            foreach (var id in input)
             {
-                return TypedResults.Problem();
+                var blobWithData = await BlobManager.GetAsync(id, cancellationToken);
+                await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
             }
-
-            foreach (var blob in blobs)
-            {
-                await BlobManager.DeleteAsync(blob.StorageFileName, cancellationToken);
-            }
-
-            await BlobRepository.DeleteManyAsync(input, autoSave: true, cancellationToken: cancellationToken);
             return TypedResults.NoContent();
         }
         catch (Exception ex)
@@ -152,13 +137,12 @@ public class BlobService: ProLinkedServiceBase, IBlobService
 
     private async Task UploadFileAsync(Guid userId, string? fileName, byte[] data, CancellationToken cancellationToken = default)
     {
-        var newBlob = await BlobManager.SaveAsync(
+        await BlobManager.SaveAsync(
             userId,
             fileName,
             data,
             cancellationToken: cancellationToken
         );
-        await BlobRepository.InsertAsync(newBlob, autoSave:true, cancellationToken: cancellationToken);
     }
 
     private async Task<Results<FileStreamHttpResult, ProblemHttpResult>> DownloadFileAsync(Guid id, CancellationToken cancellationToken = default)

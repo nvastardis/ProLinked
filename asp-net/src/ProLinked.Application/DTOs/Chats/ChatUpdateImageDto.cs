@@ -2,7 +2,7 @@
 
 namespace ProLinked.Application.DTOs.Chats;
 
-public class ChatUpdateImageDto: EntityDto<Guid>
+public class ChatUpdateImageDto
 {
     public IFormFile Image { get; set; } = null!;
 }

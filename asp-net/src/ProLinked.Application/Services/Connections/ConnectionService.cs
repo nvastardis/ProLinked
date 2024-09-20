@@ -6,7 +6,6 @@ using ProLinked.Application.DTOs.Connections;
 using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.Application.Services.Connections;
 
@@ -27,7 +26,7 @@ public class ConnectionService: ProLinkedServiceBase, IConnectionService
     }
 
     public async Task<PagedAndSortedResultList<ConnectionLookUpDto>> GetListAsync(
-        [Required] UserFilterDto input,
+        UserFilterDto input,
         CancellationToken cancellationToken = default)
     {
         var queryResult = await ConnectionRepository.GetListByUserAsync(
@@ -42,8 +41,8 @@ public class ConnectionService: ProLinkedServiceBase, IConnectionService
     }
 
     public async Task DeleteAsync(
-        [Required] Guid id,
-        [Required] Guid userId,
+        Guid id,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var connectionToDelete = await ConnectionManager.GetConnectionAsync(id, userId, cancellationToken);

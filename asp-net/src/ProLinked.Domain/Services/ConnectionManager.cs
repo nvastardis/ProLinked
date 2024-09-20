@@ -59,6 +59,7 @@ public class ConnectionManager: IConnectionManager
             senderId,
             targetId);
 
+        await _connectionRequestsRepository.InsertAsync(newConnectionRequest, autoSave: true, cancellationToken);
         return newConnectionRequest;
     }
 
@@ -76,6 +77,7 @@ public class ConnectionManager: IConnectionManager
                 throw new BusinessException(ProLinkedDomainErrorCodes.ConnectionRequestRejected);
             default:
                 request.SetStatus(status);
+                await _connectionRequestsRepository.UpdateAsync(request, autoSave: true, cancellationToken);
                 break;
         }
 
@@ -90,8 +92,10 @@ public class ConnectionManager: IConnectionManager
                 Guid.NewGuid(),
                 request.SenderId,
                 request.TargetId);
+
+           await _connectionsRepository.InsertAsync(info.Connection, autoSave: true, cancellationToken);
         }
-        return await Task.FromResult(info);
+        return info;
     }
 
     public async Task<Connection> GetConnectionAsync(
@@ -118,6 +122,26 @@ public class ConnectionManager: IConnectionManager
             throw new BusinessException(ProLinkedDomainErrorCodes.UserNotFoundInConnection);
         }
         return request;
+    }
+
+    public async Task DeleteRequestAsync(
+        Guid requestId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var request = await GetRequestAsync(requestId, userId, cancellationToken);
+        if (request.Status != ConnectionRequestStatus.PENDING)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.ConnectionRequestInvalidStatus);
+        }
+
+        await _connectionRequestsRepository.DeleteAsync(request, autoSave: true, cancellationToken);
+    }
+
+    public async Task DeleteConnectionAsync(Guid connectionId, Guid userId, CancellationToken cancellationToken = default)
+    {
+        var connection = await GetConnectionAsync(connectionId, userId, cancellationToken);
+        await _connectionsRepository.DeleteAsync(connection, autoSave: true, cancellationToken);
     }
 
 

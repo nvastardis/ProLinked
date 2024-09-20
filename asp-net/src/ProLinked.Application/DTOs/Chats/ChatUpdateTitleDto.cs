@@ -1,6 +1,6 @@
 ﻿namespace ProLinked.Application.DTOs.Chats;
 
-public class ChatUpdateTitleDto: EntityDto<Guid>
+public class ChatUpdateTitleDto
 {
     public string Title { get; set; } = null!;
 }

@@ -20,16 +20,28 @@ public class JwtTokenService : IJwtTokenService
 
     public async Task<string> GenerateRefreshToken()
     {
-        return await Task.FromResult(Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)));
+        return await Task.FromResult(
+            Convert.ToBase64String(
+                RandomNumberGenerator.GetBytes(64)
+                )
+            );
     }
 
-    public async Task<string> GenerateAccessTokenAsync(AppUser user)
+    public async Task<string> GenerateAccessTokenAsync(
+        AppUser user)
     {
-        return await GenerateTokenAsync(user, AuthSettings.PrivateKey, AuthSettings.PrivateKeyExpirationInHours);
+        return await GenerateTokenAsync(
+            user,
+            AuthSettings.PrivateKey,
+            AuthSettings.PrivateKeyExpirationInHours
+        );
     }
 
 
-    private async Task<string> GenerateTokenAsync(AppUser user, string secret, int hours)
+    private async Task<string> GenerateTokenAsync(
+        AppUser user,
+        string secret,
+        int hours)
     {
         var handler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(secret);
@@ -50,7 +62,8 @@ public class JwtTokenService : IJwtTokenService
         return handler.WriteToken(token);
     }
 
-    private async Task<ClaimsIdentity> GenerateClaimsAsync(AppUser user)
+    private async Task<ClaimsIdentity> GenerateClaimsAsync(
+        AppUser user)
     {
         var claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));

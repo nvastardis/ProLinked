@@ -24,6 +24,6 @@ public interface IBlobManager
         CancellationToken cancellationToken = default);
 
     Task DeleteAsync(
-        string storageFileName,
+        Blob blob,
         CancellationToken cancellationToken = default);
 }

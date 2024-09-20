@@ -26,5 +26,13 @@ public interface IConnectionManager
         Guid userId,
         CancellationToken cancellationToken = default);
 
+    Task DeleteRequestAsync(
+        Guid requestId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
 
+    Task DeleteConnectionAsync(
+        Guid requestId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
 }

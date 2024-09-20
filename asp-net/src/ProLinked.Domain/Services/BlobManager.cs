@@ -60,6 +60,9 @@ public class BlobManager: IBlobManager
             fileName!,
             extension,
             storageFileName);
+
+        await _blobRepository.InsertAsync(blob, autoSave: true, cancellationToken);
+
         return blob;
     }
 
@@ -122,9 +125,10 @@ public class BlobManager: IBlobManager
     }
 
     public async Task DeleteAsync(
-        string storageFileName,
+        Blob blob,
         CancellationToken cancellationToken = default)
     {
-        await _azureBlobService.DeleteAsync(storageFileName, cancellationToken);
+        await _azureBlobService.DeleteAsync(blob.StorageFileName, cancellationToken);
+        await _blobRepository.DeleteAsync(blob, autoSave:true, cancellationToken);
     }
 }

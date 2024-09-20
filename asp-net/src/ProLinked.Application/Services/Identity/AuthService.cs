@@ -64,11 +64,13 @@ public class AuthService: IAuthService
             return ResponseGenerator.CreateValidationProblem(result);
         }
 
-        return TypedResults.Ok(new RegistrationResponse()
-        {
-            Email = email,
-            Username = input.UserName,
-        });
+        return TypedResults.Ok(
+            new RegistrationResponse
+            {
+                Email = email,
+                Username = input.UserName,
+            }
+        );
     }
 
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> LoginAsync(

@@ -13,14 +13,20 @@ namespace ProLinked.Domain.Services;
 public class ChatManager: IChatManager
 {
     private readonly IChatRepository _chatRepository;
+    private readonly IRepository<Message, Guid> _messageRepository;
+    private readonly IRepository<ChatMembership> _chatMembershipRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public ChatManager(
         IChatRepository chatRepository,
-        UserManager<AppUser> userManager)
+        UserManager<AppUser> userManager,
+        IRepository<Message, Guid> messageRepository,
+        IRepository<ChatMembership> chatMembershipRepository)
     {
         _chatRepository = chatRepository;
         _userManager = userManager;
+        _messageRepository = messageRepository;
+        _chatMembershipRepository = chatMembershipRepository;
     }
 
     public async Task<Chat> CreateAsync(
@@ -68,6 +74,7 @@ public class ChatManager: IChatManager
             newChat.AddMember(membership);
         }
 
+        await _chatRepository.InsertAsync(newChat, autoSave: true, cancellationToken);
         return newChat;
     }
 
@@ -103,8 +110,10 @@ public class ChatManager: IChatManager
 
         cancellationToken.ThrowIfCancellationRequested();
         chat.AddMessage(newMessage);
+        await _messageRepository.InsertAsync(newMessage, autoSave: true, cancellationToken);
+        await _chatRepository.UpdateAsync(chat, autoSave:true, cancellationToken);
 
-        return await Task.FromResult(chat);
+        return chat;
     }
 
     public async Task<Chat> UpdateImageAsync(
@@ -121,8 +130,8 @@ public class ChatManager: IChatManager
 
         cancellationToken.ThrowIfCancellationRequested();
         chat.SetImage(newImg);
-
-        return await Task.FromResult(chat);
+        await _chatRepository.UpdateAsync(chat, autoSave: true, cancellationToken);
+        return chat;
     }
 
     public async Task<Chat> UpdateTitleAsync(
@@ -139,8 +148,9 @@ public class ChatManager: IChatManager
 
         cancellationToken.ThrowIfCancellationRequested();
         chat.SetTitle(newTitle);
+        await _chatRepository.UpdateAsync(chat, autoSave: true, cancellationToken);
 
-        return await Task.FromResult(chat);
+        return chat;
     }
 
     public async Task<Chat> AddMemberAsync(
@@ -157,7 +167,9 @@ public class ChatManager: IChatManager
         }
 
         cancellationToken.ThrowIfCancellationRequested();
-        chat.AddMember(new ChatMembership(chat.Id, member.Id));
+        var newMember = new ChatMembership(chat.Id, member.Id);
+        chat.AddMember(newMember);
+        await _chatMembershipRepository.InsertAsync(newMember, autoSave: true, cancellationToken);
         return chat;
     }
 
@@ -167,6 +179,7 @@ public class ChatManager: IChatManager
         CancellationToken cancellationToken = default)
     {
         chat.RemoveMember(memberId);
+        await _chatMembershipRepository.DeleteManyAsync(e => e.UserId == memberId, autoSave: true, cancellationToken);
         if (chat.Members.Count > 1)
         {
             return chat;
@@ -188,6 +201,15 @@ public class ChatManager: IChatManager
             throw new BusinessException(ProLinkedDomainErrorCodes.MemberNotFound);
         }
         return chat;
+    }
+
+    public async Task DeleteAsync(
+        Guid chatId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var chat = await GetChatAsync(userId, chatId, cancellationToken);
+        await _chatRepository.DeleteAsync(chat, autoSave: true, cancellationToken);
     }
 
 
