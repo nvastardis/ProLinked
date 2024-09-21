@@ -8,4 +8,6 @@ public record ListFilterDto
     public string? Sorting;
     public int SkipCount;
     public int MaxResultCount;
+    public DateTime? From;
+    public DateTime? To;
 }

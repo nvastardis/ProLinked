@@ -36,7 +36,17 @@ public interface IJobManager
         Guid applicationId,
         CancellationToken cancellationToken = default);
 
+    Task<Advertisement> RejectApplicationAsync(
+        Guid currentUserId,
+        Guid applicationId,
+        CancellationToken cancellationToken = default);
+
     Task<Advertisement> CloseAdvertisementAsync(
+        Guid currentUserId,
+        Guid advertisementId,
+        CancellationToken cancellationToken = default);
+
+    Task<Advertisement> GetAdvertisementAsync(
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default);

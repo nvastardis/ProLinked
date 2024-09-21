@@ -40,7 +40,8 @@ public class JobManager: IJobManager
             employmentType,
             workArrangement);
 
-        return await Task.FromResult(newAdvertisement);
+        await _advertisementRepository.InsertAsync(newAdvertisement, autoSave: true, cancellationToken);
+        return newAdvertisement;
     }
 
     public async Task<Advertisement> UpdateAdvertisementAsync(
@@ -54,20 +55,7 @@ public class JobManager: IJobManager
         WorkArrangementEnum? workArrangement = null,
         CancellationToken cancellationToken = default)
     {
-        var adv = await _advertisementRepository.FindAsync(advertisementId, includeDetails: true, cancellationToken);
-        if (adv is null)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.JobAdvertisementNotFound)
-                .WithData(nameof(Advertisement.Id), advertisementId);
-        }
-
-        if (adv.CreatorId != userId)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.UserIsNotAdvertiser)
-                .WithData(nameof(Advertisement.Id), adv.Id)
-                .WithData(nameof(Advertisement.CreatorId), adv.CreatorId);
-        }
-
+        var adv = await GetAdvertisementAsync(userId, advertisementId, cancellationToken);
         if (adv.Status != AdvertisementStatus.OPEN)
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.JobAdvertisementAlreadyClosed)
@@ -88,6 +76,7 @@ public class JobManager: IJobManager
             location,
             employmentType,
             workArrangement);
+        await _advertisementRepository.UpdateAsync(adv, autoSave: true, cancellationToken);
 
         return adv;
     }
@@ -97,15 +86,7 @@ public class JobManager: IJobManager
         Guid advertisementId,
         CancellationToken cancellationToken = default)
     {
-        var advertisement = await _advertisementRepository.FindAsync(advertisementId, includeDetails:true, cancellationToken);
-        if (advertisement is null)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.JobAdvertisementNotFound);
-        }
-        if (advertisement.CreatorId == currentUserId)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.AdvertiserCannotApply);
-        }
+        var advertisement = await GetAdvertisementAsync(currentUserId, advertisementId, cancellationToken);
         if (advertisement.Status == AdvertisementStatus.CLOSED)
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.JobApplicationPeriodClosed);
@@ -120,8 +101,8 @@ public class JobManager: IJobManager
             Guid.NewGuid(),
             advertisementId,
             currentUserId);
-
         advertisement.AddApplication(newApplication);
+        await _applicationRepository.InsertAsync(newApplication, autoSave: true, cancellationToken);
         return advertisement;
     }
 
@@ -136,14 +117,31 @@ public class JobManager: IJobManager
             throw new BusinessException(ProLinkedDomainErrorCodes.JobApplicationNotFound);
         }
 
-        var advertisement = await _advertisementRepository.GetAsync(application.AdvertisementId, cancellationToken: cancellationToken);
-        if (advertisement.CreatorId != currentUserId)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.UserIsNotAdvertiser);
-        }
+        var advertisement = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
 
         cancellationToken.ThrowIfCancellationRequested();
         application.SetStatus(ApplicationStatus.ACCEPTED_FOR_INTERVIEW);
+        await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
+
+        return advertisement;
+    }
+
+    public async Task<Advertisement> RejectApplicationAsync(
+        Guid currentUserId,
+        Guid applicationId,
+        CancellationToken cancellationToken = default)
+    {
+        var application = await _applicationRepository.FindAsync(applicationId, false, cancellationToken);
+        if (application is null)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.JobApplicationNotFound);
+        }
+
+        var advertisement = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
+
+        cancellationToken.ThrowIfCancellationRequested();
+        application.SetStatus(ApplicationStatus.REJECTED);
+        await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
 
         return advertisement;
     }
@@ -152,6 +150,30 @@ public class JobManager: IJobManager
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default)
+    {
+        var advertisement = await GetAdvertisementAsync(currentUserId, advertisementId, cancellationToken);
+        if (advertisement.Status == AdvertisementStatus.CLOSED)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.JobAdvertisementAlreadyClosed);
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        advertisement.SetStatus(AdvertisementStatus.CLOSED);
+        await _advertisementRepository.UpdateAsync(advertisement, autoSave: true, cancellationToken);
+
+
+        foreach (var application in advertisement.Applications)
+        {
+            if (application.Status == ApplicationStatus.PENDING)
+            {
+                application.SetStatus(ApplicationStatus.REJECTED);
+                await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
+            }
+        }
+        return advertisement;
+    }
+
+    public async Task<Advertisement> GetAdvertisementAsync(Guid currentUserId, Guid advertisementId, CancellationToken cancellationToken = default)
     {
         var advertisement = await _advertisementRepository.FindAsync(advertisementId, includeDetails:true, cancellationToken);
         if (advertisement is null)
@@ -162,21 +184,7 @@ public class JobManager: IJobManager
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.UserIsNotAdvertiser);
         }
-        if (advertisement.Status == AdvertisementStatus.CLOSED)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.JobAdvertisementAlreadyClosed);
-        }
 
-        cancellationToken.ThrowIfCancellationRequested();
-        advertisement.SetStatus(AdvertisementStatus.CLOSED);
-
-        foreach (var application in advertisement.Applications)
-        {
-            if (application.Status == ApplicationStatus.PENDING)
-            {
-                application.SetStatus(ApplicationStatus.REJECTED);
-            }
-        }
         return advertisement;
     }
 }
