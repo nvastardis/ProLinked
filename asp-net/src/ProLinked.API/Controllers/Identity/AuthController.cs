@@ -22,7 +22,7 @@ public class AuthController: ControllerBase
     [Route("register")]
     [AllowAnonymous]
     public async Task<Results<Ok<RegistrationResponse>, ValidationProblem>> Register(
-        [FromBody] RegisterRequest input,
+        RegisterRequest input,
         CancellationToken cancellationToken = default) =>
         await _authService.RegisterAsync(input, cancellationToken);
 
@@ -31,7 +31,7 @@ public class AuthController: ControllerBase
     [Route("login")]
     [AllowAnonymous]
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> Login(
-        [FromBody] LoginRequest input)
+        LoginRequest input)
     {
         var result = await _authService.LoginAsync(input);
         if (result.Result is Ok<AccessTokenResponse> accessTokenResponse)
@@ -52,7 +52,7 @@ public class AuthController: ControllerBase
     [Route("refresh")]
     [Authorize]
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> Refresh(
-        [FromBody] RefreshRequest refreshRequest)
+        RefreshRequest refreshRequest)
     {
         var result = await _authService.RefreshAsync(User, refreshRequest);
         if (result.Result is Ok<AccessTokenResponse> accessTokenResponse)

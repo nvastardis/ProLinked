@@ -62,7 +62,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpPost]
     public async Task<Results<NoContent, ProblemHttpResult>> CreateAsync(
-        [FromBody] ConnectionRequestCreateDto input,
+        ConnectionRequestCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();

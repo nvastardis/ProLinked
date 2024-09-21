@@ -111,7 +111,7 @@ public class ChatController: ProLinkedController
     [Route("{id}/add-message")]
     public async Task<Results<NoContent, ProblemHttpResult>> AddMessageByChatAsync(
         [Required] Guid id,
-        [Required, FromBody] MessageCreateDto input,
+        [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
@@ -129,7 +129,7 @@ public class ChatController: ProLinkedController
     [Route("send-message-to-user/{targetUserId}")]
     public async Task<Results<NoContent,ProblemHttpResult>> AddMessageByUserAsync(
         [Required] Guid targetUserId,
-        [Required, FromBody] MessageCreateDto input,
+        [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
@@ -147,7 +147,7 @@ public class ChatController: ProLinkedController
     [Route("{id}/add-member")]
     public async Task<Results<NoContent, ProblemHttpResult>> AddMemberAsync(
         [Required] Guid id,
-        [Required, FromBody] MemberCreateDto input,
+        [Required] MemberCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
@@ -181,7 +181,7 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     public async Task<Results<NoContent, ProblemHttpResult>> CreateAsync(
-        [Required, FromBody] ChatCreateDto input,
+        [Required] ChatCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();

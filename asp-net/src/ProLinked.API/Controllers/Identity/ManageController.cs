@@ -30,7 +30,7 @@ public class ManageController: ControllerBase
     [Route("update")]
     [Authorize]
     public async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> Update(
-        [FromBody] InfoRequest input)
+        InfoRequest input)
     {
         return await _manageService.UpdateAsync(User, input);
     }

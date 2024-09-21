@@ -70,7 +70,7 @@ public class JobController: ProLinkedController
     [HttpPost]
     [Route("advertisements")]
     public async Task<Results<NoContent, ProblemHttpResult>> CreateJobAdvertisementAsync(
-        [FromBody] AdvertisementCUDto input,
+        AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
