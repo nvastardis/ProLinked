@@ -30,6 +30,7 @@ public interface IPostManager
     Task<Post> RemovePostReactionAsync(
         Guid postId,
         Guid reactionId,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task<Post> AddCommentReactionAsync(
@@ -43,12 +44,12 @@ public interface IPostManager
         Guid postId,
         Guid commentId,
         Guid reactionId,
+        Guid userId,
         CancellationToken cancellationToken = default);
 
     Task<Post> SetVisibilityAsync(
         Guid postId,
+        Guid userId,
         PostVisibilityEnum visibility,
         CancellationToken cancellationToken = default);
-
-
 }

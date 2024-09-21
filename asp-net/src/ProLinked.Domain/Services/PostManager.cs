@@ -12,11 +12,21 @@ namespace ProLinked.Domain.Services;
 public class PostManager: IPostManager
 {
     private readonly IPostRepository _postRepository;
+    private readonly IRepository<PostReaction, Guid> _postReactionRepository;
+    private readonly IRepository<Comment, Guid> _commentRepository;
+    private readonly IRepository<CommentReaction, Guid> _commentReactionRepository;
+
 
     public PostManager(
-        IPostRepository postRepository)
+        IPostRepository postRepository,
+        IRepository<PostReaction, Guid> postReactionRepository,
+        IRepository<Comment, Guid> commentRepository,
+        IRepository<CommentReaction, Guid> commentReactionRepository)
     {
         _postRepository = postRepository;
+        _postReactionRepository = postReactionRepository;
+        _commentRepository = commentRepository;
+        _commentReactionRepository = commentReactionRepository;
     }
 
     public async Task<Post> CreatePostAsync(
@@ -44,7 +54,9 @@ public class PostManager: IPostManager
             blobList = media.ConvertAll(e => new PostBlob(post.Id, e.Id));
         }
         post.SetContent(text, blobList);
-        return await Task.FromResult(post);
+
+        await _postRepository.InsertAsync(post, autoSave: true, cancellationToken);
+        return post;
     }
 
     public async Task<Post> AddCommentAsync(
@@ -78,6 +90,7 @@ public class PostManager: IPostManager
             parent);
         newComment.SetContent(text, media);
         post.AddComment(newComment);
+        await _commentRepository.InsertAsync(newComment, autoSave: true, cancellationToken);
         return post;
     }
 
@@ -102,17 +115,18 @@ public class PostManager: IPostManager
             currentUserId,
             reactionType);
         post.AddReaction(newReaction);
-
+        await _postReactionRepository.InsertAsync(newReaction, autoSave: true, cancellationToken);
         return post;
     }
 
     public async Task<Post> RemovePostReactionAsync(
         Guid postId,
         Guid reactionId,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var post = await FindPostAsync(postId);
-        if (post.Reactions.All(e => e.Id != reactionId))
+        if (post.Reactions.All(e => e.Id != reactionId && e.CreatorId != userId))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.ReactionNotFound)
                 .WithData("PostId", reactionId)
@@ -121,6 +135,7 @@ public class PostManager: IPostManager
 
         cancellationToken.ThrowIfCancellationRequested();
         post.RemoveReaction(reactionId);
+        await _postReactionRepository.DeleteAsync(reactionId, autoSave: true, cancellationToken);
 
         return post;
     }
@@ -150,6 +165,7 @@ public class PostManager: IPostManager
         );
 
         comment.AddReaction(newReaction);
+        await _commentReactionRepository.InsertAsync(newReaction, autoSave: true, cancellationToken);
 
         return post;
     }
@@ -158,11 +174,12 @@ public class PostManager: IPostManager
         Guid postId,
         Guid commentId,
         Guid reactionId,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
         var post = await FindPostAsync(postId);
         var comment = FindComment(post, commentId);
-        if (comment.Reactions.All(x => x.Id != reactionId))
+        if (comment.Reactions.All(x => x.Id != reactionId && x.CreatorId != userId))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.ReactionNotFound)
                 .WithData("ReactionId", reactionId);
@@ -170,6 +187,7 @@ public class PostManager: IPostManager
 
         cancellationToken.ThrowIfCancellationRequested();
         comment.RemoveReaction(reactionId);
+        await _commentReactionRepository.DeleteAsync(reactionId, autoSave: true, cancellationToken);
 
         return post;
     }
@@ -177,13 +195,19 @@ public class PostManager: IPostManager
 
     public async Task<Post> SetVisibilityAsync(
         Guid postId,
+        Guid userId,
         PostVisibilityEnum visibility,
         CancellationToken cancellationToken = default)
     {
         var post = await FindPostAsync(postId);
+        if (post.CreatorId != userId)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.PostNotFound);
+        }
 
         cancellationToken.ThrowIfCancellationRequested();
         post.SetVisibility(visibility);
+        await _postRepository.UpdateAsync(post, autoSave: true, cancellationToken);
         return post;
     }
 
