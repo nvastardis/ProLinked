@@ -3,7 +3,8 @@ using ProLinked.Domain.Shared.Posts;
 
 namespace ProLinked.Application.DTOs.Posts;
 
-public record PostListFilterDto: UserFilterDto
+public record PostListFilterDto: ListFilterDto
 {
+    public Guid? UserId = null;
     public PostVisibilityEnum VisibilityEnum;
 }

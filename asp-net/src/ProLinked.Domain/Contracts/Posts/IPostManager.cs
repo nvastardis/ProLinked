@@ -13,43 +13,70 @@ public interface IPostManager
         List<Blob>? media = null,
         CancellationToken cancellationToken = default);
 
-    Task<Post> AddCommentAsync(
-        Guid currentUserId,
-        Guid postId,
+    Task AddCommentAsync(
+        Post post,
+        Guid userId,
         Guid? parentId = null,
         string? text = null,
         Blob? media = null,
         CancellationToken cancellationToken = default);
 
-    Task<Post> AddPostReactionAsync(
-        Guid currentUserId,
-        Guid postId,
+    Task UpdatePostAsync(
+        Post post,
+        string? text = null,
+        List<Blob>? media = null,
+        CancellationToken cancellationToken = default);
+
+    Task UpdateCommentAsync(
+        Comment comment,
+        string? text = null,
+        Blob? media = null,
+        CancellationToken cancellationToken = default);
+
+    Task AddPostReactionAsync(
+        Post post,
+        Guid userId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default);
 
-    Task<Post> RemovePostReactionAsync(
-        Guid postId,
-        Guid reactionId,
-        Guid userId,
+    Task RemovePostReactionAsync(
+        Post post,
+        Reaction reaction,
         CancellationToken cancellationToken = default);
 
-    Task<Post> AddCommentReactionAsync(
-        Guid currentUserId,
-        Guid postId,
-        Guid commentId,
+    Task AddCommentReactionAsync(
+        Comment comment,
+        Guid userId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default);
 
-    Task<Post> RemoveCommentReactionAsync(
-        Guid postId,
-        Guid commentId,
-        Guid reactionId,
-        Guid userId,
+    Task RemoveCommentReactionAsync(
+        Comment comment,
+        Reaction reaction,
         CancellationToken cancellationToken = default);
 
-    Task<Post> SetVisibilityAsync(
-        Guid postId,
-        Guid userId,
+    Task SetVisibilityAsync(
+        Post post,
         PostVisibilityEnum visibility,
+        CancellationToken cancellationToken = default);
+
+    Task<Post> GetPostAsCreatorAsync(
+        Guid postId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task<Comment> GetCommentAsCreatorAsync(
+        Guid commentId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task<Reaction> GetPostReactionAsCreatorAsync(
+        Guid reactionId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task<Reaction> GetCommentReactionAsCreatorAsync(
+        Guid reactionId,
+        Guid userId,
         CancellationToken cancellationToken = default);
 }

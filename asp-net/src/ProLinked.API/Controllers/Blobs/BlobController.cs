@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Blobs;
+using ProLinked.Application.DTOs.Blobs;
+using ProLinked.Domain.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.API.Controllers.Blobs;
@@ -12,7 +14,10 @@ public class BlobController: ProLinkedController
 {
     private readonly IBlobService _blobService;
 
-    public BlobController(IBlobService blobService)
+    public BlobController(
+        ILogger<BlobController> logger,
+        IBlobService blobService)
+        : base(logger)
     {
         _blobService = blobService;
     }
@@ -22,20 +27,29 @@ public class BlobController: ProLinkedController
     [Route("{id}")]
     public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetAsync(
         [Required] Guid id,
-        CancellationToken cancellationToken = default) =>
-        await _blobService.GetAsync(
-            id,
-            cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        return await FileStreamWithStandardExceptionHandling(
+            _blobService.GetAsync(
+                id,
+                cancellationToken)
+        );
+    }
+
 
     [HttpGet]
     [Authorize]
     [Route("list/")]
     public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetListAsync(
-        [FromQuery, Length(1,10)] Guid[] ids,
-        CancellationToken cancellationToken = default) =>
-        await _blobService.GetManyAsync(
-            ids,
-            cancellationToken);
+        [FromQuery, Length(1, 10)] Guid[] ids,
+        CancellationToken cancellationToken = default)
+    {
+        return await FileStreamWithStandardExceptionHandling(
+            _blobService.GetManyAsync(
+                ids,
+                cancellationToken)
+        );
+    }
 
     [HttpPost]
     [Route("upload")]
@@ -45,7 +59,12 @@ public class BlobController: ProLinkedController
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await _blobService.PostAsync(input, userId, cancellationToken);
+        return await NoContentWithStandardExceptionHandling(
+            _blobService.PostAsync(
+                input,
+                userId,
+                cancellationToken)
+        );
     }
 
     [HttpPost]
@@ -56,7 +75,12 @@ public class BlobController: ProLinkedController
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await _blobService.PostManyAsync(input, userId, cancellationToken);
+        return await NoContentWithStandardExceptionHandling(
+            _blobService.PostManyAsync(
+                input,
+                userId,
+                cancellationToken)
+        );
     }
 
     [HttpDelete]
@@ -64,14 +88,44 @@ public class BlobController: ProLinkedController
     [Authorize]
     public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
-        CancellationToken cancellationToken = default) =>
-        await _blobService.DeleteAsync(id, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        return await NoContentWithStandardExceptionHandling(
+            _blobService.DeleteAsync(
+                id,
+                cancellationToken)
+        );
+    }
 
     [HttpDelete]
     [Route("delete/list")]
     [Authorize]
     public async Task<Results<NoContent, ProblemHttpResult>> DeleteListAsync(
         [FromQuery, Length(1,10)] Guid[] ids,
-        CancellationToken cancellationToken = default) =>
-        await _blobService.DeleteManyAsync(ids, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        return await NoContentWithStandardExceptionHandling(
+            _blobService.DeleteManyAsync(
+                ids,
+                cancellationToken)
+        );
+    }
+
+    private async Task<Results<FileStreamHttpResult, ProblemHttpResult>> FileStreamWithStandardExceptionHandling(
+        Task<BlobDownloadDto> taskToExecute)
+    {
+        try
+        {
+            var result = await taskToExecute;
+            return TypedResults.File(result.Data, result.ContentType, result.FileName);
+        }
+        catch (BusinessException businessException)
+        {
+            return TypedResults.Problem(businessException.Code);
+        }
+        catch (Exception ex)
+        {
+            return TypedResults.Problem(ex.Message);
+        }
+    }
 }

@@ -6,11 +6,9 @@ namespace ProLinked.Application.Services;
 public abstract class ProLinkedServiceBase
 {
     protected readonly IMapper ObjectMapper;
-    protected readonly ILogger Logger;
 
     protected ProLinkedServiceBase(
-        IMapper objectMapper,
-        ILogger logger)
+        IMapper objectMapper)
     {
         ObjectMapper = objectMapper;
 

@@ -11,7 +11,7 @@ public class Post: Entity<Guid>
     public string? Text { get; private set; }
     public PostVisibilityEnum PostVisibility { get; private set; }
     public ICollection<Comment> Comments { get; init; }
-    public ICollection<PostReaction> Reactions { get; init; }
+    public ICollection<Reaction> Reactions { get; init; }
     public ICollection<PostBlob> Media { get; init; }
     public DateTime CreationTime { get; init; }
     public DateTime LastModificationDate { get; private set; }
@@ -30,13 +30,13 @@ public class Post: Entity<Guid>
         SetVisibility(postVisibility);
 
         Comments = new Collection<Comment>();
-        Reactions = new Collection<PostReaction>();
+        Reactions = new Collection<Reaction>();
         Media = new Collection<PostBlob>();
         CreationTime = creationTime ?? DateTime.Now;
         SetContent(text);
     }
 
-    internal Post UpdatePost(string? text = null, ICollection<PostBlob>? media = null)
+    public Post UpdatePost(string? text = null, ICollection<PostBlob>? media = null)
     {
         SetContent(text, media);
         LastModificationDate = DateTime.Now;
@@ -93,7 +93,7 @@ public class Post: Entity<Guid>
         return this;
     }
 
-    public Post AddReaction(PostReaction reactionToAdd)
+    public Post AddReaction(Reaction reactionToAdd)
     {
         Reactions.Add(reactionToAdd);
         return this;

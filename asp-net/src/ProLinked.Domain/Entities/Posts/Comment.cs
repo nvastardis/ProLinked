@@ -12,12 +12,13 @@ public class Comment: Entity<Guid>
 {
     public Guid CreatorId { get; init; }
     public Guid PostId { get; init; }
-    public ICollection<CommentReaction> Reactions { get; init; }
+    public ICollection<Reaction> Reactions { get; init; }
     public ICollection<Comment> Children { get; init; }
     public Guid? ParentId { get; init; }
     public string? Text { get; private set; }
     public Blob? Media { get; private set; }
     public DateTime CreationTime { get; init; }
+    public DateTime? LastModificationTime { get; private set; }
 
     private Comment(Guid id): base(id){}
 
@@ -35,9 +36,17 @@ public class Comment: Entity<Guid>
         ParentId = parentId;
         CreatorId = creatorId;
         SetContent(text, media);
-        Reactions = new Collection<CommentReaction>();
+        Reactions = new Collection<Reaction>();
         Children = new Collection<Comment>();
         CreationTime = creationTime ?? DateTime.Now;
+        LastModificationTime = null;
+    }
+
+    public Comment UpdateComment(string? text = null, Blob? media = null)
+    {
+        SetContent(text, media);
+        LastModificationTime = DateTime.Now;
+        return this;
     }
 
     public Comment SetContent(string? text = null, Blob? media = null)
@@ -54,13 +63,13 @@ public class Comment: Entity<Guid>
         return this;
     }
 
-    public Comment AddReaction(CommentReaction reactionToAdd)
+    public Comment AddReaction(Reaction reactionToAdd)
     {
         if (Reactions.Any(x => x.CreatorId == reactionToAdd.CreatorId || x.Id == reactionToAdd.Id))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.ReactionAlreadyExists)
-                .WithData(nameof(CommentReaction.CreatorId), reactionToAdd.CreatorId)
-                .WithData(nameof(CommentReaction.Id), reactionToAdd.Id);
+                .WithData(nameof(Reaction.CreatorId), reactionToAdd.CreatorId)
+                .WithData(nameof(Reaction.Id), reactionToAdd.Id);
         }
 
         Reactions.Add(reactionToAdd);

@@ -15,7 +15,10 @@ public class ConnectionController: ProLinkedController
 {
     private readonly IConnectionService _connectionService;
 
-    public ConnectionController(IConnectionService connectionService)
+    public ConnectionController(
+        ILogger<ConnectionController> logger,
+        IConnectionService connectionService)
+        : base(logger)
     {
         _connectionService = connectionService;
     }

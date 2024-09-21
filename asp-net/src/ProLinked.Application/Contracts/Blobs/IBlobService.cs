@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using ProLinked.Application.DTOs.Blobs;
 
 namespace ProLinked.Application.Contracts.Blobs;
 
 public interface IBlobService
 {
-    Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetAsync(
+    Task<BlobDownloadDto> GetAsync(
         Guid input,
         CancellationToken cancellationToken = default);
-    Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetManyAsync(
+    Task<BlobDownloadDto> GetManyAsync(
         Guid[] input,
         CancellationToken cancellationToken = default);
-    Task<Results<NoContent, ProblemHttpResult>> PostAsync(
+    Task PostAsync(
         IFormFile input,
         Guid userId,
         CancellationToken cancellationToken = default);
-    Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
+    Task PostManyAsync(
         IFormFileCollection input,
         Guid userId,
         CancellationToken cancellationToken = default);
-    Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
+    Task DeleteAsync(
         Guid id,
         CancellationToken cancellationToken = default);
-    Task<Results<NoContent, ProblemHttpResult>> DeleteManyAsync(
+    Task DeleteManyAsync(
         Guid[] blobIds,
         CancellationToken cancellationToken = default);
 }

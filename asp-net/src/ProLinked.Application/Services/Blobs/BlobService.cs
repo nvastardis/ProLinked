@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Blobs;
+using ProLinked.Application.DTOs.Blobs;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Extensions;
 using System.IO.Compression;
@@ -15,127 +14,88 @@ public class BlobService: ProLinkedServiceBase, IBlobService
 
     public BlobService(
         IMapper mapper,
-        ILogger<IBlobService> logger,
         IBlobManager blobManager)
-        : base(mapper, logger)
+        : base(mapper)
     {
         BlobManager = blobManager;
     }
 
-    public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetAsync(
+    public async Task<BlobDownloadDto> GetAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
         return await DownloadFileAsync(id, cancellationToken);
     }
 
-    public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetManyAsync(
+    public async Task<BlobDownloadDto> GetManyAsync(
         Guid[] input,
         CancellationToken cancellationToken = default)
     {
-        try
+        var formFileList = new FormFileCollection();
+        foreach (var item in input)
         {
-            var formFileList = new FormFileCollection();
-            foreach (var item in input)
-            {
-                var newItem = await BlobManager.GetAsync(item, cancellationToken);
-                var itemToAdd = new FormFile(
-                    newItem.Data,
-                    0,
-                    newItem.Data.Length,
-                    newItem.Info.FullFileName,
-                    newItem.Info.FullFileName);
+            var newItem = await BlobManager.GetAsync(item, cancellationToken);
+            var itemToAdd = new FormFile(
+                newItem.Data,
+                0,
+                newItem.Data.Length,
+                newItem.Info.FullFileName,
+                newItem.Info.FullFileName);
 
-                formFileList.Add(itemToAdd);
-            }
-            return await ZipFilesAsync(formFileList, cancellationToken);
+            formFileList.Add(itemToAdd);
         }
-        catch (Exception ex)
-        {
-            Logger.LogDebug(ex.Message);
-            return TypedResults.Problem();
-        }
+        return await ZipFilesAsync(formFileList, cancellationToken);
     }
 
-    public async Task<Results<NoContent, ProblemHttpResult>> PostAsync(
+    public async Task PostAsync(
         IFormFile input,
         Guid userId,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var fileName = input.FileName;
-            var data = await input.OpenReadStream().GetAllBytesAsync(cancellationToken);
-            await UploadFileAsync(userId, fileName, data, cancellationToken);
-            return TypedResults.NoContent();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogDebug(ex.Message);
-            return TypedResults.Problem();
-        }
+        var fileName = input.FileName;
+        var data = await input.OpenReadStream().GetAllBytesAsync(cancellationToken);
+        await UploadFileAsync(userId, fileName, data, cancellationToken);
     }
 
-    public async Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
+    public async Task PostManyAsync(
         IFormFileCollection input,
         Guid userId,
         CancellationToken cancellationToken = default)
     {
-        try
+
+        foreach (var item in input)
         {
-            foreach (var item in input)
-            {
-                var fileName = item.FileName;
-                var data = await item.OpenReadStream().GetAllBytesAsync(cancellationToken);
-                await UploadFileAsync(userId, fileName, data, cancellationToken);
-            }
-            return TypedResults.NoContent();
+            var fileName = item.FileName;
+            var data = await item.OpenReadStream().GetAllBytesAsync(cancellationToken);
+            await UploadFileAsync(userId, fileName, data, cancellationToken);
         }
-        catch (Exception ex)
-        {
-            Logger.LogDebug(ex.Message);
-            return TypedResults.Problem();
-        }
+
     }
 
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
+    public async Task DeleteAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var blobWithData = await BlobManager.GetAsync(id, cancellationToken: cancellationToken);
-            await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
-            return TypedResults.NoContent();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogDebug(ex.Message);
-            return TypedResults.Problem();
-        }
+        var blobWithData = await BlobManager.GetAsync(id, cancellationToken: cancellationToken);
+        await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
     }
 
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteManyAsync(
+    public async Task DeleteManyAsync(
         Guid[] input,
         CancellationToken cancellationToken = default)
     {
-        try
+        foreach (var id in input)
         {
-            foreach (var id in input)
-            {
-                var blobWithData = await BlobManager.GetAsync(id, cancellationToken);
-                await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
-            }
-            return TypedResults.NoContent();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogDebug(ex.Message);
-            return TypedResults.Problem();
+            var blobWithData = await BlobManager.GetAsync(id, cancellationToken);
+            await BlobManager.DeleteAsync(blobWithData.Info, cancellationToken);
         }
     }
 
-    private async Task UploadFileAsync(Guid userId, string? fileName, byte[] data, CancellationToken cancellationToken = default)
+    private async Task UploadFileAsync(
+        Guid userId,
+        string? fileName,
+        byte[] data,
+        CancellationToken cancellationToken = default)
     {
         await BlobManager.SaveAsync(
             userId,
@@ -145,19 +105,25 @@ public class BlobService: ProLinkedServiceBase, IBlobService
         );
     }
 
-    private async Task<Results<FileStreamHttpResult, ProblemHttpResult>> DownloadFileAsync(Guid id, CancellationToken cancellationToken = default)
+    private async Task<BlobDownloadDto> DownloadFileAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
     {
         var result = await BlobManager.GetAsync(id, cancellationToken);
         if (result.Data.Length == 0)
         {
-            return TypedResults.Problem();
+            throw new EndOfStreamException();
         }
 
         result.Data.Position = 0;
-        return TypedResults.File(fileStream:result.Data, fileDownloadName:result.Info.FullFileName);
+        return new BlobDownloadDto
+        {
+            FileName = result.Info.FullFileName,
+            Data = result.Data
+        };
     }
 
-    private async Task<FileStreamHttpResult> ZipFilesAsync(
+    private async Task<BlobDownloadDto> ZipFilesAsync(
         IFormFileCollection files,
         CancellationToken cancellationToken = default)
     {
@@ -179,6 +145,11 @@ public class BlobService: ProLinkedServiceBase, IBlobService
 
 
         memoryStream.Position = 0;
-        return TypedResults.File(memoryStream, "application/zip", zipName);
+        return new BlobDownloadDto
+        {
+            Data = memoryStream,
+            FileName = zipName,
+            ContentType = "application/zip"
+        };
     }
 }

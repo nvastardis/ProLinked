@@ -22,11 +22,10 @@ public class ChatService: ProLinkedServiceBase, IChatService
 
     public ChatService(
         IMapper mapper,
-        ILogger<IChatService> logger,
         IChatManager chatManager,
         IChatRepository chatRepository,
         IBlobManager blobManager)
-        : base(mapper, logger)
+        : base(mapper)
     {
         ChatManager = chatManager;
         ChatRepository = chatRepository;

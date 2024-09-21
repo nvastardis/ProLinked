@@ -5,6 +5,7 @@ using ProLinked.Application.DTOs;
 using ProLinked.Application.DTOs.Jobs;
 using ProLinked.Domain;
 using ProLinked.Domain.Shared.Jobs;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.API.Controllers.Jobs;
 
@@ -15,14 +16,16 @@ public class JobController: ProLinkedController
     private readonly IJobService _jobService;
 
     public JobController(
+        ILogger<JobController> logger,
         IJobService jobService)
+        : base(logger)
     {
         _jobService = jobService;
     }
 
 
     [HttpGet]
-    [Route("advertisements")]
+    [Route("advertisement/list")]
     public async Task<Results<Ok<PagedAndSortedResultList<AdvertisementDto>>, ProblemHttpResult>>
         GetListOfJobAdvertisementsAsync(
             [FromQuery] Guid? userId,
@@ -52,7 +55,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpGet]
-    [Route("advertisements/{id}/applications")]
+    [Route("advertisement/{id}/application/list")]
     public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, ProblemHttpResult>>
         GetListOfApplicationsAsync(
             Guid id,
@@ -68,7 +71,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPost]
-    [Route("advertisements")]
+    [Route("advertisement")]
     public async Task<Results<NoContent, ProblemHttpResult>> CreateJobAdvertisementAsync(
         AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
@@ -83,7 +86,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPost]
-    [Route("advertisements/{id}/apply")]
+    [Route("advertisement/{id}/apply")]
     public async Task<Results<NoContent, ProblemHttpResult>> ApplyAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -98,7 +101,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPut]
-    [Route("advertisements/{id}/close")]
+    [Route("advertisement/{id}/close")]
     public async Task<Results<NoContent, ProblemHttpResult>> CloseAdvertisement(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -113,7 +116,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPut]
-    [Route("advertisements/{id}/update")]
+    [Route("advertisement/{id}/update")]
     public async Task<Results<NoContent, ProblemHttpResult>> UpdateJobAdvertisementAsync(
         Guid id,
         AdvertisementCUDto input,
@@ -130,10 +133,10 @@ public class JobController: ProLinkedController
     }
 
     [HttpGet]
-    [Route("applications/user")]
+    [Route("application/user")]
     public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, ProblemHttpResult>>
         GetListOfUserApplicationsAsync(
-            [FromQuery] Guid? userId,
+            [Required, FromQuery] Guid userId,
             [FromQuery] DateTime? from,
             [FromQuery] DateTime? to,
             [FromQuery] ApplicationStatus? applicationStatus,
@@ -146,7 +149,7 @@ public class JobController: ProLinkedController
             _jobService.GetListOfUserApplicationsAsync(
                 new JobListFilter
                 {
-                    UserId = userId ?? Guid.Empty,
+                    UserId = userId,
                     From = from,
                     To = to,
                     ApplicationStatus = applicationStatus ?? ApplicationStatus.UNDEFINED,
@@ -160,7 +163,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPut]
-    [Route("applications/{id}/accept")]
+    [Route("application/{id}/accept")]
     public async Task<Results<NoContent, ProblemHttpResult>> AcceptApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -175,7 +178,7 @@ public class JobController: ProLinkedController
     }
 
     [HttpPut]
-    [Route("applications/{id}/reject")]
+    [Route("application/{id}/reject")]
     public async Task<Results<NoContent, ProblemHttpResult>> RejectApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)

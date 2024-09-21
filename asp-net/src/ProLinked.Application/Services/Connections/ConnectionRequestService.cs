@@ -17,10 +17,9 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
 
     public ConnectionRequestService(
         IMapper mapper,
-        ILogger<IConnectionRequestService> logger,
         IConnectionManager connectionManager,
         IConnectionRequestRepository connectionRequestRepository)
-        : base(mapper, logger)
+        : base(mapper)
     {
         ConnectionManager = connectionManager;
         ConnectionRequestRepository = connectionRequestRepository;

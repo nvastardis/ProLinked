@@ -7,6 +7,14 @@ namespace ProLinked.API.Controllers;
 
 public abstract class ProLinkedController: ControllerBase
 {
+    protected ILogger Logger;
+
+    protected ProLinkedController(
+        ILogger logger)
+    {
+        Logger = logger;
+    }
+
     protected Guid GetCurrentUserId()
     {
         return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty);
@@ -40,10 +48,12 @@ public abstract class ProLinkedController: ControllerBase
         }
         catch (BusinessException businessException)
         {
+            Logger.Log(LogLevel.Error, businessException.Code);
             return TypedResults.Problem(businessException.Code);
         }
         catch (Exception ex)
         {
+            Logger.Log(LogLevel.Error, ex.Message, ex.Data);
             return TypedResults.Problem(ex.Message);
         }
     }

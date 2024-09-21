@@ -50,6 +50,7 @@ public static class ProLinkedDomainErrorCodes
     public const string UserNotFoundInConnection = "ProLinked:UserNotFoundInConnection";
     public const string UserNotLoggedIn = "ProLinked:UserNotLoggedIn";
     public const string UserNotTargetOfNotification = "ProLinked:UserNotTargetOfNotification";
+    public const string UserNotPoster = "ProLinked:UserNotPoster";
     public const string UserTargetAndCreatorOfNotification ="ProLinked:UserTargetAndCreatorOfNotification";
 
 }

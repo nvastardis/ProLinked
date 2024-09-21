@@ -17,11 +17,10 @@ public class JobService: ProLinkedServiceBase, IJobService
 
     public JobService(
         IMapper objectMapper,
-        ILogger logger,
         IJobManager jobManager,
         IAdvertisementRepository advertisementRepository,
         IApplicationRepository applicationRepository)
-        : base(objectMapper, logger)
+        : base(objectMapper)
     {
         JobManager = jobManager;
         AdvertisementRepository = advertisementRepository;

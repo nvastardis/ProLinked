@@ -7,8 +7,8 @@ using ProLinked.Domain.Contracts.Chats;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.Contracts.Jobs;
 using ProLinked.Domain.Contracts.Notifications;
+using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.Entities.Identity;
-using ProLinked.Domain.Repositories.Posts;
 using ProLinked.Domain.Repositories.Resumes;
 using ProLinked.Domain.Shared.Blobs;
 using ProLinked.Infrastructure.Data;
@@ -18,6 +18,7 @@ using ProLinked.Infrastructure.Data.Repositories.Chats;
 using ProLinked.Infrastructure.Data.Repositories.Connections;
 using ProLinked.Infrastructure.Data.Repositories.Jobs;
 using ProLinked.Infrastructure.Data.Repositories.Notifications;
+using ProLinked.Infrastructure.Data.Repositories.Posts;
 using ProLinked.Infrastructure.Data.Repositories.Resumes;
 using PostRepository = ProLinked.Infrastructure.Data.Repositories.Posts.PostRepository;
 
@@ -34,6 +35,7 @@ public static class DependencyInjection
         serviceCollection.AddTransient<IApplicationRepository, ApplicationRepository>();
         serviceCollection.AddTransient<INotificationRepository, NotificationRepository>();
         serviceCollection.AddTransient<IPostRepository, PostRepository>();
+        serviceCollection.AddTransient<ICommentRepository, CommentRepository>();
         serviceCollection.AddTransient<IResumeRepository, ResumeRepository>();
         serviceCollection.AddTransient<ISkillRepository, SkillRepository>();
         serviceCollection.AddTransient<IEducationRepository, EducationRepository>();

@@ -8,11 +8,15 @@ using ProLinked.Application.Contracts.Blobs;
 using ProLinked.Application.Contracts.Chats;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.Contracts.Identity;
+using ProLinked.Application.Contracts.Jobs;
+using ProLinked.Application.Contracts.Posts;
 using ProLinked.Application.Localization;
 using ProLinked.Application.Services.Blobs;
 using ProLinked.Application.Services.Chats;
 using ProLinked.Application.Services.Connections;
 using ProLinked.Application.Services.Identity;
+using ProLinked.Application.Services.Jobs;
+using ProLinked.Application.Services.Posts;
 
 namespace ProLinked.Application;
 
@@ -74,5 +78,8 @@ public static class DependencyInjection
         serviceCollection.AddScoped<IChatService, ChatService>();
         serviceCollection.AddScoped<IConnectionService, ConnectionService>();
         serviceCollection.AddScoped<IConnectionRequestService, ConnectionRequestService>();
+        serviceCollection.AddScoped<IJobService, JobService>();
+        serviceCollection.AddScoped<ICommentService, CommentService>();
+        serviceCollection.AddScoped<IPostService, PostService>();
     }
 }

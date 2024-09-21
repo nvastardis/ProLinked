@@ -57,7 +57,7 @@ public class ChatRepository: ProLinkedBaseRepository<Chat, Guid>, IChatRepositor
                 ChatId = chatId,
                 SenderId = user.Id,
                 CreationTime = message.CreationTime,
-                MediaId = message.Media.Id,
+                MediaId = message.Media == null ? null : message.Media!.Id,
                 SenderFullName = user.Name + " " + user.Surname,
                 Text = message.Text
             };
@@ -117,7 +117,7 @@ public class ChatRepository: ProLinkedBaseRepository<Chat, Guid>, IChatRepositor
             {
                 Id = chat.Id,
                 Title = chat.Title,
-                ImageId = chat.Image.Id,
+                ImageId = chat.Image == null ? null : chat.Image!.Id,
                 LastMessageDate = chat.LastMessageDate,
                 LastMessageContent = messageItem.Text,
                 LastMessageSenderName = userItem.Name

@@ -15,7 +15,10 @@ public class ChatController: ProLinkedController
 {
     private readonly IChatService _chatService;
 
-    public ChatController(IChatService chatService)
+    public ChatController(
+        ILogger<ChatController> logger,
+        IChatService chatService)
+    : base(logger)
     {
         _chatService = chatService;
     }

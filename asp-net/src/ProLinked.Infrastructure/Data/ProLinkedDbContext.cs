@@ -15,9 +15,8 @@ namespace ProLinked.Infrastructure.Data;
 public class ProLinkedDbContext: IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
 {
     public DbSet<Post> Posts { get; set; }
-    public DbSet<PostReaction> PostReactions { get; set; }
     public DbSet<Comment> Comments { get; set; }
-    public DbSet<CommentReaction> CommentReactions { get; set; }
+    public DbSet<Reaction> PostReactions { get; set; }
     public DbSet<Chat> Chats { get; set; }
     public DbSet<ChatMembership> ChatMemberships { get; set; }
     public DbSet<Message> Messages { get; set; }

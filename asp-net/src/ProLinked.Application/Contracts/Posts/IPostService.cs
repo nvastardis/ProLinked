@@ -7,23 +7,9 @@ namespace ProLinked.Application.Contracts.Posts;
 
 public interface IPostService
 {
+    /* Posts */
     Task<PagedAndSortedResultList<PostLookUpDto>> GetPostListAsync(
         PostListFilterDto filter,
-        CancellationToken cancellationToken = default);
-
-    Task<PagedAndSortedResultList<CommentDto>> GetCommentListAsync(
-        Guid postId,
-        ListFilterDto filterDto,
-        CancellationToken cancellationToken = default);
-
-    Task<PagedAndSortedResultList<CommentReactionDto>> GetCommentReactionListAsync(
-        Guid commentId,
-        ListFilterDto filterDto,
-        CancellationToken cancellationToken = default);
-
-    Task<PagedAndSortedResultList<PostReactionDto>> GetPostReactionListAsync(
-        Guid postId,
-        ListFilterDto filterDto,
         CancellationToken cancellationToken = default);
 
     Task<PostWithDetailsDto> GetWithDetailsAsync(
@@ -35,48 +21,37 @@ public interface IPostService
         Guid userId,
         CancellationToken cancellationToken = default);
 
-    // TODO ?
-    // Task UpdatePostAsync(
-    //     Guid postId,
-    //     PostCUDto input,
-    //     Guid userId,
-    //     CancellationToken cancellationToken = default);
+    Task UpdatePostAsync(
+        PostCUDto input,
+        Guid postId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
 
     Task SetVisibilityAsync(
         Guid postId,
+        Guid userId,
         PostVisibilityEnum visibilityEnum,
-        Guid userId,
         CancellationToken cancellationToken = default);
 
-
-    Task AddPostReactionAsync(
+    Task DeletePostAsync(
         Guid postId,
+        Guid userId,
+        CancellationToken cancellationToken);
+
+    /* Post Reactions */
+    Task<PagedAndSortedResultList<ReactionDto>> GetPostReactionListAsync(
+        Guid postId,
+        ListFilterDto filterDto,
+        CancellationToken cancellationToken = default);
+
+    Task CreatePostReactionAsync(
+        Guid postId,
+        Guid userId,
         ReactionTypeEnum reactionType,
-        Guid userId,
         CancellationToken cancellationToken = default);
 
-    Task RemovePostReactionAsync(
+    Task DeletePostReactionAsync(
         Guid postId,
-        Guid reactionId,
-        Guid userId,
-        CancellationToken cancellationToken = default);
-
-    Task AddCommentAsync(
-        Guid postId,
-        CommentCUDto input,
-        Guid userId,
-        CancellationToken cancellationToken = default);
-
-    Task AddCommentReactionAsync(
-        Guid postId,
-        Guid commentId,
-        ReactionTypeEnum reactionType,
-        Guid userId,
-        CancellationToken cancellationToken = default);
-
-    Task RemoveCommentReactionAsync(
-        Guid postId,
-        Guid commentId,
         Guid reactionId,
         Guid userId,
         CancellationToken cancellationToken = default);

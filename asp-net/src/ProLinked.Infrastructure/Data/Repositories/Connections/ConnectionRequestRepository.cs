@@ -32,9 +32,9 @@ public class ConnectionRequestRepository: ProLinkedBaseRepository<ConnectionRequ
             {
                 Id = request.Id,
                 UserId = request.SenderId,
-                UserFullName = $"{request.Sender.Name} {request.Sender.Surname}",
+                UserFullName = $"{request.Sender!.Name} {request.Sender!.Surname}",
                 CreationTime = request.CreationTime,
-                JobTitle = request.Sender.JobTitle ?? string.Empty,
+                JobTitle = request.Sender!.JobTitle,
                 ProfilePhotoId = request.Sender.PhotographId
             };
         query =

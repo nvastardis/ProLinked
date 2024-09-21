@@ -1,16 +1,14 @@
-﻿namespace ProLinked.Application.DTOs.Posts;
+﻿namespace ProLinked.Domain.DTOs.Posts;
 
-public class PostWithDetailsDto
+public class PostLookUp
 {
     public Guid Id;
     public Guid CreatorId;
     public string CreatorFullName = null!;
     public Guid? CreatorProfilePhotoId;
     public DateTime CreationTime;
-    public int CommentCount = 0;
-    public List<CommentDto>? Comments;
     public int ReactionCount = 0;
-    public List<ReactionDto>? Reactions;
+    public int CommentCount = 0;
     public string? Text = null;
     public List<Guid>? MediaIds = null;
     public DateTime? LastModificationTime = null;

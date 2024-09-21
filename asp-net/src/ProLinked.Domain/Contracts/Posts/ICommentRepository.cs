@@ -3,16 +3,11 @@ using ProLinked.Domain.Entities.Posts;
 
 namespace ProLinked.Domain.Contracts.Posts;
 
-public interface IPostRepository: IRepository<Post, Guid>
+public interface ICommentRepository: IRepository<Comment,Guid>
 {
-    Task<PostWithDetails> GetWithDetailsAsync(
-        Guid postId,
-        int skipCount = ProLinkedConsts.SkipCountDefaultValue,
-        int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
-        CancellationToken cancellationToken = default);
-
-    Task<List<Post>> GetListAsync(
-        Guid? userId,
+    Task<List<Comment>> GetListAsync(
+        Guid? postId = null,
+        Guid? userId = null,
         DateTime? fromDate = null,
         DateTime? toDate = null,
         bool includeDetails = false,
@@ -21,7 +16,7 @@ public interface IPostRepository: IRepository<Post, Guid>
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default);
 
-    Task<List<PostLookUp>> GetLookUpListAsync(
+    Task<List<CommentLookUp>> GetLookUpListAsync(
         Guid? postId = null,
         Guid? userId = null,
         DateTime? fromDate = null,
@@ -32,9 +27,8 @@ public interface IPostRepository: IRepository<Post, Guid>
         CancellationToken cancellationToken = default);
 
     Task<List<ReactionLookUp>> GetReactionsAsync(
-        Guid postId,
+        Guid commentId,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default);
-
 }

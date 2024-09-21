@@ -35,17 +35,17 @@ public class ConnectionRepository: ProLinkedBaseRepository<Connection, Guid>, IC
                     connection.UserAId == userId ? connection.UserBId : connection.UserAId,
                 UserFullName =
                     connection.UserAId == userId
-                        ? $"{connection.UserB.Name} {connection.UserB.Surname}"
-                        : $"{connection.UserA.Name} {connection.UserA.Surname}",
+                        ? $"{connection.UserB!.Name} {connection.UserB!.Surname}"
+                        : $"{connection.UserA!.Name} {connection.UserA!.Surname}",
                 CreationTime = connection.CreationTime,
                 JobTitle =
                     connection.UserAId == userId
-                        ? connection.UserB.JobTitle ?? string.Empty
-                        : connection.UserA.JobTitle ?? string.Empty,
+                        ? connection.UserB!.JobTitle
+                        : connection.UserA!.JobTitle,
                 ProfilePhotoId =
                     connection.UserAId == userId
-                        ? connection.UserB.PhotographId
-                        : connection.UserA.PhotographId,
+                        ? connection.UserB!.PhotographId
+                        : connection.UserA!.PhotographId,
             };
         query =
             query.

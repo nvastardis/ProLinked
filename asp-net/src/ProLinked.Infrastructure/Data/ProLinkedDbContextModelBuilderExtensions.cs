@@ -64,8 +64,9 @@ public static class ProLinkedDbContextModelBuilderExtensions
 
             b.HasMany(x => x.Reactions)
                 .WithOne()
-                .IsRequired()
-                .HasForeignKey(x => x.PostId);
+                .HasForeignKey(x => x.PostId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
 
             b.HasMany(x => x.Media)
                 .WithOne()
@@ -74,9 +75,9 @@ public static class ProLinkedDbContextModelBuilderExtensions
             b.HasIndex(x => x.Id);
         });
 
-        builder.Entity<PostReaction>(b =>
+        builder.Entity<Reaction>(b =>
         {
-            b.ToTable(ProLinkedConsts.DbTablePrefix + "PostReactions", ProLinkedConsts.DbSchema);
+            b.ToTable(ProLinkedConsts.DbTablePrefix + "Reactions", ProLinkedConsts.DbSchema);
 
 
             b.HasOne<AppUser>()
@@ -118,27 +119,14 @@ public static class ProLinkedDbContextModelBuilderExtensions
 
             b.HasMany(x => x.Reactions)
                 .WithOne()
-                .IsRequired()
-                .HasForeignKey(x => x.CommentId);
+                .HasForeignKey(x => x.CommentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
 
             b.HasMany(x => x.Children)
                 .WithOne()
                 .HasForeignKey(x => x.ParentId)
                 .IsRequired(false);
-
-            b.HasIndex(x => x.Id);
-        });
-
-        builder.Entity<CommentReaction>(b =>
-        {
-            b.ToTable(ProLinkedConsts.DbTablePrefix + "CommentReactions", ProLinkedConsts.DbSchema);
-
-
-            b.HasOne<AppUser>()
-                .WithMany()
-                .HasForeignKey(x => x.CreatorId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
 
             b.HasIndex(x => x.Id);
         });

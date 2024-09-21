@@ -23,9 +23,8 @@ public class ProLinkedDbSeedingService
         { "Roles", "Data\\Identity\\RoleData.json" },
         { "Users", "Data\\Identity\\UserData.json" },
         { "Posts", "Data\\Posts\\PostData.json" },
-        { "PostReactions", "Data\\Posts\\PostReactionData.json" },
+        { "Reactions", "Data\\Posts\\ReactionData.json" },
         { "Comments", "Data\\Posts\\CommentData.json" },
-        { "CommentReactions", "Data\\Posts\\CommentReactionData.json" },
         { "Skills", "Data\\Resumes\\SkillData.json" },
         { "Resumes", "Data\\Resumes\\ResumeData.json" },
         { "ResumeSkills", "Data\\Resumes\\ResumeSkillData.json" },
@@ -98,19 +97,14 @@ public class ProLinkedDbSeedingService
             _pathToDataFile["Posts"],
             e=> x =>  e.Id == x.Id);
 
-        await DataSeeder.SeedEntitiesIfNewAsync<PostReaction>(
-            nameof(PostReaction),
-            _pathToDataFile["PostReactions"],
-            e=> x =>  e.Id == x.Id);
-
         await DataSeeder.SeedEntitiesIfNewAsync<Comment>(
             nameof(Comment),
             _pathToDataFile["Comments"],
             e=> x =>  e.Id == x.Id);
 
-        await DataSeeder.SeedEntitiesIfNewAsync<CommentReaction>(
-            nameof(CommentReaction),
-            _pathToDataFile["CommentReactions"],
+        await DataSeeder.SeedEntitiesIfNewAsync<Reaction>(
+            nameof(Reaction),
+            _pathToDataFile["Reactions"],
             e=> x =>  e.Id == x.Id);
 
         await DataSeeder.SeedEntitiesIfNewAsync<Advertisement>(

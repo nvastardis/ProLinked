@@ -16,7 +16,9 @@ public class ConnectionRequestController: ProLinkedController
     private readonly IConnectionRequestService _connectionRequestService;
 
     public ConnectionRequestController(
+        ILogger<ConnectionRequestController> logger,
         IConnectionRequestService connectionRequestService)
+        : base(logger)
     {
         _connectionRequestService = connectionRequestService;
     }
