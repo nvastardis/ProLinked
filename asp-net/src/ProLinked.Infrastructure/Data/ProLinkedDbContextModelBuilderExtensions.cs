@@ -8,7 +8,6 @@ using ProLinked.Domain.Entities.Jobs;
 using ProLinked.Domain.Entities.Notifications;
 using ProLinked.Domain.Entities.Posts;
 using ProLinked.Domain.Entities.Resumes;
-using ProLinked.Domain.Shared;
 using ProLinked.Domain.Shared.Chats;
 using ProLinked.Domain.Shared.Jobs;
 using ProLinked.Domain.Shared.Posts;
@@ -122,8 +121,9 @@ public static class ProLinkedDbContextModelBuilderExtensions
                 .IsRequired()
                 .HasForeignKey(x => x.CommentId);
 
-            b.HasOne(x => x.Parent)
+            b.HasMany(x => x.Children)
                 .WithOne()
+                .HasForeignKey(x => x.ParentId)
                 .IsRequired(false);
 
             b.HasIndex(x => x.Id);
@@ -365,7 +365,7 @@ public static class ProLinkedDbContextModelBuilderExtensions
             b.HasIndex(x => x.Id);
         });
 
-        builder.Entity<Domain.Entities.Jobs.Application>(b =>
+        builder.Entity<Application>(b =>
         {
             b.ToTable(ProLinkedConsts.DbTablePrefix + "JobApplications", ProLinkedConsts.DbSchema);
 

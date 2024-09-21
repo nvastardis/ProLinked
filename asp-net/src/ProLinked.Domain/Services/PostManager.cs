@@ -87,7 +87,7 @@ public class PostManager: IPostManager
             Guid.NewGuid(),
             postId,
             currentUserId,
-            parent);
+            parentId);
         newComment.SetContent(text, media);
         post.AddComment(newComment);
         await _commentRepository.InsertAsync(newComment, autoSave: true, cancellationToken);

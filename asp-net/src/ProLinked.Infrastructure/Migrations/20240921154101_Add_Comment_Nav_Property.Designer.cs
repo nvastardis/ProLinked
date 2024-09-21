@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProLinked.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ProLinked.Infrastructure.Data;
 namespace ProLinked.Infrastructure.Migrations
 {
     [DbContext(typeof(ProLinkedDbContext))]
-    partial class ProLinkedDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240921154101_Add_Comment_Nav_Property")]
+    partial class Add_Comment_Nav_Property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

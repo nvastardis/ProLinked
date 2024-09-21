@@ -13,7 +13,8 @@ public class Comment: Entity<Guid>
     public Guid CreatorId { get; init; }
     public Guid PostId { get; init; }
     public ICollection<CommentReaction> Reactions { get; init; }
-    public Comment? Parent { get; init; }
+    public ICollection<Comment> Children { get; init; }
+    public Guid? ParentId { get; init; }
     public string? Text { get; private set; }
     public Blob? Media { get; private set; }
     public DateTime CreationTime { get; init; }
@@ -24,17 +25,18 @@ public class Comment: Entity<Guid>
         Guid id,
         Guid postId,
         Guid creatorId,
-        Comment? parent = null,
+        Guid? parentId = null,
         string? text = null,
         Blob? media = null,
         DateTime? creationTime = null)
         : base(id)
     {
         PostId = postId;
-        Parent = parent;
+        ParentId = parentId;
         CreatorId = creatorId;
         SetContent(text, media);
         Reactions = new Collection<CommentReaction>();
+        Children = new Collection<Comment>();
         CreationTime = creationTime ?? DateTime.Now;
     }
 
@@ -70,6 +72,18 @@ public class Comment: Entity<Guid>
     {
         var reactionToDelete = Reactions.FirstOrDefault(e => e.Id == reactionId);
         Reactions.Remove(reactionToDelete!);
+        return this;
+    }
+
+    public Comment AddChild(Comment newComment)
+    {
+        Children.Add(newComment);
+        return this;
+    }
+
+    public Comment RemoveChild(Comment comment)
+    {
+        Children.Remove(comment);
         return this;
     }
 
