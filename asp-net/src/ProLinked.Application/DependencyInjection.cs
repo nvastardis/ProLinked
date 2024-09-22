@@ -19,6 +19,7 @@ using ProLinked.Application.Services.Identity;
 using ProLinked.Application.Services.Jobs;
 using ProLinked.Application.Services.Posts;
 using ProLinked.Application.Services.Resumes;
+using ProLinked.Domain;
 
 namespace ProLinked.Application;
 
@@ -32,7 +33,7 @@ public static class DependencyInjection
             options.ResourcesPath = @"Shared\Localization\ProLinked\en.json");
     }
 
-    public static void AddProLinkedAuthentication(this IServiceCollection serviceCollection, ConfigurationManager configurationManager)
+    public static void AddProLinkedAuthentication(this IServiceCollection serviceCollection, IConfiguration configurationManager)
     {
         AuthSettings.PrivateKey = configurationManager["JwtKey"]!;
         AuthSettings.RefreshKey = configurationManager["JwtRefreshKey"]!;
@@ -85,5 +86,10 @@ public static class DependencyInjection
         serviceCollection.AddScoped<IPostService, PostService>();
         serviceCollection.AddScoped<IResumeService, ResumeService>();
         serviceCollection.AddScoped<ISkillService, SkillService>();
+    }
+
+    public static void AddProLinkedDomainServices(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddDomainServices();
     }
 }

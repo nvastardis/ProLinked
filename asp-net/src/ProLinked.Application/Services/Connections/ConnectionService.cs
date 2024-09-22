@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
+using ProLinked.Application.Contracts.Connections.DTOs;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Connections;
-using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
 

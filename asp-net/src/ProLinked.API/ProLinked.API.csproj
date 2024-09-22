@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ProLinked.Application.Contracts\ProLinked.Application.Contracts.csproj" />
       <ProjectReference Include="..\ProLinked.Application\ProLinked.Application.csproj" />
       <ProjectReference Include="..\ProLinked.Infrastructure\ProLinked.Infrastructure.csproj" />
     </ItemGroup>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Posts;
+using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Filtering;
-using ProLinked.Application.DTOs.Posts;
 using ProLinked.Domain;
 using ProLinked.Domain.Shared.Posts;
 

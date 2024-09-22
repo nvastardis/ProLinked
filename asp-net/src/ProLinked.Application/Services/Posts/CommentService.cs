@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Posts;
+using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Filtering;
-using ProLinked.Application.DTOs.Posts;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Posts;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Posts;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Application.Services.Posts;
 

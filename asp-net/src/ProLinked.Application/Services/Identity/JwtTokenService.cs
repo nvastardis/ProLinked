@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ProLinked.Application.Contracts.Identity;
+using ProLinked.Application.Contracts.Identity.DTOs;
 using ProLinked.Domain.Entities.Identity;
 
 namespace ProLinked.Application.Services.Identity;
@@ -28,7 +29,7 @@ public class JwtTokenService : IJwtTokenService
     }
 
     public async Task<string> GenerateAccessTokenAsync(
-        AppUser user)
+        AppUserDto user)
     {
         return await GenerateTokenAsync(
             user,
@@ -39,7 +40,7 @@ public class JwtTokenService : IJwtTokenService
 
 
     private async Task<string> GenerateTokenAsync(
-        AppUser user,
+        AppUserDto user,
         string secret,
         int hours)
     {
@@ -63,7 +64,7 @@ public class JwtTokenService : IJwtTokenService
     }
 
     private async Task<ClaimsIdentity> GenerateClaimsAsync(
-        AppUser user)
+        AppUserDto user)
     {
         var claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
@@ -71,7 +72,8 @@ public class JwtTokenService : IJwtTokenService
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Name));
         claims.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
 
-        var roles = await _userManager.GetRolesAsync(user);
+        var userCore = await _userManager.FindByIdAsync(user.Id.ToString());
+        var roles = await _userManager.GetRolesAsync(userCore!);
         foreach (var role in roles)
             claims.AddClaim(new Claim(ClaimTypes.Role, role));
 

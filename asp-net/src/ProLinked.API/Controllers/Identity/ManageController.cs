@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Identity;
-using InfoResponse = ProLinked.Application.DTOs.Identity.InfoResponse;
+using InfoResponse = ProLinked.Application.Contracts.Identity.DTOs.InfoResponse;
 
 namespace ProLinked.API.Controllers.Identity;
 

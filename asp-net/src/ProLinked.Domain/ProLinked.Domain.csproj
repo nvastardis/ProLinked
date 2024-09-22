@@ -8,11 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Properties\launchSettings.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.5" />
+      <ProjectReference Include="..\..\ProLinked.Domain.Shared\ProLinked.Domain.Shared.csproj" />
     </ItemGroup>
 
 </Project>

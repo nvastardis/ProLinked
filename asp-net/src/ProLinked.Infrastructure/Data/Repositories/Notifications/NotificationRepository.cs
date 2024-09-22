@@ -3,6 +3,7 @@ using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.Entities.Notifications;
 using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 using ProLinked.Infrastructure.Data;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Notifications;

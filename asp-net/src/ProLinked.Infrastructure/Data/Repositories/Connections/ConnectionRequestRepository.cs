@@ -3,8 +3,8 @@ using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Entities.Connections;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Connections;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Connections;
 

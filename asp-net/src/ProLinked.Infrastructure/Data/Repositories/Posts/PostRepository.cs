@@ -6,6 +6,7 @@ using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Entities.Posts;
 using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Exceptions;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Posts;
 

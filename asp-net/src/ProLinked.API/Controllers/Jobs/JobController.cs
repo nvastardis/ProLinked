@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Jobs;
+using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Jobs;
 using ProLinked.Domain;
 using ProLinked.Domain.Shared.Jobs;
 using System.ComponentModel.DataAnnotations;

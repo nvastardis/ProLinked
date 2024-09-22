@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Resumes;
+using ProLinked.Application.Contracts.Resumes.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Resumes;
 
 namespace ProLinked.API.Controllers.Resumes;
 

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using ProLinked.Application.Contracts.Resumes;
+using ProLinked.Application.Contracts.Resumes.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Resumes;
 using ProLinked.Domain.Contracts.Resumes;
 using ProLinked.Domain.Entities.Resumes;
 using ProLinked.Domain.Repositories.Resumes;

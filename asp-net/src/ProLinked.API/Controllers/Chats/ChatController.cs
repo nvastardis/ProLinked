@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Chats;
+using ProLinked.Application.Contracts.Chats.DTOs;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Chats;
-using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain;
 using System.ComponentModel.DataAnnotations;
 

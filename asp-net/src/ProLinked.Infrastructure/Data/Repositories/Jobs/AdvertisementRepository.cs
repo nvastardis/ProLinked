@@ -4,6 +4,7 @@ using ProLinked.Domain.Contracts.Jobs;
 using ProLinked.Domain.Entities.Jobs;
 using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Jobs;
+using ProLinked.Domain.Shared.Utils;
 using ProLinked.Infrastructure.Data;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Jobs;

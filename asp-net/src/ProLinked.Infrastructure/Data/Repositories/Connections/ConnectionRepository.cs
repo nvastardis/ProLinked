@@ -5,6 +5,7 @@ using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Entities.Connections;
 using System.Linq.Dynamic.Core;
 using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Connections;
 

@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Chats;
+using ProLinked.Application.Contracts.Chats.DTOs;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Chats;
-using ProLinked.Application.DTOs.Filtering;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Contracts.Chats;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Chats;
-using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Application.Services.Chats;
 

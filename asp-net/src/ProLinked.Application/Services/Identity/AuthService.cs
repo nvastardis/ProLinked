@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using ProLinked.Application.Contracts.Identity;
-using ProLinked.Application.DTOs.Identity;
+using ProLinked.Application.Contracts.Identity.DTOs;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 using System.Security.Claims;
-using LoginRequest = ProLinked.Application.DTOs.Identity.LoginRequest;
-using RefreshRequest = ProLinked.Application.DTOs.Identity.RefreshRequest;
-using RegisterRequest = ProLinked.Application.DTOs.Identity.RegisterRequest;
+using LoginRequest = ProLinked.Application.Contracts.Identity.DTOs.LoginRequest;
+using RefreshRequest = ProLinked.Application.Contracts.Identity.DTOs.RefreshRequest;
+using RegisterRequest = ProLinked.Application.Contracts.Identity.DTOs.RegisterRequest;
 
 namespace ProLinked.Application.Services.Identity;
 
@@ -91,7 +92,13 @@ public class AuthService: IAuthService
             return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        var token = await _jwtTokenService.GenerateAccessTokenAsync(user);
+        var token = await _jwtTokenService.GenerateAccessTokenAsync(new AppUserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Name = user.Name,
+            Surname = user.Surname
+        });
         var refreshToken = await _jwtTokenService.GenerateRefreshToken();
 
         var expirationDate = (long)TimeSpan.FromHours(AuthSettings.PrivateKeyExpirationInHours).TotalSeconds;
@@ -110,7 +117,6 @@ public class AuthService: IAuthService
         );
     }
 
-    //TODO: Handle JWT logout
     public async Task<Results<Ok, ProblemHttpResult>> LogoutAsync()
     {
         try
@@ -140,7 +146,14 @@ public class AuthService: IAuthService
             return TypedResults.Problem(_l["Error:InvalidToken"], statusCode: StatusCodes.Status401Unauthorized);
         }
 
-        var accessToken = await _jwtTokenService.GenerateAccessTokenAsync(user);
+        var accessToken = await _jwtTokenService.GenerateAccessTokenAsync(new AppUserDto
+        {
+            Email = user.Email,
+            Id = user.Id,
+            Name = user.Name,
+            Surname = user.Surname
+        });
+
         var refreshToken= await _jwtTokenService.GenerateRefreshToken();
         var expirationDate = (long)TimeSpan.FromHours(AuthSettings.PrivateKeyExpirationInHours).TotalSeconds;
 

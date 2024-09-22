@@ -4,7 +4,7 @@ using ProLinked.Domain.Contracts.Chats;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Entities.Identity;
-using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Chats;
 

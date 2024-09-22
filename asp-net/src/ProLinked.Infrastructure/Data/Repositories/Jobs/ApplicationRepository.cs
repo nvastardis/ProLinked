@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Jobs;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Jobs;
-using ProLinked.Infrastructure.Data;
+using ProLinked.Domain.Shared.Utils;
 using ProLinkedApplication = ProLinked.Domain.Entities.Jobs.Application;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Jobs;

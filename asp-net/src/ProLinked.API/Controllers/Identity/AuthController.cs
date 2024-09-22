@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Identity;
-using ProLinked.Application.DTOs.Identity;
+using ProLinked.Application.Contracts.Identity.DTOs;
 
 namespace ProLinked.API.Controllers.Identity;
 

@@ -1,5 +1,4 @@
 using Microsoft.OpenApi.Models;
-using ProLinked.Domain;
 using ProLinked.Application;
 using ProLinked.Infrastructure;
 
@@ -22,7 +21,7 @@ public class Program
         );
         builder.Services.AddIdentity();
         builder.Services.AddRepositories();
-        builder.Services.AddDomainServices();
+        builder.Services.AddProLinkedDomainServices();
         builder.Services.AddProLinkedLocalization();
         builder.Services.AddProLinkedAuthentication(builder.Configuration);
         builder.Services.AddAutoMapper();

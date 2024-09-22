@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Blobs;
-using ProLinked.Application.DTOs.Blobs;
+using ProLinked.Application.Contracts.Blobs.DTOs;
 using ProLinked.Domain.Shared.Exceptions;
 using System.ComponentModel.DataAnnotations;
 

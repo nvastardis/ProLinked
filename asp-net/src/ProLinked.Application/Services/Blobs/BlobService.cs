@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using ProLinked.Application.Contracts.Blobs;
-using ProLinked.Application.DTOs.Blobs;
+using ProLinked.Application.Contracts.Blobs.DTOs;
 using ProLinked.Domain.Contracts.Blobs;
-using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Utils;
 using System.IO.Compression;
 
 namespace ProLinked.Application.Services.Blobs;

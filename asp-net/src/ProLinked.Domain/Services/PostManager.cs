@@ -1,10 +1,10 @@
 ﻿using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Posts;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared;
 using ProLinked.Domain.Shared.Exceptions;
 using ProLinked.Domain.Shared.Posts;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Domain.Services;
 

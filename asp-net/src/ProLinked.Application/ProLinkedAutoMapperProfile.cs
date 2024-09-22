@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using ProLinked.Application.DTOs.Chats;
-using ProLinked.Application.DTOs.Connections;
-using ProLinked.Application.DTOs.Jobs;
-using ProLinked.Application.DTOs.Posts;
-using ProLinked.Application.DTOs.Resumes;
+using ProLinked.Application.Contracts.Chats.DTOs;
+using ProLinked.Application.Contracts.Connections.DTOs;
+using ProLinked.Application.Contracts.Jobs.DTOs;
+using ProLinked.Application.Contracts.Posts.DTOs;
+using ProLinked.Application.Contracts.Resumes.DTOs;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.DTOs.Posts;

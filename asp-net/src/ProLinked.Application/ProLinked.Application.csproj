@@ -14,13 +14,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ProLinked.Application.Contracts\ProLinked.Application.Contracts.csproj" />
       <ProjectReference Include="..\ProLinked.Domain\ProLinked.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Chats\" />
-      <Folder Include="DTOs\Connections\" />
-      <Folder Include="DTOs\Filtering\" />
       <Folder Include="Services\Connections\" />
     </ItemGroup>
 

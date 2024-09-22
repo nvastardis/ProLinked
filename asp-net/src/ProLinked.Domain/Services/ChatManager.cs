@@ -3,10 +3,10 @@ using ProLinked.Domain.Contracts.Chats;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Entities.Identity;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared;
 using ProLinked.Domain.Shared.Blobs;
 using ProLinked.Domain.Shared.Exceptions;
+using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Domain.Services;
 

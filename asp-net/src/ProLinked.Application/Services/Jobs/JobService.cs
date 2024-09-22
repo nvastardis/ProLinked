@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Jobs;
+using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
-using ProLinked.Application.DTOs.Jobs;
 using ProLinked.Domain.Contracts.Jobs;
 using ProLinked.Domain.Entities.Jobs;
 using JobApplication = ProLinked.Domain.Entities.Jobs.Application;
