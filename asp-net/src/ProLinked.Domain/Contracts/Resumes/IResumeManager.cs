@@ -14,7 +14,7 @@ public interface IResumeManager
         CancellationToken cancellationToken = default);
 
     Task<Resume> AddEducationStepAsync(
-        Guid currentUserId,
+        Resume resume,
         string school,
         string? degree = null,
         string? fieldOfStudy = null,
@@ -26,7 +26,7 @@ public interface IResumeManager
         CancellationToken cancellationToken = default);
 
     Task<Resume> UpdateEducationStepAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid educationStepId,
         string? school = null,
         string? degree = null,
@@ -39,7 +39,7 @@ public interface IResumeManager
         CancellationToken cancellationToken = default);
 
     Task<Resume> AddExperienceStepAsync(
-        Guid currentUserId,
+        Resume resume,
         string title,
         string company,
         EmploymentTypeEnum employmentType,
@@ -52,7 +52,7 @@ public interface IResumeManager
         CancellationToken cancellationToken = default);
 
     Task<Resume> UpdateExperienceStepAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid experienceStepId,
         string? title = null,
         string? company = null,
@@ -66,28 +66,74 @@ public interface IResumeManager
         CancellationToken cancellationToken = default);
 
     Task<Resume> MapSkillToResumeAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid skillId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> MapSkillToEducationAsync(
-        Guid currentUserId,
+    Task<EducationStepSkill> MapSkillToEducationAsync(
+        EducationStep step,
         Guid skillId,
-        Guid educationId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> MapSkillToExperienceAsync(
-        Guid currentUserId,
+    Task<ExperienceStepSkill> MapSkillToExperienceAsync(
+        ExperienceStep step,
         Guid skillId,
-        Guid experienceId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> SetFollowingFlagOnSkillAsync(
-        Guid currentUserId,
-        Guid skillId,
+    Task<ResumeSkill> SetFollowingFlagOnSkillAsync(
+        ResumeSkill resumeSkill,
         bool isFollowing,
+        CancellationToken cancellationToken = default);
+
+    Task<Resume> GetResumeAsync(
+        Guid resumeId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteResumeAsync(
+        Resume resume,
+        CancellationToken cancellationToken = default);
+
+    Task<ResumeSkill> GetResumeSkillAsync(
+        Guid resumeId,
+        Guid skillId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteResumeSkillAsync(
+        ResumeSkill resumeSkill,
+        CancellationToken cancellationToken = default);
+
+    Task<EducationStep> GetEducationStepAsync(
+        Guid resumeId,
+        Guid stepId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteEducationStepAsync(
+        EducationStep educationStep,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteEducationStepSkillAsync(
+        EducationStep educationStep,
+        Guid skillId,
+        CancellationToken cancellationToken = default);
+
+    Task<ExperienceStep> GetExperienceStepAsync(
+        Guid resumeId,
+        Guid stepId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteExperienceStepAsync(
+        ExperienceStep experienceStep,
+        CancellationToken cancellationToken = default);
+
+    Task DeleteExperienceStepSkillAsync(
+        ExperienceStep experienceStep,
+        Guid skillId,
         CancellationToken cancellationToken = default);
 }

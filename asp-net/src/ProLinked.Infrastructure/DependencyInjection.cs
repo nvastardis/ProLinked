@@ -8,6 +8,7 @@ using ProLinked.Domain.Contracts.Connections;
 using ProLinked.Domain.Contracts.Jobs;
 using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.Contracts.Posts;
+using ProLinked.Domain.Contracts.Resumes;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Repositories.Resumes;
 using ProLinked.Domain.Shared.Blobs;

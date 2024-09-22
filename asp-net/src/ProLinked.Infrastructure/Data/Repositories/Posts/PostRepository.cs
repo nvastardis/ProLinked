@@ -41,7 +41,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
                 CreationTime = post.CreationTime,
                 ReactionCount = post.Reactions.Count,
                 Text = post.Text,
-                MediaIds = post.Media?.Select(e => e.BlobId).ToList(),
+                MediaIds = post.Media == null ? null : post.Media!.Select(e => e.BlobId).ToList(),
                 LastModificationTime = post.LastModificationDate
             };
 
@@ -158,7 +158,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
                 ReactionCount = post.Reactions.Count,
                 CommentCount = post.Comments.Count,
                 Text = post.Text,
-                MediaIds = post.Media?.Select(e => e.BlobId).ToList(),
+                MediaIds = post.Media == null ? null : post.Media!.Select(e => e.BlobId).ToList(),
                 LastModificationTime = post.LastModificationDate,
             };
 

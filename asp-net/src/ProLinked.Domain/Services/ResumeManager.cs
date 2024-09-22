@@ -11,13 +11,28 @@ public class ResumeManager: IResumeManager
 {
     private readonly ISkillRepository _skillRepository;
     private readonly IResumeRepository _resumeRepository;
+    private readonly IRepository<ResumeSkill> _resumeSkillRepository;
+    private readonly IRepository<EducationStep,Guid> _educationStepRepository;
+    private readonly IRepository<EducationStepSkill> _educationStepSkillRepository;
+    private readonly IRepository<ExperienceStep,Guid> _experienceStepRepository;
+    private readonly IRepository<ExperienceStepSkill> _experienceStepSkillRepository;
 
     public ResumeManager(
         ISkillRepository skillRepository,
-        IResumeRepository resumeRepository)
+        IResumeRepository resumeRepository,
+        IRepository<ResumeSkill> resumeSkillRepository,
+        IRepository<EducationStep, Guid> educationStepRepository,
+        IRepository<EducationStepSkill> educationStepSkillRepository,
+        IRepository<ExperienceStep, Guid> experienceStepRepository,
+        IRepository<ExperienceStepSkill> experienceStepSkillRepository)
     {
         _skillRepository = skillRepository;
         _resumeRepository = resumeRepository;
+        _resumeSkillRepository = resumeSkillRepository;
+        _educationStepRepository = educationStepRepository;
+        _educationStepSkillRepository = educationStepSkillRepository;
+        _experienceStepRepository = experienceStepRepository;
+        _experienceStepSkillRepository = experienceStepSkillRepository;
     }
 
     public async Task<Resume> CreateResumeAsync(
@@ -34,6 +49,7 @@ public class ResumeManager: IResumeManager
         var newResume = new Resume(
             Guid.NewGuid(),
             currentUserId);
+        await _resumeRepository.InsertAsync(newResume, autoSave: true, cancellationToken);
 
         return newResume;
     }
@@ -53,12 +69,12 @@ public class ResumeManager: IResumeManager
         var newSkill = new Skill(
             Guid.NewGuid(),
             title);
-
+        await _skillRepository.InsertAsync(newSkill, autoSave: true, cancellationToken);
         return newSkill;
     }
 
     public async Task<Resume> AddEducationStepAsync(
-        Guid currentUserId,
+        Resume resume,
         string school,
         string? degree = null,
         string? fieldOfStudy = null,
@@ -69,8 +85,6 @@ public class ResumeManager: IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
-
         var newEducationStep = new EducationStep(
             Guid.NewGuid(),
             resume.Id,
@@ -86,11 +100,12 @@ public class ResumeManager: IResumeManager
         cancellationToken.ThrowIfCancellationRequested();
         resume.AddEducationStep(newEducationStep);
 
+        await _educationStepRepository.InsertAsync(newEducationStep, autoSave: true, cancellationToken);
         return resume;
     }
 
     public async Task<Resume> UpdateEducationStepAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid educationStepId,
         string? school = null,
         string? degree = null,
@@ -102,7 +117,6 @@ public class ResumeManager: IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
         var step = resume.Education.FirstOrDefault(e => e.Id == educationStepId);
         if (step is null)
         {
@@ -119,11 +133,13 @@ public class ResumeManager: IResumeManager
             description,
             startDate,
             endDate);
+        await _educationStepRepository.UpdateAsync(step, autoSave: true, cancellationToken);
+
         return resume;
     }
 
     public async Task<Resume> AddExperienceStepAsync(
-        Guid currentUserId,
+        Resume resume,
         string title,
         string company,
         EmploymentTypeEnum employmentType,
@@ -135,8 +151,6 @@ public class ResumeManager: IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
-
         var newExperience = new ExperienceStep(
             Guid.NewGuid(),
             resume.Id,
@@ -152,11 +166,13 @@ public class ResumeManager: IResumeManager
 
         cancellationToken.ThrowIfCancellationRequested();
         resume.AddExperienceStep(newExperience);
+        await _experienceStepRepository.InsertAsync(newExperience, autoSave: true, cancellationToken);
+
         return resume;
     }
 
     public async Task<Resume> UpdateExperienceStepAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid experienceStepId,
         string? title = null,
         string? company = null,
@@ -169,7 +185,6 @@ public class ResumeManager: IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
         var step = resume.Experience.FirstOrDefault(e => e.Id == experienceStepId);
         if (step is null)
         {
@@ -187,16 +202,17 @@ public class ResumeManager: IResumeManager
             description,
             startDate,
             endDate);
+        await _experienceStepRepository.UpdateAsync(step, autoSave: true, cancellationToken);
+
         return resume;
     }
 
     public async Task<Resume> MapSkillToResumeAsync(
-        Guid currentUserId,
+        Resume resume,
         Guid skillId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
         var skill = await _skillRepository.FindAsync(skillId, false, cancellationToken);
         if (skill is null)
         {
@@ -208,100 +224,213 @@ public class ResumeManager: IResumeManager
         }
 
         cancellationToken.ThrowIfCancellationRequested();
-        return AddSkillToResume(resume, skill, isFollowingSkill);
+        return await AddSkillToResume(resume, skill, isFollowingSkill, cancellationToken);
     }
 
-    public async Task<Resume> MapSkillToEducationAsync(
-        Guid currentUserId,
+    public async Task<EducationStepSkill> MapSkillToEducationAsync(
+        EducationStep education,
         Guid skillId,
-        Guid educationId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default)
     {
-        var resume = await MapSkillToResumeStepDefaultChecks(currentUserId, skillId, isFollowingSkill);
-        var education = resume.Education.FirstOrDefault(e => e.Id == educationId);
-        if (education is null)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.EducationStepNotFound)
-                .WithData("EducationStepId", educationId);
-        }
+        await MapSkillToResumeStepDefaultChecks(
+            education.ResumeId,
+            skillId, isFollowingSkill,
+            cancellationToken);
+
         if (education.RelatedSkills.Any(e => e.SkillId == skillId))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.SKillAlreadyMappedToEducationStep);
         }
 
-        var newEducationSkill = new EducationStepSkill(educationId, skillId);
+        var newEducationSkill = new EducationStepSkill(education.Id, skillId);
 
         cancellationToken.ThrowIfCancellationRequested();
         education.AddRelatedSkill(newEducationSkill);
+        await _educationStepSkillRepository.InsertAsync(newEducationSkill, autoSave: true, cancellationToken);
 
-        return resume;
+        return newEducationSkill;
     }
 
-    public async Task<Resume> MapSkillToExperienceAsync(
-        Guid currentUserId,
+    public async Task<ExperienceStepSkill> MapSkillToExperienceAsync(
+        ExperienceStep experience,
         Guid skillId,
-        Guid experienceId,
         bool isFollowingSkill,
         CancellationToken cancellationToken = default)
     {
-        var resume = await MapSkillToResumeStepDefaultChecks(currentUserId, skillId, isFollowingSkill);
-        var experience = resume.Experience.FirstOrDefault(e => e.Id == experienceId);
-        if (experience is null)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.ExperienceStepNotFound)
-                .WithData("ExperienceId", experienceId);
-        }
+        await MapSkillToResumeStepDefaultChecks(
+            experience.ResumeId,
+            skillId, isFollowingSkill,
+            cancellationToken);
+
         if (experience.RelatedSkills.Any(e => e.SkillId == skillId))
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.SKillAlreadyMappedToExperienceStep);
         }
-        var newExperienceSkill = new ExperienceStepSkill(experienceId, skillId);
+        var newExperienceSkill = new ExperienceStepSkill(experience.Id, skillId);
 
         cancellationToken.ThrowIfCancellationRequested();
         experience.AddRelatedSkill(newExperienceSkill);
+        await _experienceStepSkillRepository.InsertAsync(newExperienceSkill, autoSave: true, cancellationToken);
+
+        return newExperienceSkill;
+    }
+
+    public async Task<ResumeSkill> SetFollowingFlagOnSkillAsync(
+        ResumeSkill relatedSkill,
+        bool isFollowing,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        relatedSkill.SetFollowingFlag(isFollowing);
+        await _resumeSkillRepository.UpdateAsync(relatedSkill, autoSave: true, cancellationToken);
+
+        return relatedSkill;
+    }
+
+    public async Task<Resume> GetResumeAsync(
+        Guid resumeId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var resume = await _resumeRepository.FindAsync(resumeId, includeDetails: true, cancellationToken);
+        if (resume is null)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.ResumeNotFound)
+                .WithData("ResumeId", resumeId);
+        }
+
+        if (resume.UserId != userId)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.ResumeNotFound)
+                .WithData("UserId", userId);
+        }
 
         return resume;
     }
 
-    public async Task<Resume> SetFollowingFlagOnSkillAsync(
-        Guid currentUserId,
+    public async Task DeleteResumeAsync(Resume resume, CancellationToken cancellationToken = default)
+    {
+        await _resumeRepository.DeleteAsync(resume, autoSave: true, cancellationToken);
+    }
+
+    public async Task<ResumeSkill> GetResumeSkillAsync(
+        Guid resumeId,
         Guid skillId,
-        bool isFollowing,
+        Guid userId,
         CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
+        var resume = await GetResumeAsync(resumeId, userId, cancellationToken);
         var relatedSKill = resume.ResumeSkills.FirstOrDefault(e => e.SkillId == skillId);
         if (relatedSKill is null)
         {
             throw new BusinessException(ProLinkedDomainErrorCodes.SkillNotMappedInResume);
         }
 
-        cancellationToken.ThrowIfCancellationRequested();
-        relatedSKill.SetFollowingFlag(isFollowing);
-        return resume;
+        return relatedSKill;
     }
 
-    private async Task<Resume> MapSkillToResumeStepDefaultChecks(
-        Guid currentUserId,
-        Guid skillId,
-        bool isFollowing)
+    public async Task DeleteResumeSkillAsync(
+        ResumeSkill resumeSkill,
+        CancellationToken cancellationToken = default)
     {
-        var resume = await FindResumeByUserAsync(currentUserId);
-        var skill = await _skillRepository.FindAsync(skillId);
-        if (skill is null)
+        await _resumeSkillRepository.DeleteAsync(resumeSkill, autoSave: true, cancellationToken);
+    }
+
+    public async Task<EducationStep> GetEducationStepAsync(
+        Guid resumeId,
+        Guid stepId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var resume = await GetResumeAsync(resumeId, userId, cancellationToken);
+        var education = resume.Education.FirstOrDefault(e => e.Id == stepId);
+        if (education is null)
         {
-            throw new BusinessException(ProLinkedDomainErrorCodes.SkillNotFound);
+            throw new BusinessException(ProLinkedDomainErrorCodes.EducationStepNotFound)
+                .WithData("EducationStepId", stepId);
         }
+
+        return education;
+    }
+
+    public async Task DeleteEducationStepAsync(
+        EducationStep educationStep,
+        CancellationToken cancellationToken = default)
+    {
+        await _educationStepRepository.DeleteAsync(educationStep, autoSave: true, cancellationToken);
+    }
+
+    public async Task DeleteEducationStepSkillAsync(
+        EducationStep educationStep,
+        Guid skillId,
+        CancellationToken cancellationToken = default)
+    {
+        var relation = await _educationStepSkillRepository.GetAsync(
+            e => e.EducationStepId == educationStep.Id && e.SkillId == skillId,
+            includeDetails: false,
+            cancellationToken);
+
+        await _educationStepSkillRepository.DeleteAsync(relation, autoSave: true, cancellationToken);
+    }
+
+    public async Task<ExperienceStep> GetExperienceStepAsync(
+        Guid resumeId,
+        Guid stepId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var resume = await GetResumeAsync(resumeId, userId, cancellationToken);
+        var experience = resume.Experience.FirstOrDefault(e => e.Id == stepId);
+        if (experience is null)
+        {
+            throw new BusinessException(ProLinkedDomainErrorCodes.EducationStepNotFound)
+                .WithData("EducationStepId", stepId);
+        }
+
+        return experience;
+    }
+
+    public async Task DeleteExperienceStepAsync(
+        ExperienceStep experienceStep,
+        CancellationToken cancellationToken = default)
+    {
+        await _experienceStepRepository.DeleteAsync(experienceStep, autoSave: true, cancellationToken);
+    }
+
+    public async Task DeleteExperienceStepSkillAsync(
+        ExperienceStep experienceStep,
+        Guid skillId,
+        CancellationToken cancellationToken = default)
+    {
+        var relation = await _experienceStepSkillRepository.GetAsync(
+            e => e.ExperienceStepId == experienceStep.Id && e.SkillId == skillId,
+            includeDetails: false,
+            cancellationToken);
+
+        await _experienceStepSkillRepository.DeleteAsync(relation, autoSave: true, cancellationToken);
+    }
+
+    private async Task MapSkillToResumeStepDefaultChecks(
+        Guid resumeId,
+        Guid skillId,
+        bool isFollowing,
+        CancellationToken cancellationToken = default)
+    {
+        var skill = await _skillRepository.GetAsync(skillId, includeDetails: true, cancellationToken);
+        var resume = await _resumeRepository.GetAsync(resumeId, includeDetails: true, cancellationToken);
+
         if (resume.ResumeSkills.All(e => e.SkillId != skillId))
         {
-            resume = AddSkillToResume(resume, skill, isFollowing);
+           await AddSkillToResume(resume, skill, isFollowing, cancellationToken);
         }
-
-        return resume;
     }
 
-    private Resume AddSkillToResume(Resume resume, Skill skill, bool isFollowingSkill)
+    private async Task<Resume> AddSkillToResume(
+        Resume resume,
+        Skill skill,
+        bool isFollowingSkill,
+        CancellationToken cancellationToken = default)
     {
         var newResumeSkill = new ResumeSkill(
             resume.Id,
@@ -309,17 +438,7 @@ public class ResumeManager: IResumeManager
             isFollowingSkill);
 
         resume.AddResumeSkill(newResumeSkill);
-        return resume;
-    }
-
-    private async Task<Resume> FindResumeByUserAsync(Guid userId)
-    {
-        var resume = await _resumeRepository.FindAsync(e => e.UserId == userId, includeDetails: true);
-        if (resume is null)
-        {
-            throw new BusinessException(ProLinkedDomainErrorCodes.ResumeNotFound)
-                .WithData("UserId", userId);
-        }
+        await _resumeSkillRepository.InsertAsync(newResumeSkill, autoSave: true, cancellationToken);
 
         return resume;
     }
