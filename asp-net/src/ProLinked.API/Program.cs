@@ -2,6 +2,7 @@ using Microsoft.OpenApi.Models;
 using ProLinked.Application;
 using ProLinked.Infrastructure;
 
+
 namespace ProLinked.API;
 
 public class Program
@@ -54,6 +55,7 @@ public class Program
         serviceCollection.AddEndpointsApiExplorer();
         serviceCollection.AddSwaggerGen(c =>
         {
+            c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
             c.MapType<DateOnly>(() => new OpenApiSchema {
                 Type = "string",
                 Format = "date" });

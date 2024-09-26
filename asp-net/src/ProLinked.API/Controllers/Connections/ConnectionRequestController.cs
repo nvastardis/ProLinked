@@ -23,6 +23,7 @@ public class ConnectionRequestController: ProLinkedController
         _connectionRequestService = connectionRequestService;
     }
 
+
     [HttpGet]
     [Route("pending")]
     public async Task<Results<Ok<PagedAndSortedResultList<ConnectionRequestLookUpDto>>, ProblemHttpResult>>
@@ -48,27 +49,27 @@ public class ConnectionRequestController: ProLinkedController
     }
 
     [HttpGet]
-    [Route("find-pending-for-user/{targertId}")]
+    [Route("find-pending-for-user/{targetId}")]
     public async Task<Results<Ok<ConnectionRequestSearchResultDto>, ProblemHttpResult>> FindPendingForUserAsync(
-        [Required] Guid targertId,
+        [Required] Guid targetId,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
         return await OkWithStandardExceptionHandling(
             _connectionRequestService.FindPendingForUserAsync(
                 userId,
-                targertId,
+                targetId,
                 cancellationToken)
         );
     }
 
     [HttpPost]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateAsync(
         ConnectionRequestCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _connectionRequestService.CreateAsync(
                 input,
                 userId,

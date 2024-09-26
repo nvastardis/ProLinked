@@ -112,13 +112,13 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/add-message")]
-    public async Task<Results<NoContent, ProblemHttpResult>> AddMessageByChatAsync(
+    public async Task<Results<Created, ProblemHttpResult>> AddMessageByChatAsync(
         [Required] Guid id,
         [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _chatService.AddMessageByChatAsync(
                 id,
                 input,
@@ -130,13 +130,13 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("send-message-to-user/{targetUserId}")]
-    public async Task<Results<NoContent,ProblemHttpResult>> AddMessageByUserAsync(
+    public async Task<Results<Created,ProblemHttpResult>> AddMessageByUserAsync(
         [Required] Guid targetUserId,
         [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _chatService.AddMessageByUserAsync(
                 targetUserId,
                 input,
@@ -148,13 +148,13 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/add-member")]
-    public async Task<Results<NoContent, ProblemHttpResult>> AddMemberAsync(
+    public async Task<Results<Created, ProblemHttpResult>> AddMemberAsync(
         [Required] Guid id,
         [Required] MemberCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _chatService.AddMemberAsync(
                 id,
                 input,
@@ -183,12 +183,12 @@ public class ChatController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateAsync(
         [Required] ChatCreateDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _chatService.CreateAsync(
                 input,
                 userId,

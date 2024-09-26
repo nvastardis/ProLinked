@@ -23,7 +23,6 @@ public class JobController: ProLinkedController
         _jobService = jobService;
     }
 
-
     [HttpGet]
     [Route("advertisement/list")]
     public async Task<Results<Ok<PagedAndSortedResultList<AdvertisementDto>>, ProblemHttpResult>>
@@ -72,12 +71,12 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateJobAdvertisementAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateJobAdvertisementAsync(
         AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _jobService.CreateJobAdvertisementAsync(
                 input,
                 userId,
@@ -87,12 +86,12 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement/{id}/apply")]
-    public async Task<Results<NoContent, ProblemHttpResult>> ApplyAsync(
+    public async Task<Results<Created, ProblemHttpResult>> ApplyAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _jobService.ApplyAsync(
                 id,
                 userId,

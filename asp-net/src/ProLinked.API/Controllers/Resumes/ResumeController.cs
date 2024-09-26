@@ -48,11 +48,11 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("create")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateResumeAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateResumeAsync(
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.CreateResumeAsync(
                 userId,
                 cancellationToken)
@@ -61,13 +61,13 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/skill/create")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateResumeSkillAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateResumeSkillAsync(
         Guid id,
         Guid skillId,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.CreateResumeSkillAsync(
                 new SkillToResumeDto
                 {
@@ -115,13 +115,13 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/education/create")]
-    public async Task<Results<NoContent,ProblemHttpResult>> CreateEducationStepAsync(
+    public async Task<Results<Created,ProblemHttpResult>> CreateEducationStepAsync(
         EducationStepCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.CreateEducationStepAsync(
                 input,
                 id,
@@ -151,14 +151,14 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/education/{stepId}/skill/create")]
-    public async Task<Results<NoContent,ProblemHttpResult>> MapSkillToEducationStepAsync(
+    public async Task<Results<Created,ProblemHttpResult>> MapSkillToEducationStepAsync(
         Guid id,
         Guid stepId,
         [FromBody] Guid skillId,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.MapSkillToEducationStepAsync(
                 new SkillToStepMapDto
                 {
@@ -226,13 +226,13 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/create")]
-    public async Task<Results<NoContent,ProblemHttpResult>> CreateExperienceStepAsync(
+    public async Task<Results<Created,ProblemHttpResult>> CreateExperienceStepAsync(
         ExperienceStepCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.CreateExperienceStepAsync(
                 input,
                 id,
@@ -262,14 +262,14 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/{stepId}/skill/create")]
-    public async Task<Results<NoContent,ProblemHttpResult>> MapSkillToExperienceStepAsync(
+    public async Task<Results<Created,ProblemHttpResult>> MapSkillToExperienceStepAsync(
         Guid id,
         Guid stepId,
         [FromBody] Guid skillId,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _resumeService.MapSkillToExperienceStepAsync(
                 new SkillToStepMapDto
                 {

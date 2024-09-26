@@ -57,4 +57,24 @@ public abstract class ProLinkedController: ControllerBase
             return TypedResults.Problem(ex.Message);
         }
     }
+
+    protected async Task<Results<Created,ProblemHttpResult>> CreatedWithStandardExceptionHandling(
+        Task taskToExecute)
+    {
+        try
+        {
+            await taskToExecute;
+            return TypedResults.Created();
+        }
+        catch (BusinessException businessException)
+        {
+            Logger.Log(LogLevel.Error, businessException.Code);
+            return TypedResults.Problem(businessException.Code);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(LogLevel.Error, ex.Message, ex.Data);
+            return TypedResults.Problem(ex.Message);
+        }
+    }
 }

@@ -6,6 +6,7 @@ using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
 using ProLinked.Domain.Shared.Posts;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.API.Controllers.Posts;
 
@@ -26,7 +27,7 @@ public class CommentController: ProLinkedController
     [HttpGet]
     [Route("list")]
     public async Task<Results<Ok<PagedAndSortedResultList<CommentDto>>,ProblemHttpResult>> GetCommentListAsync(
-        [FromQuery] Guid postId,
+        [Required,FromQuery] Guid postId,
         [FromQuery] Guid? userId,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to,
@@ -53,12 +54,12 @@ public class CommentController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateCommentAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateCommentAsync(
         CommentCUDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _commentService.CreateCommentAsync(
                 input,
                 userId,
@@ -82,7 +83,6 @@ public class CommentController: ProLinkedController
                 cancellationToken)
         );
     }
-
 
     [HttpDelete]
     [Route("{id}/delete")]
@@ -128,13 +128,13 @@ public class CommentController: ProLinkedController
 
     [HttpPost]
     [Route("{commentId}/reaction")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateCommentReactionAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateCommentReactionAsync(
         Guid commentId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _commentService.CreateCommentReactionAsync(
                 commentId,
                 userId,

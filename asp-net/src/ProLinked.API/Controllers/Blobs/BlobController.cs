@@ -36,7 +36,6 @@ public class BlobController: ProLinkedController
         );
     }
 
-
     [HttpGet]
     [Authorize]
     [Route("list/")]
@@ -54,12 +53,12 @@ public class BlobController: ProLinkedController
     [HttpPost]
     [Route("upload")]
     [Authorize]
-    public async Task<Results<NoContent, ProblemHttpResult>> Upload(
+    public async Task<Results<Created, ProblemHttpResult>> Upload(
         [Required] IFormFile input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _blobService.PostAsync(
                 input,
                 userId,

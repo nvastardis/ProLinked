@@ -67,12 +67,12 @@ public class PostController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreatePostAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreatePostAsync(
         PostCUDto input,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _postService.CreatePostAsync(
                 input,
                 userId,
@@ -159,13 +159,13 @@ public class PostController: ProLinkedController
 
     [HttpPost]
     [Route("{postId}/reaction")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreatePostReactionAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreatePostReactionAsync(
         Guid postId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _postService.CreatePostReactionAsync(
                 postId,
                 userId,

@@ -32,11 +32,11 @@ public class SkillController: ProLinkedController
 
     [HttpPost]
     [Route("create")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CreateSkillAsync(
+    public async Task<Results<Created, ProblemHttpResult>> CreateSkillAsync(
         string title,
         CancellationToken cancellationToken = default)
     {
-        return await NoContentWithStandardExceptionHandling(
+        return await CreatedWithStandardExceptionHandling(
             _skillService.CreateSkillAsync(
                 title,
                 cancellationToken)

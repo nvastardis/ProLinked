@@ -26,7 +26,6 @@ public class AuthController: ControllerBase
         CancellationToken cancellationToken = default) =>
         await _authService.RegisterAsync(input, cancellationToken);
 
-
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
@@ -65,7 +64,6 @@ public class AuthController: ControllerBase
 
     private void SetRefreshTokenCookie(string token)
     {
-        // append cookie with refresh token to the http response
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
