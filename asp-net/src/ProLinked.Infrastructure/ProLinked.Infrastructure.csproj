@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\ProLinked.Domain.Shared\ProLinked.Domain.Shared.csproj" />
+      <ProjectReference Include="..\ProLinked.Domain.Shared\ProLinked.Domain.Shared.csproj" />
       <ProjectReference Include="..\ProLinked.Domain\ProLinked.Domain.csproj" />
     </ItemGroup>
 

@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\ProLinked.Domain.Shared\ProLinked.Domain.Shared.csproj" />
+      <ProjectReference Include="..\ProLinked.Domain.Shared\ProLinked.Domain.Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
