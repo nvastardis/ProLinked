@@ -23,7 +23,6 @@ public class ProLinkedDbSeedingService
         { "Roles", "Data\\Identity\\RoleData.json" },
         { "Users", "Data\\Identity\\UserData.json" },
         { "Posts", "Data\\Posts\\PostData.json" },
-        { "Reactions", "Data\\Posts\\ReactionData.json" },
         { "Comments", "Data\\Posts\\CommentData.json" },
         { "Skills", "Data\\Resumes\\SkillData.json" },
         { "Resumes", "Data\\Resumes\\ResumeData.json" },
@@ -100,11 +99,6 @@ public class ProLinkedDbSeedingService
         await DataSeeder.SeedEntitiesIfNewAsync<Comment>(
             nameof(Comment),
             _pathToDataFile["Comments"],
-            e=> x =>  e.Id == x.Id);
-
-        await DataSeeder.SeedEntitiesIfNewAsync<Reaction>(
-            nameof(Reaction),
-            _pathToDataFile["Reactions"],
             e=> x =>  e.Id == x.Id);
 
         await DataSeeder.SeedEntitiesIfNewAsync<Advertisement>(

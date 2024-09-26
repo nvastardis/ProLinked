@@ -62,9 +62,6 @@
       <None Update="Data\Posts\PostData.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Data\Posts\ReactionData.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Update="Data\Resumes\EducationStepData.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
