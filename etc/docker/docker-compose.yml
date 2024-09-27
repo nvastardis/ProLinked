@@ -1,6 +1,109 @@
-﻿services:
-  prolinked:
-    image: prolinked
+﻿name: prolinked
+
+services:
+  redis:
+    image: redis:7.4-rc-alpine
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+    environment:
+      REDIS_ARGS: "--requirepass P@ssw0rd"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - prolinked-network
+    
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-server
+    hostname: mssql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd!
+      - MSSQL_LCID=1033
+      - TZ=Europe/Athens
+    ports:
+      - 1433:1433
+    volumes:
+      - data-store:/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S mssql-server -U sa -P P@ssw0rd! -Q 'SELECT 1' || exit 1"]
+      interval: 5s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+    networks: 
+      - prolinked-network
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite
+    hostname: azurite
+    restart: unless-stopped
+    ports:
+      - 10000:10000
+    volumes:
+      - blob-store:/data:rw
+    networks:
+      - prolinked-network
+
+  prolinked.api:
+    image: prolinked.api:latest
+    container_name: prolinked.api
+    hostname: prolinked.api
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: asp-net/src/ProLinked.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=fdd45d7b-f9f6-431b-be3b-9e6d90a28e7d
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/dev-cert/certificate.pfx
+    ports:
+      - 9000:8080
+      - 9001:8081
+    restart: unless-stopped
+    volumes:
+      - dev-cert:/data:rw
+    depends_on:
+      mssql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      azurite:
+        condition: service_started
+    networks:
+      - prolinked-network
+
+  prolinked.dbMigrator:
+    image: prolinked.dbmigrator:latest
+    container_name: prolinked.dbMigrator
+    build:
+      context: ../../
+      dockerfile: asp-net/src/ProLinked.DbMigrator/Dockerfile
+    environment:
+     - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      mssql:
+        condition: service_healthy
+    networks:
+      - prolinked-network
+
+volumes:
+  dev-cert:
+    name: dev-cert
+  data-store:
+    name: data-store
+  blob-store:
+    name: blob-store
+
+networks:
+  prolinked-network:
+    driver: bridge

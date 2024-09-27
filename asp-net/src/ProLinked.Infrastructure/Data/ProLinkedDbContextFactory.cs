@@ -10,7 +10,8 @@ public class ProLinkedDbContextFactory: IDesignTimeDbContextFactory<ProLinkedDbC
         var configuration = BuildConfiguration();
 
         var builder = new DbContextOptionsBuilder<ProLinkedDbContext>()
-            .UseSqlServer(configuration.GetConnectionString("Default"));
+            .UseSqlServer(
+                configuration.GetConnectionString("Default"));
 
         return new ProLinkedDbContext(builder.Options);
     }

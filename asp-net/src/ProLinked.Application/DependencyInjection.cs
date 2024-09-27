@@ -35,8 +35,8 @@ public static class DependencyInjection
 
     public static void AddProLinkedAuthentication(this IServiceCollection serviceCollection, IConfiguration configurationManager)
     {
-        AuthSettings.PrivateKey = configurationManager["JwtKey"]!;
-        AuthSettings.RefreshKey = configurationManager["JwtRefreshKey"]!;
+        AuthSettings.PrivateKey = configurationManager["JwtSettings:SecretKey"]!;
+        AuthSettings.RefreshKey = configurationManager["JwtSettings:RefreshKey"]!;
         AuthSettings.Issuer = configurationManager["JwtSettings:Issuer"]!;
         AuthSettings.Audience = configurationManager["JwtSettings:Audience"]!;
 
@@ -58,7 +58,7 @@ public static class DependencyInjection
                     ValidIssuer = configurationManager["JwtSettings:Issuer"],
                     ValidAudience = configurationManager["JwtSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configurationManager["JwtKey"]!))
+                        Encoding.UTF8.GetBytes(AuthSettings.PrivateKey))
                 };
         });
 

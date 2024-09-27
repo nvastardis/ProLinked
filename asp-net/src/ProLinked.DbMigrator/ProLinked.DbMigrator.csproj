@@ -83,7 +83,7 @@
       <None Update="Data\Resumes\SkillData.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="appsettings.json">
+      <None Update="appsettings.Production.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="appsettings.Development.json">

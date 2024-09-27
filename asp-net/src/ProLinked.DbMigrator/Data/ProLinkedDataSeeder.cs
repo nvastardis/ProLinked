@@ -36,8 +36,10 @@ public class ProLinkedDataSeeder
         Func<TSerializableEntity, Expression<Func<TSerializableEntity,bool>>> searchPredicate)
         where TSerializableEntity: Entity
     {
+        var jsonFileNameClean =
+            Path.GetFileNameWithoutExtension(jsonFileName).Replace('.', Path.DirectorySeparatorChar);
         var repository = _serviceProvider.GetRequiredService<IRepository<TSerializableEntity>>();
-        var seedObjects = await LoadDataAsync<TSerializableEntity>(entityName, jsonFileName);
+        var seedObjects = await LoadDataAsync<TSerializableEntity>(entityName, jsonFileNameClean+".json");
         foreach (var seedObj in seedObjects)
         {
             if (await repository.FindAsync(searchPredicate(seedObj), false) is null)
@@ -52,7 +54,9 @@ public class ProLinkedDataSeeder
         string entityName,
         string jsonFileName)
     {
-        var seedObjects = await LoadDataAsync<AppUser>(entityName, jsonFileName);
+        var jsonFileNameClean =
+            Path.GetFileNameWithoutExtension(jsonFileName).Replace('.', Path.DirectorySeparatorChar);
+        var seedObjects = await LoadDataAsync<AppUser>(entityName, jsonFileNameClean + ".json");
         foreach (var seedObj in seedObjects)
         {
             if (await _userManager.FindByIdAsync(seedObj.Id.ToString()) is null)
@@ -68,7 +72,9 @@ public class ProLinkedDataSeeder
         string entityName,
         string jsonFileName)
     {
-        var seedObjects = await LoadDataAsync<IdentityRole<Guid>>(entityName, jsonFileName);
+        var jsonFileNameClean =
+            Path.GetFileNameWithoutExtension(jsonFileName).Replace('.', Path.DirectorySeparatorChar);
+        var seedObjects = await LoadDataAsync<IdentityRole<Guid>>(entityName, jsonFileNameClean + ".json");
         foreach (var seedObj in seedObjects)
         {
             if (await _roleManager.FindByIdAsync(seedObj.Id.ToString()) is null)

@@ -9,20 +9,10 @@ namespace ProLinked.DbMigrator;
 
 public class Startup
 {
-    IConfigurationRoot Configuration { get; }
-
-    public Startup()
-    {
-        var builder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json");
-
-        Configuration = builder.Build();
-    }
-
-    public void ConfigureServices(IServiceCollection serviceCollection)
+    public void ConfigureServices(IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddDbConnection(
-            Configuration.GetConnectionString("Default") ?? throw new KeyNotFoundException()
+            configuration.GetConnectionString("Default") ?? throw new KeyNotFoundException()
         );
         serviceCollection.AddIdentity();
         serviceCollection.AddRepositories();
@@ -32,7 +22,7 @@ public class Startup
             {
                 options.IncludeScopes = false;
             });
-            options.AddConfiguration(Configuration.GetSection("Logging"));
+            options.AddConfiguration(configuration.GetSection("Logging"));
         });
         serviceCollection.AddTransient<ProLinkedDbMigrationService>();
         serviceCollection.AddTransient<ProLinkedDataSeeder>();

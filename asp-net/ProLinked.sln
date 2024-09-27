@@ -13,11 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8AAA2E46-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProLinked.DbMigrator", "src\ProLinked.DbMigrator\ProLinked.DbMigrator.csproj", "{5CD169A8-3749-449E-AC12-212C97BBF652}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{594C5905-CBD3-47D0-8184-0A719DAA45AC}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{9AD3F90E-C960-4F12-AAB1-330041493294}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProLinked.Tests", "test\ProLinked.Tests\ProLinked.Tests.csproj", "{D109FB1E-F14C-480D-8D92-2AEBF0CEAF6D}"

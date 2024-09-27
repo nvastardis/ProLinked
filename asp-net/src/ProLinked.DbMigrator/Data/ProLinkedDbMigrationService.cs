@@ -18,84 +18,24 @@ public class ProLinkedDbMigrationService
         _dbContext = dbContext;
     }
 
-    public async Task MigrateAsync()
+    public async Task<bool> MigrateAsync()
     {
-        await AddInitialMigrationIfNotExist();
         Logger.LogInformation("Started database migrations...");
-
-        await MigrateDatabaseSchemaAsync();
-        Logger.LogInformation($"Successfully completed host database migrations.");
-    }
-
-    private async Task MigrateDatabaseSchemaAsync()
-    {
-        Logger.LogInformation(
-            $"Migrating schema for host database...");
-
-        await _dbContext.Database.MigrateAsync();
-    }
-
-    private async Task<bool> AddInitialMigrationIfNotExist()
-    {
-        try
+        if (!await _dbContext.Database.CanConnectAsync())
         {
-            if (MigrationsFolderExists())
-            {
-                return false;
-            }
-            await AddInitialMigration();
-            return true;
-
-        }
-        catch (Exception e)
-        {
-            Logger.LogWarning("Couldn't determinate if any migrations exist : " + e.Message);
+            Logger.LogInformation("Creating initial migration...");
+            await _dbContext.Database.MigrateAsync();
             return false;
         }
-    }
 
-    private bool MigrationsFolderExists()
-    {
-        var dbMigrationsProjectFolder = GetEntityFrameworkCoreProjectFolderPath();
-        return dbMigrationsProjectFolder != null && Directory.Exists(Path.Combine(dbMigrationsProjectFolder, "Migrations"));
-    }
+        if (!(await _dbContext.Database.GetPendingMigrationsAsync()).Any())
+        {
+            Logger.LogInformation("Database already up to date.");
+        }
 
-    private async Task AddInitialMigration()
-    {
-        Logger.LogInformation("Creating initial migration...");
-
+        Logger.LogInformation("Migrating schema for host database...");
         await _dbContext.Database.MigrateAsync();
-    }
-
-    private string? GetEntityFrameworkCoreProjectFolderPath()
-    {
-        var slnDirectoryPath = GetSolutionDirectoryPath();
-
-        if (slnDirectoryPath == null)
-        {
-            throw new Exception("Solution folder not found!");
-        }
-
-        var srcDirectoryPath = Path.Combine(slnDirectoryPath, "src");
-
-        return Directory.GetDirectories(srcDirectoryPath)
-            .FirstOrDefault(d => d.EndsWith(".Infrastructure"));
-    }
-
-    private string? GetSolutionDirectoryPath()
-    {
-        var currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-
-        while (currentDirectory != null && Directory.GetParent(currentDirectory.FullName) != null)
-        {
-            currentDirectory = Directory.GetParent(currentDirectory.FullName);
-
-            if (currentDirectory != null && Directory.GetFiles(currentDirectory.FullName).FirstOrDefault(f => f.EndsWith(".sln")) != null)
-            {
-                return currentDirectory.FullName;
-            }
-        }
-
-        return null;
+        Logger.LogInformation($"Successfully completed host database migrations.");
+        return true;
     }
 }

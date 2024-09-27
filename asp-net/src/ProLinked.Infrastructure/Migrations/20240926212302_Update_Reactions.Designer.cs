@@ -12,8 +12,8 @@ using ProLinked.Infrastructure.Data;
 namespace ProLinked.Infrastructure.Migrations
 {
     [DbContext(typeof(ProLinkedDbContext))]
-    [Migration("20240921180822_Remove_CommentReaction_and_PostReaction")]
-    partial class Remove_CommentReaction_and_PostReaction
+    [Migration("20240926212302_Update_Reactions")]
+    partial class Update_Reactions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -690,8 +690,6 @@ namespace ProLinked.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
                     b.HasIndex("CreatorId");
 
                     b.HasIndex("Id");
@@ -1115,21 +1113,21 @@ namespace ProLinked.Infrastructure.Migrations
 
             modelBuilder.Entity("ProLinked.Domain.Entities.Posts.Reaction", b =>
                 {
-                    b.HasOne("ProLinked.Domain.Entities.Posts.Comment", null)
-                        .WithMany("Reactions")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("ProLinked.Domain.Entities.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ProLinked.Domain.Entities.Posts.Comment", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ProLinked.Domain.Entities.Posts.Post", null)
                         .WithMany("Reactions")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("ProLinked.Domain.Entities.Resumes.EducationStep", b =>

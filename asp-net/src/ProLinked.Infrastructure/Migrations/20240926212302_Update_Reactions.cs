@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProLinked.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Remove_CommentReaction_and_PostReaction : Migration
+    public partial class Update_Reactions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,28 +39,22 @@ namespace ProLinked.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetReactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetReactions_AspNetComments_CommentId",
-                        column: x => x.CommentId,
+                        name: "FK_AspNetReactions_AspNetComments_PostId",
+                        column: x => x.PostId,
                         principalTable: "AspNetComments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetReactions_AspNetPosts_PostId",
                         column: x => x.PostId,
                         principalTable: "AspNetPosts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetReactions_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetReactions_CommentId",
-                table: "AspNetReactions",
-                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetReactions_CreatorId",

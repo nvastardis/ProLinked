@@ -13,24 +13,24 @@ public class ProLinkedDbSeedingService
 {
     private readonly Dictionary<string, string> _pathToDataFile = new()
     {
-        { "Chats", "Data\\Chats\\ChatData.json" },
-        { "ChatMemberships", "Data\\Chats\\ChatMembershipData.json" },
-        { "Messages", "Data\\Chats\\MessageData.json" },
-        { "Connections", "Data\\Connections\\ConnectionData.json" },
-        { "ConnectionRequests", "Data\\Connections\\ConnectionRequestData.json" },
-        { "Advertisements", "Data\\Jobs\\AdvertisementData.json" },
-        { "Applications", "Data\\Jobs\\ApplicationData.json" },
-        { "Roles", "Data\\Identity\\RoleData.json" },
-        { "Users", "Data\\Identity\\UserData.json" },
-        { "Posts", "Data\\Posts\\PostData.json" },
-        { "Comments", "Data\\Posts\\CommentData.json" },
-        { "Skills", "Data\\Resumes\\SkillData.json" },
-        { "Resumes", "Data\\Resumes\\ResumeData.json" },
-        { "ResumeSkills", "Data\\Resumes\\ResumeSkillData.json" },
-        { "ExperienceSteps", "Data\\Resumes\\ExperienceStepData.json" },
-        { "ExperienceStepSkills", "Data\\Resumes\\ExperienceStepSkillData.json" },
-        { "EducationSteps", "Data\\Resumes\\EducationStepData.json" },
-        { "EducationStepSkills", "Data\\Resumes\\EducationStepSkillData.json" }
+        { "Chats", "Data.Chats.ChatData.json" },
+        { "ChatMemberships", "Data.Chats.ChatMembershipData.json" },
+        { "Messages", "Data.Chats.MessageData.json" },
+        { "Connections", "Data.Connections.ConnectionData.json" },
+        { "ConnectionRequests", "Data.Connections.ConnectionRequestData.json" },
+        { "Advertisements", "Data.Jobs.AdvertisementData.json" },
+        { "Applications", "Data.Jobs.ApplicationData.json" },
+        { "Roles", "Data.Identity.RoleData.json" },
+        { "Users", "Data.Identity.UserData.json" },
+        { "Posts", "Data.Posts.PostData.json" },
+        { "Comments", "Data.Posts.CommentData.json" },
+        { "Skills", "Data.Resumes.SkillData.json" },
+        { "Resumes", "Data.Resumes.ResumeData.json" },
+        { "ResumeSkills", "Data.Resumes.ResumeSkillData.json" },
+        { "ExperienceSteps", "Data.Resumes.ExperienceStepData.json" },
+        { "ExperienceStepSkills", "Data.Resumes.ExperienceStepSkillData.json" },
+        { "EducationSteps", "Data.Resumes.EducationStepData.json" },
+        { "EducationStepSkills", "Data.Resumes.EducationStepSkillData.json" }
     };
 
     private ProLinkedDataSeeder DataSeeder{ get; }
