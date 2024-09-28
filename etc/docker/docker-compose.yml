@@ -30,11 +30,9 @@ services:
       - TZ=Europe/Athens
     ports:
       - 1433:1433
-    volumes:
-      - data-store:/data:rw
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S mssql-server -U sa -P P@ssw0rd! -Q 'SELECT 1' || exit 1"]
-      interval: 5s
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S mssql-server -U sa -P P@ssw0rd! -Q 'SELECT 1' || exit 1"]
+      interval: 10s
       retries: 10
       start_period: 10s
       timeout: 3s
@@ -60,15 +58,9 @@ services:
     build:
       context: ../../
       dockerfile: asp-net/src/ProLinked.API/Dockerfile
-    environment:
-      - ASPNETCORE_URLS=https://+:8081;http://+:8080
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=fdd45d7b-f9f6-431b-be3b-9e6d90a28e7d
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/dev-cert/certificate.pfx
     ports:
-      - 9000:8080
-      - 9001:8081
+      - 8080:8080
+      - 8081:8081
     restart: unless-stopped
     volumes:
       - dev-cert:/data:rw
@@ -89,7 +81,7 @@ services:
       context: ../../
       dockerfile: asp-net/src/ProLinked.DbMigrator/Dockerfile
     environment:
-     - ASPNETCORE_ENVIRONMENT=Production
+     - ASPNETCORE_ENVIRONMENT=Staging
     depends_on:
       mssql:
         condition: service_healthy

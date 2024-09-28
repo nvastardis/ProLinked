@@ -3,7 +3,11 @@ USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
-ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_ENVIRONMENT=Staging
+ENV ASPNETCORE_URLS=https://+:8081;http://+:8080
+ENV ASPNETCORE_HTTPS_PORT=8081
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=fdd45d7b-f9f6-431b-be3b-9e6d90a28e7d
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/dev-cert/certificate.pfx
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -12,7 +16,6 @@ COPY ["asp-net/src/ProLinked.API/ProLinked.API.csproj", "asp-net/src/ProLinked.A
 RUN dotnet restore "asp-net/src/ProLinked.API/ProLinked.API.csproj"
 RUN dotnet dev-certs https --clean
 RUN dotnet dev-certs https -ep /dev-cert/certificate.pfx -p fdd45d7b-f9f6-431b-be3b-9e6d90a28e7d --trust
-
 
 WORKDIR /src
 COPY . .

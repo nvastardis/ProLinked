@@ -8,12 +8,16 @@ public class ProLinkedLocalizer: IStringLocalizer
 {
     private List<LocalizationResource> LocalizationList { get; init; } = new();
 
-    public ProLinkedLocalizer(string[]? filePaths = null)
+    public ProLinkedLocalizer(string?[]? filePaths = null)
     {
-        var paths = filePaths ?? ["..\\ProLinked.Application\\Localization\\ProLinked\\en.json"];
-        foreach (var filePath in paths)
+        if (filePaths is null || filePaths.Any(e => e == null))
         {
-            var jsonAsString = File.ReadAllText(filePath);
+            throw new ArgumentNullException(nameof(filePaths), "Localization File Cannot Be Null");
+        }
+
+        foreach (var filePath in filePaths)
+        {
+            var jsonAsString = File.ReadAllText(filePath!);
             var localizationFile = JsonConvert.DeserializeObject<LocalizationResource>(jsonAsString);
             if (localizationFile is null)
             {

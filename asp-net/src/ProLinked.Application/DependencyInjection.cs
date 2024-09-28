@@ -25,10 +25,12 @@ namespace ProLinked.Application;
 
 public static class DependencyInjection
 {
-    public static void AddProLinkedLocalization(this IServiceCollection serviceCollection)
+    public static void AddProLinkedLocalization(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddSingleton<IStringLocalizerFactory, ProLinkedLocalizerFactory>();
-        serviceCollection.AddSingleton<IStringLocalizer, ProLinkedLocalizer>();
+        serviceCollection.AddSingleton<IStringLocalizer>(
+            new ProLinkedLocalizer(
+                [configuration["LocalizationFile"]]));
         serviceCollection.AddLocalization(options =>
             options.ResourcesPath = @"Shared\Localization\ProLinked\en.json");
     }

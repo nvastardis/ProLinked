@@ -23,7 +23,7 @@ public class Program
         builder.Services.AddIdentity();
         builder.Services.AddRepositories();
         builder.Services.AddProLinkedDomainServices();
-        builder.Services.AddProLinkedLocalization();
+        builder.Services.AddProLinkedLocalization(builder.Configuration);
         builder.Services.AddProLinkedAuthentication(builder.Configuration);
         builder.Services.AddAutoMapper();
         builder.Services.AddApplicationServices();
@@ -35,7 +35,7 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
