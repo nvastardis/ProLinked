@@ -22,7 +22,7 @@ public class ResumeController: ProLinkedController
     /* Resume */
     [HttpGet]
     [Route("{id}")]
-    public async Task<Results<Ok<ResumeDto>, ProblemHttpResult>> GetResumeAsync(
+    public async Task<Results<Ok<ResumeDto>, BadRequest<string>, ProblemHttpResult>> GetResumeAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -35,7 +35,7 @@ public class ResumeController: ProLinkedController
 
     [HttpGet]
     [Route("{id}/skill/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<SkillDto>>, ProblemHttpResult>> GetResumeSkillsAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<SkillDto>>, BadRequest<string>, ProblemHttpResult>> GetResumeSkillsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -48,7 +48,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("create")]
-    public async Task<Results<Created, ProblemHttpResult>> CreateResumeAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateResumeAsync(
         CancellationToken cancellationToken = default)
     {
         var userId = GetCurrentUserId();
@@ -61,7 +61,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/skill/create")]
-    public async Task<Results<Created, ProblemHttpResult>> CreateResumeSkillAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateResumeSkillAsync(
         Guid id,
         Guid skillId,
         CancellationToken cancellationToken = default)
@@ -81,7 +81,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/skill/{skillId}/delete")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteResumeSkillAsync(
+    public async Task<Results<NoContent,BadRequest<string>,  ProblemHttpResult>> DeleteResumeSkillAsync(
         Guid id,
         Guid skillId,
         CancellationToken cancellationToken = default)
@@ -102,7 +102,7 @@ public class ResumeController: ProLinkedController
     /* Education */
     [HttpGet]
     [Route("{id}/step/education/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<EducationStepDto>>, ProblemHttpResult>> GetEducationStepsAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<EducationStepDto>>, BadRequest<string>, ProblemHttpResult>> GetEducationStepsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -115,7 +115,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/education/create")]
-    public async Task<Results<Created,ProblemHttpResult>> CreateEducationStepAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateEducationStepAsync(
         EducationStepCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
@@ -132,7 +132,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/step/education/{stepId}/update")]
-    public async Task<Results<NoContent,ProblemHttpResult>> UpdateEducationStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateEducationStepAsync(
         EducationStepCUDto input,
         Guid id,
         Guid stepId,
@@ -151,7 +151,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/education/{stepId}/skill/create")]
-    public async Task<Results<Created,ProblemHttpResult>> MapSkillToEducationStepAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> MapSkillToEducationStepAsync(
         Guid id,
         Guid stepId,
         [FromBody] Guid skillId,
@@ -173,7 +173,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/education/{stepId}/skill/{skillId}/delete")]
-    public async Task<Results<NoContent,ProblemHttpResult>> DeleteSkillFromEducationStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteSkillFromEducationStepAsync(
         Guid id,
         Guid stepId,
         Guid skillId,
@@ -195,7 +195,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/education/{stepId}/delete")]
-    public async Task<Results<NoContent,ProblemHttpResult>> DeleteEducationStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteEducationStepAsync(
         Guid id,
         Guid stepId,
         CancellationToken cancellationToken = default)
@@ -213,7 +213,7 @@ public class ResumeController: ProLinkedController
     /* Experience */
     [HttpGet]
     [Route("{id}/step/experience/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ExperienceStepDto>>, ProblemHttpResult>> GetExperienceStepsAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ExperienceStepDto>>, BadRequest<string>, ProblemHttpResult>> GetExperienceStepsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -226,7 +226,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/create")]
-    public async Task<Results<Created,ProblemHttpResult>> CreateExperienceStepAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateExperienceStepAsync(
         ExperienceStepCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
@@ -243,7 +243,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/step/experience/{stepId}/update")]
-    public async Task<Results<NoContent,ProblemHttpResult>> UpdateExperienceStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateExperienceStepAsync(
         ExperienceStepCUDto input,
         Guid id,
         Guid stepId,
@@ -262,7 +262,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/{stepId}/skill/create")]
-    public async Task<Results<Created,ProblemHttpResult>> MapSkillToExperienceStepAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> MapSkillToExperienceStepAsync(
         Guid id,
         Guid stepId,
         [FromBody] Guid skillId,
@@ -284,7 +284,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/experience/{stepId}/skill/{skillId}/delete")]
-    public async Task<Results<NoContent,ProblemHttpResult>> DeleteSkillFromExperienceStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteSkillFromExperienceStepAsync(
         Guid id,
         Guid stepId,
         Guid skillId,
@@ -306,7 +306,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/experience/{stepId}/delete")]
-    public async Task<Results<NoContent,ProblemHttpResult>> DeleteExperienceStepAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteExperienceStepAsync(
         Guid id,
         Guid stepId,
         CancellationToken cancellationToken = default)

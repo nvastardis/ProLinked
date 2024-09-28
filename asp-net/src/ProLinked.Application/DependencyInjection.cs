@@ -65,7 +65,7 @@ public static class DependencyInjection
         });
 
         serviceCollection.AddScoped<IAuthService, AuthService>();
-        serviceCollection.AddScoped<IManageService, ManageService>();
+        serviceCollection.AddScoped<IUserService, UserService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 

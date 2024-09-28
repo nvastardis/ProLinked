@@ -25,7 +25,7 @@ public class ChatController: ProLinkedController
 
     [HttpGet]
     [Route("list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ChatLookUpDto>>, ProblemHttpResult>> GetListLookUpAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ChatLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetListLookUpAsync(
         [FromQuery] string? sorting,
         [FromQuery] int? skipCount,
         [FromQuery] int? maxResultCount,
@@ -48,7 +48,7 @@ public class ChatController: ProLinkedController
 
     [HttpGet]
     [Route("{id}/messages")]
-    public async Task<Results<Ok<PagedAndSortedResultList<MessageLookUpDto>>, ProblemHttpResult>> GetMessageListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<MessageLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetMessageListAsync(
         [Required] Guid id,
         [FromQuery] string? sorting,
         [FromQuery] int? skipCount,
@@ -73,7 +73,7 @@ public class ChatController: ProLinkedController
 
     [HttpGet]
     [Route("{id}/members")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ChatMembershipLookUpDto>>, ProblemHttpResult>> GetMemberListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ChatMembershipLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetMemberListAsync(
         [Required] Guid id,
         [FromQuery] string? sorting,
         [FromQuery] int? skipCount,
@@ -96,7 +96,7 @@ public class ChatController: ProLinkedController
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<Results<Ok<ChatWithDetailsDto>,ProblemHttpResult>> GetDetailsAsync(
+    public async Task<Results<Ok<ChatWithDetailsDto>, BadRequest<string>, ProblemHttpResult>> GetDetailsAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -112,7 +112,7 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/add-message")]
-    public async Task<Results<Created, ProblemHttpResult>> AddMessageByChatAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> AddMessageByChatAsync(
         [Required] Guid id,
         [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
@@ -130,7 +130,7 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("send-message-to-user/{targetUserId}")]
-    public async Task<Results<Created,ProblemHttpResult>> AddMessageByUserAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> AddMessageByUserAsync(
         [Required] Guid targetUserId,
         [Required] MessageCreateDto input,
         CancellationToken cancellationToken = default)
@@ -148,7 +148,7 @@ public class ChatController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/add-member")]
-    public async Task<Results<Created, ProblemHttpResult>> AddMemberAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> AddMemberAsync(
         [Required] Guid id,
         [Required] MemberCreateDto input,
         CancellationToken cancellationToken = default)
@@ -166,7 +166,7 @@ public class ChatController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/delete-member/{memberId}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteMemberAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteMemberAsync(
         [Required] Guid id,
         [Required] Guid memberId,
         CancellationToken cancellationToken = default)
@@ -183,7 +183,7 @@ public class ChatController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<Created, ProblemHttpResult>> CreateAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateAsync(
         [Required] ChatCreateDto input,
         CancellationToken cancellationToken = default)
     {
@@ -199,7 +199,7 @@ public class ChatController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update-title")]
-    public async Task<Results<NoContent, ProblemHttpResult>> UpdateTitleAsync(
+    public async Task<Results<NoContent, BadRequest<string>,ProblemHttpResult>> UpdateTitleAsync(
         [Required] Guid id,
         [Required] ChatUpdateTitleDto input,
         CancellationToken cancellationToken = default)
@@ -217,7 +217,7 @@ public class ChatController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update-image")]
-    public async Task<Results<NoContent, ProblemHttpResult>> UpdateImageAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateImageAsync(
         [Required] Guid id,
         [Required] ChatUpdateImageDto input,
         CancellationToken cancellationToken = default)
@@ -235,7 +235,7 @@ public class ChatController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {

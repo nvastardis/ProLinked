@@ -26,7 +26,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpGet]
     [Route("pending")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ConnectionRequestLookUpDto>>, ProblemHttpResult>>
+    public async Task<Results<Ok<PagedAndSortedResultList<ConnectionRequestLookUpDto>>, BadRequest<string>, ProblemHttpResult>>
         GetListPendingAsync(
             [FromQuery] string? sorting,
             [FromQuery] int? skipCount,
@@ -50,7 +50,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpGet]
     [Route("find-pending-for-user/{targetId}")]
-    public async Task<Results<Ok<ConnectionRequestSearchResultDto>, ProblemHttpResult>> FindPendingForUserAsync(
+    public async Task<Results<Ok<ConnectionRequestSearchResultDto>, BadRequest<string>, ProblemHttpResult>> FindPendingForUserAsync(
         [Required] Guid targetId,
         CancellationToken cancellationToken = default)
     {
@@ -64,7 +64,7 @@ public class ConnectionRequestController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<Created, ProblemHttpResult>> CreateAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateAsync(
         ConnectionRequestCreateDto input,
         CancellationToken cancellationToken = default)
     {
@@ -79,7 +79,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpPut]
     [Route("accept/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> AcceptAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> AcceptAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -94,7 +94,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpPut]
     [Route("reject/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> RejectAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> RejectAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -109,7 +109,7 @@ public class ConnectionRequestController: ProLinkedController
 
     [HttpDelete]
     [Route("delete/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {

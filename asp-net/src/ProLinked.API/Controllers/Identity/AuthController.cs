@@ -8,7 +8,7 @@ using ProLinked.Application.Contracts.Identity.DTOs;
 namespace ProLinked.API.Controllers.Identity;
 
 [ApiController]
-[Route("api/identity/auth")]
+[Route("api/auth")]
 public class AuthController: ControllerBase
 {
     private readonly IAuthService _authService;

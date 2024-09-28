@@ -34,7 +34,6 @@ public class AppUser: IdentityUser<Guid>
 
     public Guid? CurriculumVitaeId { get; set;}
 
-
     [MaxLength(256)]
     public string? RefreshToken { get; set; }
 

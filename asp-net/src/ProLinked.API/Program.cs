@@ -2,6 +2,13 @@ using Microsoft.OpenApi.Models;
 using ProLinked.Application;
 using ProLinked.Infrastructure;
 
+//TODO : Fix dockerized api -> https
+//TODO : add user search etc
+//TODO : fix user login and registration dtos
+//TODO : recommendation system!!!
+//TODO : manual
+//TODO : public/private skills?
+
 
 namespace ProLinked.API;
 

@@ -26,7 +26,7 @@ public class PostController: ProLinkedController
     /* Posts */
     [HttpGet]
     [Route("list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<PostLookUpDto>>, ProblemHttpResult>> GetPostListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<PostLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetPostListAsync(
         [FromQuery] Guid? userId,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to,
@@ -55,7 +55,7 @@ public class PostController: ProLinkedController
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<Results<Ok<PostWithDetailsDto>, ProblemHttpResult>> GetWithDetailsAsync(
+    public async Task<Results<Ok<PostWithDetailsDto>, BadRequest<string>, ProblemHttpResult>> GetWithDetailsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -67,7 +67,7 @@ public class PostController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<Created, ProblemHttpResult>> CreatePostAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreatePostAsync(
         PostCUDto input,
         CancellationToken cancellationToken = default)
     {
@@ -82,7 +82,7 @@ public class PostController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update")]
-    public async Task<Results<NoContent, ProblemHttpResult>> UpdatePostAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdatePostAsync(
         PostCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
@@ -99,7 +99,7 @@ public class PostController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/set-visibility")]
-    public async Task<Results<NoContent, ProblemHttpResult>> SetVisibilityAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> SetVisibilityAsync(
         Guid id,
         PostVisibilityEnum visibilityEnum,
         CancellationToken cancellationToken = default)
@@ -116,7 +116,7 @@ public class PostController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeletePostAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeletePostAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -132,7 +132,7 @@ public class PostController: ProLinkedController
     /* Post Reactions */
     [HttpGet]
     [Route("{postId}/reaction/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ReactionDto>>, ProblemHttpResult>> GetPostReactionListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ReactionDto>>, BadRequest<string>, ProblemHttpResult>> GetPostReactionListAsync(
         Guid postId,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to,
@@ -159,7 +159,7 @@ public class PostController: ProLinkedController
 
     [HttpPost]
     [Route("{postId}/reaction")]
-    public async Task<Results<Created, ProblemHttpResult>> CreatePostReactionAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreatePostReactionAsync(
         Guid postId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default)
@@ -176,7 +176,7 @@ public class PostController: ProLinkedController
 
     [HttpDelete]
     [Route("{postId}/reaction/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeletePostReactionAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeletePostReactionAsync(
         Guid postId,
         Guid reactionId,
         CancellationToken cancellationToken = default)

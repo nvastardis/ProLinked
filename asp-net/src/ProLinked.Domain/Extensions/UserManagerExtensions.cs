@@ -36,6 +36,67 @@ public static class UserManagerExtensions
         return Task.FromResult(user.DateOfBirth);
     }
 
+
+    public static Task<string?> GetSummaryAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.Summary);
+    }
+
+    public static Task<string?> GetJobTitleAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.JobTitle);
+    }
+
+    public static Task<string?> GetCompanyAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.Company);
+    }
+
+    public static Task<string?> GetCityAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.City);
+    }
+
+    public static Task<Guid?> GetPhotographIdAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.PhotographId);
+    }
+
+    public static Task<Guid?> GetCurriculumVitaeIdAsync(
+        this UserManager<AppUser> item,
+        AppUser user,
+        CancellationToken cancellationToken = default(CancellationToken))
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        Check.NotNull(user, nameof(user));
+        return Task.FromResult(user.CurriculumVitaeId);
+    }
+
     public static Task<string?> GetRefreshTokenAsync(
         this UserManager<AppUser> item,
         AppUser user,

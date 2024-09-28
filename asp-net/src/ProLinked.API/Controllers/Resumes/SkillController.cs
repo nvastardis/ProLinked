@@ -21,7 +21,7 @@ public class SkillController: ProLinkedController
 
     [HttpGet]
     [Route("list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<SkillDto>>, ProblemHttpResult>> GetSkillListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<SkillDto>>, BadRequest<string>, ProblemHttpResult>> GetSkillListAsync(
         CancellationToken cancellationToken = default)
     {
         return await OkWithStandardExceptionHandling(
@@ -32,7 +32,7 @@ public class SkillController: ProLinkedController
 
     [HttpPost]
     [Route("create")]
-    public async Task<Results<Created, ProblemHttpResult>> CreateSkillAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateSkillAsync(
         string title,
         CancellationToken cancellationToken = default)
     {

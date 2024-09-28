@@ -25,7 +25,7 @@ public class ConnectionController: ProLinkedController
 
     [HttpGet]
     [Route("list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ConnectionLookUpDto>>,ProblemHttpResult>> GetListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ConnectionLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetListAsync(
         [Required, FromQuery] Guid userId,
         [FromQuery] string? sorting,
         [FromQuery] int? skipCount,
@@ -46,7 +46,7 @@ public class ConnectionController: ProLinkedController
 
     [HttpDelete]
     [Route("delete/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> GetListAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> GetListAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {

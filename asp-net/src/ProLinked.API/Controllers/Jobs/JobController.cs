@@ -25,7 +25,7 @@ public class JobController: ProLinkedController
 
     [HttpGet]
     [Route("advertisement/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<AdvertisementDto>>, ProblemHttpResult>>
+    public async Task<Results<Ok<PagedAndSortedResultList<AdvertisementDto>>, BadRequest<string>, ProblemHttpResult>>
         GetListOfJobAdvertisementsAsync(
             [FromQuery] Guid? userId,
             [FromQuery] DateTime? from,
@@ -55,7 +55,7 @@ public class JobController: ProLinkedController
 
     [HttpGet]
     [Route("advertisement/{id}/application/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, ProblemHttpResult>>
+    public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, BadRequest<string>, ProblemHttpResult>>
         GetListOfApplicationsAsync(
             Guid id,
             CancellationToken cancellationToken = default)
@@ -71,7 +71,7 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement")]
-    public async Task<Results<Created, ProblemHttpResult>> CreateJobAdvertisementAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateJobAdvertisementAsync(
         AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
     {
@@ -86,7 +86,7 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement/{id}/apply")]
-    public async Task<Results<Created, ProblemHttpResult>> ApplyAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> ApplyAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -101,7 +101,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("advertisement/{id}/close")]
-    public async Task<Results<NoContent, ProblemHttpResult>> CloseAdvertisement(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> CloseAdvertisement(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -116,7 +116,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("advertisement/{id}/update")]
-    public async Task<Results<NoContent, ProblemHttpResult>> UpdateJobAdvertisementAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateJobAdvertisementAsync(
         Guid id,
         AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
@@ -133,7 +133,7 @@ public class JobController: ProLinkedController
 
     [HttpGet]
     [Route("application/user")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, ProblemHttpResult>>
+    public async Task<Results<Ok<PagedAndSortedResultList<ApplicationDto>>, BadRequest<string>, ProblemHttpResult>>
         GetListOfUserApplicationsAsync(
             [Required, FromQuery] Guid userId,
             [FromQuery] DateTime? from,
@@ -163,7 +163,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("application/{id}/accept")]
-    public async Task<Results<NoContent, ProblemHttpResult>> AcceptApplicationAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> AcceptApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -178,7 +178,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("application/{id}/reject")]
-    public async Task<Results<NoContent, ProblemHttpResult>> RejectApplicationAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> RejectApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {

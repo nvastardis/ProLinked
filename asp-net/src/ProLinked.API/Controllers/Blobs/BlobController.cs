@@ -25,7 +25,7 @@ public class BlobController: ProLinkedController
     [HttpGet]
     [Authorize]
     [Route("{id}")]
-    public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetAsync(
+    public async Task<Results<FileStreamHttpResult, BadRequest<string>, ProblemHttpResult>> GetAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -39,7 +39,7 @@ public class BlobController: ProLinkedController
     [HttpGet]
     [Authorize]
     [Route("list/")]
-    public async Task<Results<FileStreamHttpResult, ProblemHttpResult>> GetListAsync(
+    public async Task<Results<FileStreamHttpResult, BadRequest<string>, ProblemHttpResult>> GetListAsync(
         [FromQuery, Length(1, 10)] Guid[] ids,
         CancellationToken cancellationToken = default)
     {
@@ -53,7 +53,7 @@ public class BlobController: ProLinkedController
     [HttpPost]
     [Route("upload")]
     [Authorize]
-    public async Task<Results<Created, ProblemHttpResult>> Upload(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> Upload(
         [Required] IFormFile input,
         CancellationToken cancellationToken = default)
     {
@@ -69,7 +69,7 @@ public class BlobController: ProLinkedController
     [HttpPost]
     [Route("upload/list")]
     [Authorize]
-    public async Task<Results<NoContent, ProblemHttpResult>> PostManyAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> PostManyAsync(
         [Required, Length(1, 10)] IFormFileCollection input,
         CancellationToken cancellationToken = default)
     {
@@ -85,7 +85,7 @@ public class BlobController: ProLinkedController
     [HttpDelete]
     [Route("delete/{id}")]
     [Authorize]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteAsync(
         [Required] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -99,7 +99,7 @@ public class BlobController: ProLinkedController
     [HttpDelete]
     [Route("delete/list")]
     [Authorize]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteListAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteListAsync(
         [FromQuery, Length(1,10)] Guid[] ids,
         CancellationToken cancellationToken = default)
     {
@@ -110,7 +110,7 @@ public class BlobController: ProLinkedController
         );
     }
 
-    private async Task<Results<FileStreamHttpResult, ProblemHttpResult>> FileStreamWithStandardExceptionHandling(
+    private async Task<Results<FileStreamHttpResult, BadRequest<string>, ProblemHttpResult>> FileStreamWithStandardExceptionHandling(
         Task<BlobDownloadDto> taskToExecute)
     {
         try
@@ -120,10 +120,12 @@ public class BlobController: ProLinkedController
         }
         catch (BusinessException businessException)
         {
-            return TypedResults.Problem(businessException.Code);
+            Logger.LogError(businessException.Code);
+            return TypedResults.BadRequest(businessException.Code);
         }
         catch (Exception ex)
         {
+            Logger.LogError(ex.Message);
             return TypedResults.Problem(ex.Message);
         }
     }

@@ -20,4 +20,18 @@ public class RegisterRequest
     /// <summary>The user's Date of Birth </summary>
     public required DateTime DateOfBirth { get; init; }
 
+    /// <summary>The user's phone number.</summary>
+    public string? PhoneNumber { get; init; }
+
+    /// <summary>The user's personal Summary</summary>
+    public string? Summary { get; init; }
+
+    /// <summary>The user's current job title </summary>
+    public string? JobTitle{ get; init; }
+
+    /// <summary>The user's current company</summary>
+    public string? Company { get; init; }
+
+    /// <summary>The user's current city residency</summary>
+    public string? City { get; init; }
 }

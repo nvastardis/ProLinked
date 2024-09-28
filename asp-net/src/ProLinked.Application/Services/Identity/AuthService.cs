@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Application.Contracts.Identity.DTOs;
+using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Utils;
@@ -30,7 +31,8 @@ public class AuthService: IAuthService
         SignInManager<AppUser> signInManager,
         IUserStore<AppUser> userStore,
         IJwtTokenService jwtTokenService,
-        IStringLocalizer l)
+        IStringLocalizer l,
+        IBlobManager blobManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -44,7 +46,9 @@ public class AuthService: IAuthService
         CancellationToken cancellationToken = default)
     {
         var emailStore = (IUserEmailStore<AppUser>)_userStore;
+        var phoneNumberStore = (IUserPhoneNumberStore<AppUser>)_userStore;
         var email = input.Email;
+        var phoneNumber = input.PhoneNumber;
 
         if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
         {
@@ -52,12 +56,35 @@ public class AuthService: IAuthService
         }
 
         var user = new AppUser();
+        await emailStore.SetEmailAsync(user, email, cancellationToken);
         await _userStore.SetUserNameAsync(user, input.UserName, cancellationToken);
         await _userStore.SetNameAsync(user, input.Name, cancellationToken);
         await _userStore.SetSurnameAsync(user, input.Surname, cancellationToken);
         await _userStore.SetDateOfBirthAsync(user, input.DateOfBirth, cancellationToken);
 
-        await emailStore.SetEmailAsync(user, email, cancellationToken);
+        if (!input.Summary.IsNullOrWhiteSpace())
+        {
+            await _userStore.SetSummaryAsync(user, input.Summary, cancellationToken);
+        }
+        if (!input.JobTitle.IsNullOrWhiteSpace())
+        {
+            await _userStore.SetJobTitleAsync(user, input.Summary, cancellationToken);
+        }
+        if (!input.Company.IsNullOrWhiteSpace())
+        {
+            await _userStore.SetCompanyAsync(user, input.Company, cancellationToken);
+        }
+
+        if (!input.City.IsNullOrWhiteSpace())
+        {
+            await _userStore.SetCityAsync(user, input.City, cancellationToken);
+        }
+
+        if (!phoneNumber.IsNullOrWhiteSpace())
+        {
+            await phoneNumberStore.SetPhoneNumberAsync(user, phoneNumber, cancellationToken);
+        }
+
         var result = await _userManager.CreateAsync(user, input.Password);
 
         if (!result.Succeeded)

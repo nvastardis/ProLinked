@@ -29,4 +29,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="Localization\en.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

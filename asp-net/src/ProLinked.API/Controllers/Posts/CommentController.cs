@@ -26,7 +26,7 @@ public class CommentController: ProLinkedController
 
     [HttpGet]
     [Route("list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<CommentDto>>,ProblemHttpResult>> GetCommentListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<CommentDto>>, BadRequest<string>, ProblemHttpResult>> GetCommentListAsync(
         [Required,FromQuery] Guid postId,
         [FromQuery] Guid? userId,
         [FromQuery] DateTime? from,
@@ -54,7 +54,7 @@ public class CommentController: ProLinkedController
     }
 
     [HttpPost]
-    public async Task<Results<Created, ProblemHttpResult>> CreateCommentAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateCommentAsync(
         CommentCUDto input,
         CancellationToken cancellationToken = default)
     {
@@ -69,7 +69,7 @@ public class CommentController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update")]
-    public async Task<Results<NoContent, ProblemHttpResult>> UpdateCommentAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateCommentAsync(
         CommentCUDto input,
         Guid id,
         CancellationToken cancellationToken = default)
@@ -86,7 +86,7 @@ public class CommentController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/delete")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteCommentAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteCommentAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -101,7 +101,7 @@ public class CommentController: ProLinkedController
 
     [HttpGet]
     [Route("{commentId}/reaction/list")]
-    public async Task<Results<Ok<PagedAndSortedResultList<ReactionDto>>,ProblemHttpResult>> GetCommentReactionListAsync(
+    public async Task<Results<Ok<PagedAndSortedResultList<ReactionDto>>, BadRequest<string>, ProblemHttpResult>> GetCommentReactionListAsync(
         Guid commentId,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to,
@@ -128,7 +128,7 @@ public class CommentController: ProLinkedController
 
     [HttpPost]
     [Route("{commentId}/reaction")]
-    public async Task<Results<Created, ProblemHttpResult>> CreateCommentReactionAsync(
+    public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateCommentReactionAsync(
         Guid commentId,
         ReactionTypeEnum reactionType,
         CancellationToken cancellationToken = default)
@@ -145,7 +145,7 @@ public class CommentController: ProLinkedController
 
     [HttpDelete]
     [Route("{commentId}/reaction/{id}")]
-    public async Task<Results<NoContent, ProblemHttpResult>> DeleteCommentReactionAsync(
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteCommentReactionAsync(
         Guid commentId,
         Guid id,
         CancellationToken cancellationToken = default)
