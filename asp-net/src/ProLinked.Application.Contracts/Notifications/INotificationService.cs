@@ -14,7 +14,6 @@ public interface INotificationService
     Task UpdateShownStatusAsync(
         Guid userId,
         Guid notificationId,
-        bool isShown = true,
         CancellationToken cancellationToken = default);
 
 }

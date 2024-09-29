@@ -51,7 +51,6 @@ public class NotificationController: ProLinkedController
             _notificationService.UpdateShownStatusAsync(
                 GetCurrentUserId(),
                 id,
-                true,
                 cancellationToken)
         );
     }

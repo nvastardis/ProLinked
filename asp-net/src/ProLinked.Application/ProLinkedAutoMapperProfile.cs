@@ -2,16 +2,17 @@
 using ProLinked.Application.Contracts.Chats.DTOs;
 using ProLinked.Application.Contracts.Connections.DTOs;
 using ProLinked.Application.Contracts.Jobs.DTOs;
+using ProLinked.Application.Contracts.Notifications.DTOs;
 using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.Contracts.Resumes.DTOs;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.DTOs.Connections;
+using ProLinked.Domain.DTOs.Notifications;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.DTOs.Resumes;
 using ProLinked.Domain.Entities.Chats;
 using ProLinked.Domain.Entities.Jobs;
 using ProLinked.Domain.Entities.Resumes;
-using System.Runtime.ConstrainedExecution;
 
 namespace ProLinked.Application;
 
@@ -51,5 +52,7 @@ public class ProLinkedAutoMapperProfile: Profile
         CreateMap<EducationStep, EducationStepDto>();
         CreateMap<ExperienceStep, ExperienceStepDto>();
 
+        /* Notifications */
+        CreateMap<NotificationLookUp, NotificationLookUpDto>();
     }
 }

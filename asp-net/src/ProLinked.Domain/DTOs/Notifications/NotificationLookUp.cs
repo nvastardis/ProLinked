@@ -1,8 +1,8 @@
 ﻿using ProLinked.Domain.Shared.Notifications;
 
-namespace ProLinked.Application.Contracts.Notifications.DTOs;
+namespace ProLinked.Domain.DTOs.Notifications;
 
-public class NotificationLookUpDto
+public class NotificationLookUp
 {
     public Guid UserId;
     public Guid SourceId;
