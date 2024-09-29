@@ -13,6 +13,10 @@ public interface IUserService
     Task<Results<Ok<InfoResponse>, NotFound>> InfoAsync(
         Guid userId);
 
+    Task<Results<FileStreamHttpResult, NotFound>> DownloadInfoAsync(
+        Guid userId,
+        bool inXml = false);
+
     Task<Results<Ok<InfoResponse[]>, NotFound>> FindAsync(
         string name);
 

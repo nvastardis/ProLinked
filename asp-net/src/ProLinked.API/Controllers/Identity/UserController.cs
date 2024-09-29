@@ -36,6 +36,15 @@ public class UserController: ControllerBase
         return await _userService.InfoAsync(id);
     }
 
+    [HttpGet]
+    [Route("info/{id}/download")]
+    [Authorize]
+    public async Task<Results<FileStreamHttpResult, NotFound>> DownloadInfo(
+        Guid id,
+        [FromQuery]bool inXml = false)
+    {
+        return await _userService.DownloadInfoAsync(id, inXml);
+    }
 
     [HttpGet]
     [Route("find")]

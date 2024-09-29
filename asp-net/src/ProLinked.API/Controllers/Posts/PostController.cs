@@ -36,12 +36,13 @@ public class PostController: ProLinkedController
         [FromQuery] int? maxResultCount,
         CancellationToken cancellationToken = default)
     {
+        var currentUserId = GetCurrentUserId();
         return await OkWithStandardExceptionHandling(
             _postService.GetPostListAsync(
                 new PostListFilterDto
                 {
                     UserId = userId,
-                    VisibilityEnum = visibilityEnum ?? PostVisibilityEnum.UNDEFINED,
+                    VisibilityEnum = userId == currentUserId ? PostVisibilityEnum.UNDEFINED : PostVisibilityEnum.PUBLIC,
                     From = from,
                     To = to,
                     IncludeDetails = false,

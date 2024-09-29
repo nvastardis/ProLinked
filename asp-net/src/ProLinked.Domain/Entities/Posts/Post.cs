@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Posts;
 using ProLinked.Domain.Shared.Utils;
 

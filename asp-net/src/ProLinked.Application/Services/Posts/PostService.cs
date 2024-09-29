@@ -37,10 +37,10 @@ public class PostService: ProLinkedServiceBase, IPostService
         CancellationToken cancellationToken = default)
     {
         var queryResult = await PostRepository.GetLookUpListAsync(
-            null,
             filter.UserId,
             filter.From,
             filter.To,
+            filter.VisibilityEnum,
             filter.Sorting,
             filter.SkipCount,
             filter.MaxResultCount,

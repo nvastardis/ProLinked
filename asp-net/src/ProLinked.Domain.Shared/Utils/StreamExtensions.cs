@@ -14,7 +14,7 @@ public static class StreamExtensions
 
     public static async Task<byte[]> GetAllBytesAsync(
         this Stream stream,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var buffer = new byte[stream.Length];
         using var ms = new MemoryStream();

@@ -31,5 +31,5 @@ public interface IResumeRepository: IRepository<Resume, Guid>
 
     Task<ResumeWithDetails> GetWithDetailsAsync(
         Guid resumeId,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }

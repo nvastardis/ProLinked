@@ -4,8 +4,8 @@ using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Entities.Posts;
-using ProLinked.Domain.Extensions;
 using ProLinked.Domain.Shared.Exceptions;
+using ProLinked.Domain.Shared.Posts;
 using ProLinked.Domain.Shared.Utils;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Posts;
@@ -98,6 +98,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
         Guid? userId,
         DateTime? fromDate = null,
         DateTime? toDate = null,
+        PostVisibilityEnum visibilityEnum = PostVisibilityEnum.UNDEFINED,
         bool includeDetails = false,
         string? sorting = null,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
@@ -108,6 +109,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
             userId,
             fromDate,
             toDate,
+            visibilityEnum,
             includeDetails,
             cancellationToken);
 
@@ -121,10 +123,10 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
     }
 
     public async Task<List<PostLookUp>> GetLookUpListAsync(
-        Guid? postId = null,
         Guid? userId = null,
         DateTime? fromDate = null,
         DateTime? toDate = null,
+        PostVisibilityEnum visibilityEnum = PostVisibilityEnum.UNDEFINED,
         string? sorting = null,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
@@ -137,6 +139,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
             userId,
             fromDate,
             toDate,
+            visibilityEnum,
             true,
             cancellationToken);
 
@@ -208,6 +211,7 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
         Guid? userId = null,
         DateTime? fromDate = null,
         DateTime? toDate = null,
+        PostVisibilityEnum? visibilityEnum = PostVisibilityEnum.UNDEFINED,
         bool includeDetails = false,
         CancellationToken cancellationToken = default)
     {
@@ -222,7 +226,10 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
                 post => post.CreationTime >= fromDate)
             .WhereIf(
                 toDate.HasValue,
-                post => post.CreationTime <= toDate);
+                post => post.CreationTime <= toDate)
+            .WhereIf(
+                visibilityEnum.HasValue && visibilityEnum.Value != PostVisibilityEnum.UNDEFINED,
+                post => post.PostVisibility == visibilityEnum);
 
         return query;
     }

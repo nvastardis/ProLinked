@@ -17,7 +17,12 @@ public static class ResponseGenerator
             UserName = await userManager.GetUserNameAsync(user) ?? throw new NotSupportedException("User must have username"),
             Name = await userManager.GetNameAsync(user) ?? throw new NotSupportedException("User must have a name"),
             Surname = await userManager.GetSurnameAsync(user) ?? throw new NotSupportedException("User must have a surname"),
-            DateOfBirth = await userManager.GetDateOfBirthAsync(user) ?? throw new NotSupportedException("User must have a Date of Birth")
+            DateOfBirth = await userManager.GetDateOfBirthAsync(user) ?? throw new NotSupportedException("User must have a Date of Birth"),
+            PhoneNumber = await userManager.GetPhoneNumberAsync(user),
+            Summary = await userManager.GetSummaryAsync(user),
+            JobTitle = await userManager.GetJobTitleAsync(user),
+            Company = await userManager.GetCompanyAsync(user),
+            City = await userManager.GetCityAsync(user)
         };
     }
 
