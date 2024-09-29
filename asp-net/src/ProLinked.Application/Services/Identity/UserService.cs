@@ -145,8 +145,9 @@ public class UserService: ProLinkedServiceBase, IUserService
     public async Task<Results<Ok<InfoResponse[]>, NotFound>> FindAsync(
         string name)
     {
-        var tasks = _userManager.
-            Users.
+        var users = _userManager.Users.ToList();
+        var tasks =
+            users.
             Where(e => (e.Name+e.Surname).Contains(name, StringComparison.CurrentCultureIgnoreCase)).
             Select(e => ResponseGenerator.CreateInfoResponseAsync(e, _userManager)).
             ToList();

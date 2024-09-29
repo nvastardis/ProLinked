@@ -22,22 +22,22 @@ public class UserController: ControllerBase
     }
 
     [HttpGet]
-    [Route("info")]
-    public async Task<Results<Ok<InfoResponse>, NotFound>> Info()
+    [Route("current/info")]
+    public async Task<Results<Ok<InfoResponse>, NotFound>> CurrentUserInfo()
     {
         return await _userService.InfoAsync(User);
     }
 
     [HttpGet]
-    [Route("info/{id}")]
-    public async Task<Results<Ok<InfoResponse>, NotFound>> Info(
+    [Route("{id}/info")]
+    public async Task<Results<Ok<InfoResponse>, NotFound>> UserIdInfo(
         Guid id)
     {
         return await _userService.InfoAsync(id);
     }
 
     [HttpGet]
-    [Route("info/{id}/download")]
+    [Route("{id}/info/download")]
     [Authorize(Roles=RoleConsts.AdministrationRoleName)]
     public async Task<Results<FileStreamHttpResult, NotFound>> DownloadInfo(
         Guid id,
@@ -48,7 +48,7 @@ public class UserController: ControllerBase
 
     [HttpGet]
     [Route("find")]
-    public async Task<Results<Ok<InfoResponse[]>, NotFound>> Info(
+    public async Task<Results<Ok<InfoResponse[]>, NotFound>> Find(
         [FromQuery, Required] string name)
     {
         return await _userService.FindAsync(name);
@@ -73,7 +73,7 @@ public class UserController: ControllerBase
 
     [HttpPost]
     [Route("update-cv")]
-    public async Task<Results<NoContent, NotFound>> Update(
+    public async Task<Results<NoContent, NotFound>> UpdateCurriculumVitae(
         IFormFile cv)
     {
         return await _userService.UpdatePhotographAsync(User, cv);

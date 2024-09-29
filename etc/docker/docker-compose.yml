@@ -59,11 +59,11 @@ services:
       context: ../../
       dockerfile: asp-net/src/ProLinked.API/Dockerfile
     ports:
-      - 8080:8080
-      - 8081:8081
+      - 9000:8080
+      - 9001:8081
     restart: unless-stopped
     volumes:
-      - dev-cert:/data:rw
+      - ../dev-cert:/app/certs
     depends_on:
       mssql:
         condition: service_healthy
@@ -89,8 +89,6 @@ services:
       - prolinked-network
 
 volumes:
-  dev-cert:
-    name: dev-cert
   data-store:
     name: data-store
   blob-store:

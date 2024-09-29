@@ -2,8 +2,8 @@ using Microsoft.OpenApi.Models;
 using ProLinked.Application;
 using ProLinked.Infrastructure;
 
-//TODO : Fix dockerized api -> https
-//TODO : Notifications!!!
+//TODO : Fix dockerized api -> https without self-signed?
+//TODO : Notifications -> signalR?
 //TODO : manual
 
 namespace ProLinked.API;
@@ -31,7 +31,6 @@ public class Program
         builder.Services.AddAutoMapper();
         builder.Services.AddApplicationServices();
 
-
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         ConfigureSwagger(builder.Services);
 
@@ -41,7 +40,11 @@ public class Program
         if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProLinked API v1");
+                c.RoutePrefix = string.Empty;
+            });
         }
 
         app.UseHttpsRedirection();
@@ -78,15 +81,14 @@ public class Program
                 Description = @"JWT Authorization header using the Bearer scheme.
                               Enter your token in the text input below."
             });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    new OpenApiSecurityScheme {
-                        Reference = new OpenApiReference {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                     },
-                    new string[] {}
+                    new string[] { }
                 }
             });
         });
