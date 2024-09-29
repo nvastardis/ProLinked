@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Posts;
 using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
+using ProLinked.Domain.Shared.Identity;
 using ProLinked.Domain.Shared.Posts;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,6 +14,7 @@ namespace ProLinked.API.Controllers.Posts;
 
 [ApiController]
 [Route("api/comment")]
+[Authorize]
 public class CommentController: ProLinkedController
 {
     private readonly ICommentService _commentService;
@@ -54,6 +57,7 @@ public class CommentController: ProLinkedController
     }
 
     [HttpPost]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateCommentAsync(
         CommentCUDto input,
         CancellationToken cancellationToken = default)
@@ -69,6 +73,7 @@ public class CommentController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateCommentAsync(
         CommentCUDto input,
         Guid id,
@@ -86,6 +91,7 @@ public class CommentController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteCommentAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -128,6 +134,7 @@ public class CommentController: ProLinkedController
 
     [HttpPost]
     [Route("{commentId}/reaction")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateCommentReactionAsync(
         Guid commentId,
         ReactionTypeEnum reactionType,

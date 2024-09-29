@@ -3,8 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ProLinked.Domain;
+using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Entities;
 using ProLinked.Domain.Entities.Identity;
+using ProLinked.Domain.Shared.Identity;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 
@@ -59,11 +61,20 @@ public class ProLinkedDataSeeder
         var seedObjects = await LoadDataAsync<AppUser>(entityName, jsonFileNameClean + ".json");
         foreach (var seedObj in seedObjects)
         {
-            if (await _userManager.FindByIdAsync(seedObj.Id.ToString()) is null)
+            if (await _userManager.FindByIdAsync(seedObj.Id.ToString()) is not null)
             {
-                await _userManager.CreateAsync(seedObj);
-                await _userManager.AddPasswordAsync(seedObj, "1q2w3E*");
+                continue;
             }
+
+            await _userManager.CreateAsync(seedObj);
+            await _userManager.AddPasswordAsync(seedObj, "1q2w3E*");
+
+            if (seedObj.UserName == "admin")
+            {
+                await _userManager.AddToRoleAsync(seedObj, RoleConsts.AdministrationRoleName);
+                continue;
+            }
+            await _userManager.AddToRoleAsync(seedObj, RoleConsts.UserRoleName);
         }
         _logger.LogInformation($"Succeeded Seeding Entity: {entityName}");
     }

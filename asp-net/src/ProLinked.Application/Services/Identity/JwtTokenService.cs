@@ -68,14 +68,20 @@ public class JwtTokenService : IJwtTokenService
     {
         var claims = new ClaimsIdentity();
         claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-        claims.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
         claims.AddClaim(new Claim(ClaimTypes.Name, user.Name));
         claims.AddClaim(new Claim(ClaimTypes.Surname, user.Surname));
 
         var userCore = await _userManager.FindByIdAsync(user.Id.ToString());
         var roles = await _userManager.GetRolesAsync(userCore!);
         foreach (var role in roles)
+        {
+            if (claims.HasClaim(ClaimTypes.Role, role))
+            {
+                continue;
+            }
+
             claims.AddClaim(new Claim(ClaimTypes.Role, role));
+        }
 
         return claims;
     }

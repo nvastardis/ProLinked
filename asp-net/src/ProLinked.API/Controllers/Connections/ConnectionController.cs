@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.Contracts.Connections.DTOs;
@@ -11,6 +12,7 @@ namespace ProLinked.API.Controllers.Connections;
 
 [ApiController]
 [Route("api/connection")]
+[Authorize]
 public class ConnectionController: ProLinkedController
 {
     private readonly IConnectionService _connectionService;

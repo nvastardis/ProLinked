@@ -10,6 +10,7 @@ namespace ProLinked.API.Controllers.Blobs;
 
 [ApiController]
 [Route("api/blob")]
+[Authorize]
 public class BlobController: ProLinkedController
 {
     private readonly IBlobService _blobService;

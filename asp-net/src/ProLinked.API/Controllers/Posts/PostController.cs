@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Posts;
 using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
+using ProLinked.Domain.Shared.Identity;
 using ProLinked.Domain.Shared.Posts;
 
 namespace ProLinked.API.Controllers.Posts;
 
 [ApiController]
 [Route("api/post")]
+[Authorize]
 public class PostController: ProLinkedController
 {
     private readonly IPostService _postService;
@@ -68,6 +71,7 @@ public class PostController: ProLinkedController
     }
 
     [HttpPost]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreatePostAsync(
         PostCUDto input,
         CancellationToken cancellationToken = default)
@@ -83,6 +87,7 @@ public class PostController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/update")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdatePostAsync(
         PostCUDto input,
         Guid id,
@@ -100,6 +105,7 @@ public class PostController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/set-visibility")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> SetVisibilityAsync(
         Guid id,
         PostVisibilityEnum visibilityEnum,
@@ -117,6 +123,7 @@ public class PostController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeletePostAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -160,6 +167,7 @@ public class PostController: ProLinkedController
 
     [HttpPost]
     [Route("{postId}/reaction")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreatePostReactionAsync(
         Guid postId,
         ReactionTypeEnum reactionType,
@@ -177,6 +185,7 @@ public class PostController: ProLinkedController
 
     [HttpDelete]
     [Route("{postId}/reaction/{id}")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeletePostReactionAsync(
         Guid postId,
         Guid reactionId,

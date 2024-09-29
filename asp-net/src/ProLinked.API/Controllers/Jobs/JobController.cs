@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Jobs;
 using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
+using ProLinked.Domain.Shared.Identity;
 using ProLinked.Domain.Shared.Jobs;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,6 +13,7 @@ namespace ProLinked.API.Controllers.Jobs;
 
 [ApiController]
 [Route("api/jobs")]
+[Authorize]
 public class JobController: ProLinkedController
 {
     private readonly IJobService _jobService;
@@ -71,6 +74,7 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateJobAdvertisementAsync(
         AdvertisementCUDto input,
         CancellationToken cancellationToken = default)
@@ -86,6 +90,7 @@ public class JobController: ProLinkedController
 
     [HttpPost]
     [Route("advertisement/{id}/apply")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> ApplyAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -101,6 +106,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("advertisement/{id}/close")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> CloseAdvertisement(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -116,6 +122,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("advertisement/{id}/update")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateJobAdvertisementAsync(
         Guid id,
         AdvertisementCUDto input,
@@ -163,6 +170,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("application/{id}/accept")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> AcceptApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)
@@ -178,6 +186,7 @@ public class JobController: ProLinkedController
 
     [HttpPut]
     [Route("application/{id}/reject")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> RejectApplicationAsync(
         Guid id,
         CancellationToken cancellationToken = default)

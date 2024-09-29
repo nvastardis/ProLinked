@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Chats;
 using ProLinked.Application.Contracts.Chats.DTOs;
 using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
+using ProLinked.Domain.Shared.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.API.Controllers.Chats;
 
 [ApiController]
 [Route("api/chat")]
+[Authorize(Roles=RoleConsts.UserRoleName)]
 public class ChatController: ProLinkedController
 {
     private readonly IChatService _chatService;

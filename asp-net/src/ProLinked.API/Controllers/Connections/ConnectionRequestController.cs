@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.Contracts.Connections.DTOs;
 using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain;
+using ProLinked.Domain.Shared.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace ProLinked.API.Controllers.Connections;
 
 [ApiController]
 [Route("api/connection-request")]
+[Authorize(Roles=RoleConsts.UserRoleName)]
 public class ConnectionRequestController: ProLinkedController
 {
     private readonly IConnectionRequestService _connectionRequestService;

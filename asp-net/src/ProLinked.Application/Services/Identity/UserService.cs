@@ -297,7 +297,7 @@ public class UserService: ProLinkedServiceBase, IUserService
     {
         var xsSubmit = new XmlSerializer(typeof(T));
         await using var sww = new StringWriter();
-        await using XmlWriter writer = XmlWriter.Create(sww);
+        await using XmlWriter writer = XmlWriter.Create(sww, new XmlWriterSettings() {Async = true});
         xsSubmit.Serialize(writer, item);
         var xml = sww.ToString();
         return await GenerateStreamFromStringAsync(xml);

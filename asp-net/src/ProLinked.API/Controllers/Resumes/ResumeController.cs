@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Resumes;
 using ProLinked.Application.Contracts.Resumes.DTOs;
 using ProLinked.Application.DTOs;
+using ProLinked.Domain.Shared.Identity;
 
 namespace ProLinked.API.Controllers.Resumes;
 
 [ApiController]
 [Route("api/resume")]
+[Authorize]
 public class ResumeController: ProLinkedController
 {
     private readonly IResumeService _resumeService;
@@ -48,6 +51,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("create")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateResumeAsync(
         CancellationToken cancellationToken = default)
     {
@@ -61,6 +65,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/skill/create")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateResumeSkillAsync(
         Guid id,
         Guid skillId,
@@ -81,6 +86,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/skill/{skillId}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent,BadRequest<string>,  ProblemHttpResult>> DeleteResumeSkillAsync(
         Guid id,
         Guid skillId,
@@ -115,6 +121,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/education/create")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateEducationStepAsync(
         EducationStepCUDto input,
         Guid id,
@@ -132,6 +139,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/step/education/{stepId}/update")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateEducationStepAsync(
         EducationStepCUDto input,
         Guid id,
@@ -173,6 +181,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/education/{stepId}/skill/{skillId}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteSkillFromEducationStepAsync(
         Guid id,
         Guid stepId,
@@ -195,6 +204,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/education/{stepId}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteEducationStepAsync(
         Guid id,
         Guid stepId,
@@ -226,6 +236,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/create")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> CreateExperienceStepAsync(
         ExperienceStepCUDto input,
         Guid id,
@@ -243,6 +254,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPut]
     [Route("{id}/step/experience/{stepId}/update")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> UpdateExperienceStepAsync(
         ExperienceStepCUDto input,
         Guid id,
@@ -262,6 +274,7 @@ public class ResumeController: ProLinkedController
 
     [HttpPost]
     [Route("{id}/step/experience/{stepId}/skill/create")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<Created, BadRequest<string>, ProblemHttpResult>> MapSkillToExperienceStepAsync(
         Guid id,
         Guid stepId,
@@ -284,6 +297,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/experience/{stepId}/skill/{skillId}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteSkillFromExperienceStepAsync(
         Guid id,
         Guid stepId,
@@ -306,6 +320,7 @@ public class ResumeController: ProLinkedController
 
     [HttpDelete]
     [Route("{id}/step/experience/{stepId}/delete")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
     public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> DeleteExperienceStepAsync(
         Guid id,
         Guid stepId,

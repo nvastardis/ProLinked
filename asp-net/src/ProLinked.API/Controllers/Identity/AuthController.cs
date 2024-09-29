@@ -9,6 +9,7 @@ namespace ProLinked.API.Controllers.Identity;
 
 [ApiController]
 [Route("api/auth")]
+[AllowAnonymous]
 public class AuthController: ControllerBase
 {
     private readonly IAuthService _authService;
@@ -20,7 +21,6 @@ public class AuthController: ControllerBase
 
     [HttpPost]
     [Route("register")]
-    [AllowAnonymous]
     public async Task<Results<Ok<RegistrationResponse>, ValidationProblem>> Register(
         RegisterRequest input,
         CancellationToken cancellationToken = default) =>
@@ -28,7 +28,6 @@ public class AuthController: ControllerBase
 
     [HttpPost]
     [Route("login")]
-    [AllowAnonymous]
     public async Task<Results<Ok<AccessTokenResponse>, ProblemHttpResult>> Login(
         LoginRequest input)
     {

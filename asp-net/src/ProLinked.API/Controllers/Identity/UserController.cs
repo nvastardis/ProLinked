@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Application.Contracts.Identity.DTOs;
+using ProLinked.Domain.Shared.Identity;
 using System.ComponentModel.DataAnnotations;
 using InfoResponse = ProLinked.Application.Contracts.Identity.DTOs.InfoResponse;
 
@@ -10,6 +11,7 @@ namespace ProLinked.API.Controllers.Identity;
 
 [ApiController]
 [Route("api/user")]
+[Authorize]
 public class UserController: ControllerBase
 {
     private readonly IUserService _userService;
@@ -21,7 +23,6 @@ public class UserController: ControllerBase
 
     [HttpGet]
     [Route("info")]
-    [Authorize]
     public async Task<Results<Ok<InfoResponse>, NotFound>> Info()
     {
         return await _userService.InfoAsync(User);
@@ -29,7 +30,6 @@ public class UserController: ControllerBase
 
     [HttpGet]
     [Route("info/{id}")]
-    [Authorize]
     public async Task<Results<Ok<InfoResponse>, NotFound>> Info(
         Guid id)
     {
@@ -38,7 +38,7 @@ public class UserController: ControllerBase
 
     [HttpGet]
     [Route("info/{id}/download")]
-    [Authorize]
+    [Authorize(Roles=RoleConsts.AdministrationRoleName)]
     public async Task<Results<FileStreamHttpResult, NotFound>> DownloadInfo(
         Guid id,
         [FromQuery]bool inXml = false)
@@ -48,7 +48,6 @@ public class UserController: ControllerBase
 
     [HttpGet]
     [Route("find")]
-    [Authorize]
     public async Task<Results<Ok<InfoResponse[]>, NotFound>> Info(
         [FromQuery, Required] string name)
     {
@@ -58,7 +57,6 @@ public class UserController: ControllerBase
 
     [HttpPost]
     [Route("update")]
-    [Authorize]
     public async Task<Results<NoContent, ValidationProblem, NotFound>> Update(
         UpdateIdentityDto input)
     {
@@ -67,7 +65,6 @@ public class UserController: ControllerBase
 
     [HttpPost]
     [Route("update-photograph")]
-    [Authorize]
     public async Task<Results<NoContent, NotFound>> UpdatePhotograph(
         IFormFile photograph)
     {
@@ -76,7 +73,6 @@ public class UserController: ControllerBase
 
     [HttpPost]
     [Route("update-cv")]
-    [Authorize]
     public async Task<Results<NoContent, NotFound>> Update(
         IFormFile cv)
     {

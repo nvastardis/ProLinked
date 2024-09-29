@@ -1,6 +1,6 @@
 ﻿using ProLinked.Domain;
 using ProLinked.Domain.Entities;
-using ProLinked.Infrastructure.Data;
+using ProLinked.Domain.Shared.Utils;
 using System.Linq.Dynamic.Core;
 
 namespace ProLinked.Infrastructure.Data.Repositories;
@@ -53,6 +53,6 @@ public class ProLinkedBaseRepository<TEntity, TKey> : EfCoreRepository<ProLinked
 
         query = query.OrderBy(sortingQuery);
 
-        return query.Page(skipCount, maxResultCount);
+        return query.PageBy(skipCount, maxResultCount);
     }
 }
