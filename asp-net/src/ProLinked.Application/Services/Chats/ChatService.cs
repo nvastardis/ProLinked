@@ -6,6 +6,7 @@ using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Contracts.Chats;
+using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.DTOs.Chats;
 using ProLinked.Domain.Entities.Blobs;
 using ProLinked.Domain.Entities.Chats;
@@ -18,17 +19,20 @@ public class ChatService: ProLinkedServiceBase, IChatService
     private IChatManager ChatManager { get; }
     private IChatRepository ChatRepository { get; }
     private IBlobManager BlobManager { get; }
+    private INotificationManager NotificationManager { get; }
 
     public ChatService(
         IMapper mapper,
         IChatManager chatManager,
         IChatRepository chatRepository,
-        IBlobManager blobManager)
+        IBlobManager blobManager,
+        INotificationManager notificationManager)
         : base(mapper)
     {
         ChatManager = chatManager;
         ChatRepository = chatRepository;
         BlobManager = blobManager;
+        NotificationManager = notificationManager;
     }
 
     public async Task<PagedAndSortedResultList<ChatLookUpDto>> GetListLookUpAsync(
@@ -110,13 +114,19 @@ public class ChatService: ProLinkedServiceBase, IChatService
             [userId, targetUserId],
             cancellationToken: cancellationToken);
 
-        await ChatManager.AddMessageAsync(
+        var result = await ChatManager.AddMessageAsync(
                 chat,
                 userId,
                 input.ParentId,
                 input.Text,
                 newBlob,
                 cancellationToken);
+
+        await NotificationManager.CreateNotificationForMessageAsync(
+            userId,
+            targetUserId,
+            result.Id,
+            cancellationToken);
     }
 
     public async Task AddMessageByChatAsync(
@@ -130,13 +140,22 @@ public class ChatService: ProLinkedServiceBase, IChatService
             : null ;
         var chat = await ChatManager.GetChatAsync(userId, chatId, cancellationToken);
 
-        await ChatManager.AddMessageAsync(
+        var result = await ChatManager.AddMessageAsync(
                 chat,
                 userId,
                 input.ParentId,
                 input.Text,
                 newBlob,
                 cancellationToken);
+
+        foreach (var member in chat.Members)
+        {
+            await NotificationManager.CreateNotificationForMessageAsync(
+                userId,
+                member.UserId,
+                result.Id,
+                cancellationToken);
+        }
     }
 
     public async Task AddMemberAsync(

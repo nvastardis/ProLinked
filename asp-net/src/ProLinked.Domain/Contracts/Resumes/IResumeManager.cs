@@ -13,7 +13,7 @@ public interface IResumeManager
         string title,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> AddEducationStepAsync(
+    Task<EducationStep> AddEducationStepAsync(
         Resume resume,
         string school,
         string? degree = null,
@@ -25,7 +25,7 @@ public interface IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> UpdateEducationStepAsync(
+    Task UpdateEducationStepAsync(
         Resume resume,
         Guid educationStepId,
         string? school = null,
@@ -38,7 +38,7 @@ public interface IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> AddExperienceStepAsync(
+    Task<ExperienceStep> AddExperienceStepAsync(
         Resume resume,
         string title,
         string company,
@@ -51,7 +51,7 @@ public interface IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> UpdateExperienceStepAsync(
+    Task UpdateExperienceStepAsync(
         Resume resume,
         Guid experienceStepId,
         string? title = null,
@@ -65,7 +65,7 @@ public interface IResumeManager
         DateTime? endDate = null,
         CancellationToken cancellationToken = default);
 
-    Task<Resume> MapSkillToResumeAsync(
+    Task<ResumeSkill> MapSkillToResumeAsync(
         Resume resume,
         Guid skillId,
         bool isFollowingSkill,
@@ -83,7 +83,7 @@ public interface IResumeManager
         bool isFollowingSkill,
         CancellationToken cancellationToken = default);
 
-    Task<ResumeSkill> SetFollowingFlagOnSkillAsync(
+    Task SetFollowingFlagOnSkillAsync(
         ResumeSkill resumeSkill,
         bool isFollowing,
         CancellationToken cancellationToken = default);

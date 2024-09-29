@@ -1,11 +1,12 @@
 ﻿using ProLinked.Application.Contracts.Notifications.DTOs;
+using ProLinked.Application.DTOs;
 using ProLinked.Domain;
 
 namespace ProLinked.Application.Contracts.Notifications;
 
 public interface INotificationService
 {
-    Task<List<NotificationLookUpDto>> GetNotificationList(
+    Task<PagedAndSortedResultList<NotificationLookUpDto>> GetNotificationList(
         Guid userId,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,

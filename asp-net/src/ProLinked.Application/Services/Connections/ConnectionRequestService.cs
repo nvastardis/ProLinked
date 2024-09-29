@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
 using ProLinked.Application.Contracts.Connections;
 using ProLinked.Application.Contracts.Connections.DTOs;
 using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain.Contracts.Connections;
+using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.DTOs.Connections;
 using ProLinked.Domain.Shared.Connections;
 
@@ -14,15 +14,17 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
 {
     private IConnectionManager ConnectionManager { get; }
     private IConnectionRequestRepository ConnectionRequestRepository { get; }
-
+    private INotificationManager NotificationManager { get; }
     public ConnectionRequestService(
         IMapper mapper,
         IConnectionManager connectionManager,
-        IConnectionRequestRepository connectionRequestRepository)
+        IConnectionRequestRepository connectionRequestRepository,
+        INotificationManager notificationManager)
         : base(mapper)
     {
         ConnectionManager = connectionManager;
         ConnectionRequestRepository = connectionRequestRepository;
+        NotificationManager = notificationManager;
     }
 
     public async Task<PagedAndSortedResultList<ConnectionRequestLookUpDto>> GetListPendingAsync(
@@ -73,9 +75,15 @@ public class ConnectionRequestService: ProLinkedServiceBase, IConnectionRequestS
         Guid userId,
         CancellationToken cancellationToken = default)
     {
-        await ConnectionManager.CreateConnectionRequestAsync(
+        var result = await ConnectionManager.CreateConnectionRequestAsync(
             userId,
             input.TargetId,
+            cancellationToken);
+
+        await NotificationManager.CreateNotificationForConnectionRequestAsync(
+            userId,
+            input.TargetId,
+            result.Id,
             cancellationToken);
     }
 

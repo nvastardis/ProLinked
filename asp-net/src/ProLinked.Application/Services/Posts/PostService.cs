@@ -5,6 +5,7 @@ using ProLinked.Application.Contracts.Posts;
 using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain.Contracts.Blobs;
+using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Blobs;
@@ -18,18 +19,21 @@ public class PostService: ProLinkedServiceBase, IPostService
 {
     private readonly IPostManager PostManager;
     private readonly IBlobManager BlobManager;
+    private readonly INotificationManager NotificationManager;
     private readonly IPostRepository PostRepository;
 
     public PostService(
         IMapper objectMapper,
         IPostManager postManager,
         IPostRepository postRepository,
-        IBlobManager blobManager)
+        IBlobManager blobManager,
+        INotificationManager notificationManager)
         : base(objectMapper)
     {
         PostManager = postManager;
         PostRepository = postRepository;
         BlobManager = blobManager;
+        NotificationManager = notificationManager;
     }
 
     public async Task<PagedAndSortedResultList<PostLookUpDto>> GetPostListAsync(
@@ -190,10 +194,16 @@ public class PostService: ProLinkedServiceBase, IPostService
             includeDetails: true,
             cancellationToken);
 
-        await PostManager.AddPostReactionAsync(
+        var result = await PostManager.AddPostReactionAsync(
             post,
             userId,
             reactionType,
+            cancellationToken);
+
+        await NotificationManager.CreateNotificationForPostReactionAsync(
+            userId,
+            post.CreatorId,
+            result.Id,
             cancellationToken);
     }
 

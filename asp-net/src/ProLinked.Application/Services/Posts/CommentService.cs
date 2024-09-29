@@ -4,6 +4,7 @@ using ProLinked.Application.Contracts.Posts;
 using ProLinked.Application.Contracts.Posts.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain.Contracts.Blobs;
+using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Blobs;
@@ -15,6 +16,7 @@ namespace ProLinked.Application.Services.Posts;
 
 public class CommentService: ProLinkedServiceBase, ICommentService
 {
+    private readonly INotificationManager NotificationManager;
     private readonly IBlobManager BlobManager;
     private readonly IPostManager PostManager;
     private readonly IPostRepository PostRepository;
@@ -25,13 +27,15 @@ public class CommentService: ProLinkedServiceBase, ICommentService
         IPostManager postManager,
         IBlobManager blobManager,
         IPostRepository postRepository,
-        ICommentRepository commentRepository)
+        ICommentRepository commentRepository,
+        INotificationManager notificationManager)
         : base(objectMapper)
     {
         PostManager = postManager;
         BlobManager = blobManager;
         PostRepository = postRepository;
         CommentRepository = commentRepository;
+        NotificationManager = notificationManager;
     }
 
     public async Task<PagedAndSortedResultList<CommentDto>> GetCommentListForPostAsync(
@@ -71,12 +75,18 @@ public class CommentService: ProLinkedServiceBase, ICommentService
             includeDetails: true,
             cancellationToken);
 
-        await PostManager.AddCommentAsync(
+        var result = await PostManager.AddCommentAsync(
             post,
             userId,
             input.ParentId,
             input.Text,
             blob,
+            cancellationToken);
+
+        await NotificationManager.CreateNotificationForCommentAsync(
+            userId,
+            post.CreatorId,
+            result.Id,
             cancellationToken);
     }
 
@@ -146,10 +156,16 @@ public class CommentService: ProLinkedServiceBase, ICommentService
             includeDetails: true,
             cancellationToken);
 
-        await PostManager.AddCommentReactionAsync(
+        var result = await PostManager.AddCommentReactionAsync(
             comment,
             userId,
             reactionType,
+            cancellationToken);
+
+        await NotificationManager.CreateNotificationForCommentReactionAsync(
+            userId,
+            comment.CreatorId,
+            result.Id,
             cancellationToken);
     }
 

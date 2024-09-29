@@ -4,27 +4,32 @@ using ProLinked.Application.Contracts.Jobs;
 using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
 using ProLinked.Domain.Contracts.Jobs;
+using ProLinked.Domain.Contracts.Notifications;
 using ProLinked.Domain.Entities.Jobs;
+using System.Threading.Tasks.Dataflow;
 using JobApplication = ProLinked.Domain.Entities.Jobs.Application;
 
 namespace ProLinked.Application.Services.Jobs;
 
 public class JobService: ProLinkedServiceBase, IJobService
 {
-    public readonly IJobManager JobManager;
-    public readonly IAdvertisementRepository AdvertisementRepository;
-    public readonly IApplicationRepository ApplicationRepository;
+    private IJobManager JobManager { get; }
+    private IAdvertisementRepository AdvertisementRepository { get; }
+    private IApplicationRepository ApplicationRepository { get; }
+    private INotificationManager NotificationManager { get; }
 
     public JobService(
         IMapper objectMapper,
         IJobManager jobManager,
         IAdvertisementRepository advertisementRepository,
-        IApplicationRepository applicationRepository)
+        IApplicationRepository applicationRepository,
+        INotificationManager notificationManager)
         : base(objectMapper)
     {
         JobManager = jobManager;
         AdvertisementRepository = advertisementRepository;
         ApplicationRepository = applicationRepository;
+        NotificationManager = notificationManager;
     }
 
     public async Task<PagedAndSortedResultList<AdvertisementDto>> GetListOfJobAdvertisementsAsync(
@@ -103,9 +108,16 @@ public class JobService: ProLinkedServiceBase, IJobService
         Guid userId,
         CancellationToken cancellationToken = default)
     {
-        await JobManager.CreateApplicationAsync(
+        var advertisement = await AdvertisementRepository.GetAsync(advertisementId, false, cancellationToken);
+        var result = await JobManager.CreateApplicationAsync(
             userId,
             advertisementId,
+            cancellationToken);
+
+        await NotificationManager.CreateNotificationForJobApplicationAsync(
+            userId,
+            advertisement.CreatorId,
+            result.Id,
             cancellationToken);
     }
 

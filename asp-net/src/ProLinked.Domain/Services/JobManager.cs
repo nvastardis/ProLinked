@@ -44,7 +44,7 @@ public class JobManager: IJobManager
         return newAdvertisement;
     }
 
-    public async Task<Advertisement> UpdateAdvertisementAsync(
+    public async Task UpdateAdvertisementAsync(
         Guid advertisementId,
         Guid userId,
         string? title = null,
@@ -77,11 +77,9 @@ public class JobManager: IJobManager
             employmentType,
             workArrangement);
         await _advertisementRepository.UpdateAsync(adv, autoSave: true, cancellationToken);
-
-        return adv;
     }
 
-    public async Task<Advertisement> CreateApplicationAsync(
+    public async Task<Application> CreateApplicationAsync(
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default)
@@ -103,10 +101,10 @@ public class JobManager: IJobManager
             currentUserId);
         advertisement.AddApplication(newApplication);
         await _applicationRepository.InsertAsync(newApplication, autoSave: true, cancellationToken);
-        return advertisement;
+        return newApplication;
     }
 
-    public async Task<Advertisement> AcceptApplicationAsync(
+    public async Task AcceptApplicationAsync(
         Guid currentUserId,
         Guid applicationId,
         CancellationToken cancellationToken = default)
@@ -117,16 +115,14 @@ public class JobManager: IJobManager
             throw new BusinessException(ProLinkedDomainErrorCodes.JobApplicationNotFound);
         }
 
-        var advertisement = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
+        _ = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
 
         cancellationToken.ThrowIfCancellationRequested();
         application.SetStatus(ApplicationStatus.ACCEPTED_FOR_INTERVIEW);
         await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
-
-        return advertisement;
     }
 
-    public async Task<Advertisement> RejectApplicationAsync(
+    public async Task RejectApplicationAsync(
         Guid currentUserId,
         Guid applicationId,
         CancellationToken cancellationToken = default)
@@ -137,16 +133,14 @@ public class JobManager: IJobManager
             throw new BusinessException(ProLinkedDomainErrorCodes.JobApplicationNotFound);
         }
 
-        var advertisement = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
+        _ = await GetAdvertisementAsync(currentUserId, application.AdvertisementId, cancellationToken);
 
         cancellationToken.ThrowIfCancellationRequested();
         application.SetStatus(ApplicationStatus.REJECTED);
         await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
-
-        return advertisement;
     }
 
-    public async Task<Advertisement> CloseAdvertisementAsync(
+    public async Task CloseAdvertisementAsync(
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default)
@@ -170,7 +164,6 @@ public class JobManager: IJobManager
                 await _applicationRepository.UpdateAsync(application, autoSave: true, cancellationToken);
             }
         }
-        return advertisement;
     }
 
     public async Task<Advertisement> GetAdvertisementAsync(Guid currentUserId, Guid advertisementId, CancellationToken cancellationToken = default)

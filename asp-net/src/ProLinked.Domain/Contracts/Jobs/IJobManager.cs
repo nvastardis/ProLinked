@@ -15,7 +15,7 @@ public interface IJobManager
         WorkArrangementEnum workArrangement,
         CancellationToken cancellationToken = default);
 
-    Task<Advertisement> UpdateAdvertisementAsync(
+    Task UpdateAdvertisementAsync(
         Guid advertisementId,
         Guid userId,
         string? title = null,
@@ -26,22 +26,22 @@ public interface IJobManager
         WorkArrangementEnum? workArrangement = null,
         CancellationToken cancellationToken = default);
 
-    Task<Advertisement> CreateApplicationAsync(
+    Task<Application> CreateApplicationAsync(
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default);
 
-    Task<Advertisement> AcceptApplicationAsync(
+    Task AcceptApplicationAsync(
         Guid currentUserId,
         Guid applicationId,
         CancellationToken cancellationToken = default);
 
-    Task<Advertisement> RejectApplicationAsync(
+    Task RejectApplicationAsync(
         Guid currentUserId,
         Guid applicationId,
         CancellationToken cancellationToken = default);
 
-    Task<Advertisement> CloseAdvertisementAsync(
+    Task CloseAdvertisementAsync(
         Guid currentUserId,
         Guid advertisementId,
         CancellationToken cancellationToken = default);

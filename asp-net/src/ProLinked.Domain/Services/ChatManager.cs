@@ -78,7 +78,7 @@ public class ChatManager: IChatManager
         return newChat;
     }
 
-    public async Task<Chat> AddMessageAsync(
+    public async Task<Message> AddMessageAsync(
         Chat chat,
         Guid senderId,
         Guid? parentId = null,
@@ -113,10 +113,10 @@ public class ChatManager: IChatManager
         await _messageRepository.InsertAsync(newMessage, autoSave: true, cancellationToken);
         await _chatRepository.UpdateAsync(chat, autoSave:true, cancellationToken);
 
-        return chat;
+        return newMessage;
     }
 
-    public async Task<Chat> UpdateImageAsync(
+    public async Task UpdateImageAsync(
         Chat chat,
         Blob newImg,
         CancellationToken cancellationToken = default)
@@ -131,10 +131,9 @@ public class ChatManager: IChatManager
         cancellationToken.ThrowIfCancellationRequested();
         chat.SetImage(newImg);
         await _chatRepository.UpdateAsync(chat, autoSave: true, cancellationToken);
-        return chat;
     }
 
-    public async Task<Chat> UpdateTitleAsync(
+    public async Task UpdateTitleAsync(
         Chat chat,
         string newTitle,
         CancellationToken cancellationToken = default)
@@ -149,11 +148,9 @@ public class ChatManager: IChatManager
         cancellationToken.ThrowIfCancellationRequested();
         chat.SetTitle(newTitle);
         await _chatRepository.UpdateAsync(chat, autoSave: true, cancellationToken);
-
-        return chat;
     }
 
-    public async Task<Chat> AddMemberAsync(
+    public async Task<ChatMembership> AddMemberAsync(
         Chat chat,
         Guid memberId,
         CancellationToken cancellationToken = default)
@@ -170,7 +167,7 @@ public class ChatManager: IChatManager
         var newMember = new ChatMembership(chat.Id, member.Id);
         chat.AddMember(newMember);
         await _chatMembershipRepository.InsertAsync(newMember, autoSave: true, cancellationToken);
-        return chat;
+        return newMember;
     }
 
     public async Task<Chat?> RemoveMemberAsync(

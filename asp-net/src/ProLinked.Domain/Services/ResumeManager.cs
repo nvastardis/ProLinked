@@ -73,7 +73,7 @@ public class ResumeManager: IResumeManager
         return newSkill;
     }
 
-    public async Task<Resume> AddEducationStepAsync(
+    public async Task<EducationStep> AddEducationStepAsync(
         Resume resume,
         string school,
         string? degree = null,
@@ -101,10 +101,10 @@ public class ResumeManager: IResumeManager
         resume.AddEducationStep(newEducationStep);
 
         await _educationStepRepository.InsertAsync(newEducationStep, autoSave: true, cancellationToken);
-        return resume;
+        return newEducationStep;
     }
 
-    public async Task<Resume> UpdateEducationStepAsync(
+    public async Task UpdateEducationStepAsync(
         Resume resume,
         Guid educationStepId,
         string? school = null,
@@ -134,11 +134,9 @@ public class ResumeManager: IResumeManager
             startDate,
             endDate);
         await _educationStepRepository.UpdateAsync(step, autoSave: true, cancellationToken);
-
-        return resume;
     }
 
-    public async Task<Resume> AddExperienceStepAsync(
+    public async Task<ExperienceStep> AddExperienceStepAsync(
         Resume resume,
         string title,
         string company,
@@ -167,11 +165,10 @@ public class ResumeManager: IResumeManager
         cancellationToken.ThrowIfCancellationRequested();
         resume.AddExperienceStep(newExperience);
         await _experienceStepRepository.InsertAsync(newExperience, autoSave: true, cancellationToken);
-
-        return resume;
+        return newExperience;
     }
 
-    public async Task<Resume> UpdateExperienceStepAsync(
+    public async Task UpdateExperienceStepAsync(
         Resume resume,
         Guid experienceStepId,
         string? title = null,
@@ -204,10 +201,9 @@ public class ResumeManager: IResumeManager
             endDate);
         await _experienceStepRepository.UpdateAsync(step, autoSave: true, cancellationToken);
 
-        return resume;
     }
 
-    public async Task<Resume> MapSkillToResumeAsync(
+    public async Task<ResumeSkill> MapSkillToResumeAsync(
         Resume resume,
         Guid skillId,
         bool isFollowingSkill,
@@ -276,7 +272,7 @@ public class ResumeManager: IResumeManager
         return newExperienceSkill;
     }
 
-    public async Task<ResumeSkill> SetFollowingFlagOnSkillAsync(
+    public async Task SetFollowingFlagOnSkillAsync(
         ResumeSkill relatedSkill,
         bool isFollowing,
         CancellationToken cancellationToken = default)
@@ -284,8 +280,6 @@ public class ResumeManager: IResumeManager
         cancellationToken.ThrowIfCancellationRequested();
         relatedSkill.SetFollowingFlag(isFollowing);
         await _resumeSkillRepository.UpdateAsync(relatedSkill, autoSave: true, cancellationToken);
-
-        return relatedSkill;
     }
 
     public async Task<Resume> GetResumeAsync(
@@ -426,7 +420,7 @@ public class ResumeManager: IResumeManager
         }
     }
 
-    private async Task<Resume> AddSkillToResume(
+    private async Task<ResumeSkill> AddSkillToResume(
         Resume resume,
         Skill skill,
         bool isFollowingSkill,
@@ -440,6 +434,6 @@ public class ResumeManager: IResumeManager
         resume.AddResumeSkill(newResumeSkill);
         await _resumeSkillRepository.InsertAsync(newResumeSkill, autoSave: true, cancellationToken);
 
-        return resume;
+        return newResumeSkill;
     }
 }

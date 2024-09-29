@@ -13,7 +13,7 @@ public interface IPostManager
         List<Blob>? media = null,
         CancellationToken cancellationToken = default);
 
-    Task AddCommentAsync(
+    Task<Comment> AddCommentAsync(
         Post post,
         Guid userId,
         Guid? parentId = null,
@@ -33,7 +33,7 @@ public interface IPostManager
         Blob? media = null,
         CancellationToken cancellationToken = default);
 
-    Task AddPostReactionAsync(
+    Task<Reaction> AddPostReactionAsync(
         Post post,
         Guid userId,
         ReactionTypeEnum reactionType,
@@ -44,7 +44,7 @@ public interface IPostManager
         Reaction reaction,
         CancellationToken cancellationToken = default);
 
-    Task AddCommentReactionAsync(
+    Task<Reaction> AddCommentReactionAsync(
         Comment comment,
         Guid userId,
         ReactionTypeEnum reactionType,

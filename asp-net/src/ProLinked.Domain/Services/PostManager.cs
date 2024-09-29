@@ -58,7 +58,7 @@ public class PostManager: IPostManager
         return post;
     }
 
-    public async Task AddCommentAsync(
+    public async Task<Comment> AddCommentAsync(
         Post post,
         Guid userId,
         Guid? parentId = null,
@@ -89,6 +89,7 @@ public class PostManager: IPostManager
         newComment.SetContent(text, media);
         post.AddComment(newComment);
         await _commentRepository.InsertAsync(newComment, autoSave: true, cancellationToken);
+        return newComment;
     }
 
     public async Task UpdatePostAsync(
@@ -118,7 +119,7 @@ public class PostManager: IPostManager
         await _commentRepository.UpdateAsync(comment, autoSave: true, cancellationToken);
     }
 
-    public async Task AddPostReactionAsync(
+    public async Task<Reaction> AddPostReactionAsync(
         Post post,
         Guid userId,
         ReactionTypeEnum reactionType,
@@ -139,6 +140,7 @@ public class PostManager: IPostManager
 
         post.AddReaction(newReaction);
         await _reactionRepository.InsertAsync(newReaction, autoSave: true, cancellationToken);
+        return newReaction;
     }
 
     public async Task RemovePostReactionAsync(
@@ -159,7 +161,7 @@ public class PostManager: IPostManager
     }
 
 
-    public async Task AddCommentReactionAsync(
+    public async Task<Reaction> AddCommentReactionAsync(
         Comment comment,
         Guid userId,
         ReactionTypeEnum reactionType,
@@ -180,6 +182,7 @@ public class PostManager: IPostManager
 
         comment.AddReaction(newReaction);
         await _reactionRepository.InsertAsync(newReaction, autoSave: true, cancellationToken);
+        return newReaction;
     }
 
     public async Task RemoveCommentReactionAsync(

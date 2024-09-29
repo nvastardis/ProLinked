@@ -11,7 +11,7 @@ public interface IChatManager
         Blob? img = null,
         CancellationToken cancellationToken = default);
 
-    Task<Chat> AddMessageAsync(
+    Task<Message> AddMessageAsync(
         Chat chat,
         Guid senderId,
         Guid? parentId = null,
@@ -19,17 +19,17 @@ public interface IChatManager
         Blob? media = null,
         CancellationToken cancellationToken = default);
 
-    Task<Chat> UpdateImageAsync(
+    Task UpdateImageAsync(
         Chat chat,
         Blob newImg,
         CancellationToken cancellationToken = default);
 
-    Task<Chat> UpdateTitleAsync(
+    Task UpdateTitleAsync(
         Chat chat,
         string newTitle,
         CancellationToken cancellationToken = default);
 
-    Task<Chat> AddMemberAsync(
+    Task<ChatMembership> AddMemberAsync(
         Chat chat,
         Guid memberId,
         CancellationToken cancellationToken = default);
