@@ -23,6 +23,12 @@ public interface IResumeService
         Guid userId,
         CancellationToken cancellationToken = default);
 
+    Task UpdateIsFollowingStatusAsync(
+        SkillToResumeDto input,
+        Guid userId,
+        bool isFollowing,
+        CancellationToken cancellationToken = default);
+
     Task DeleteResumeSkillAsync(
         SkillToResumeDto input,
         Guid userId,

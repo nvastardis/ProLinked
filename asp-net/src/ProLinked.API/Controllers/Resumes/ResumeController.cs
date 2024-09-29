@@ -84,6 +84,29 @@ public class ResumeController: ProLinkedController
         );
     }
 
+    [HttpPost]
+    [Route("{id}/skill/{skillId}/set-flag")]
+    [Authorize(Roles=RoleConsts.UserRoleName)]
+    public async Task<Results<NoContent, BadRequest<string>, ProblemHttpResult>> SetFlagAsync(
+        Guid id,
+        Guid skillId,
+        bool isFollowing,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = GetCurrentUserId();
+        return await NoContentWithStandardExceptionHandling(
+            _resumeService.UpdateIsFollowingStatusAsync(
+                new SkillToResumeDto
+                {
+                    ResumeId = id,
+                    SkillId = skillId
+                },
+                userId,
+                isFollowing,
+                cancellationToken)
+        );
+    }
+
     [HttpDelete]
     [Route("{id}/skill/{skillId}/delete")]
     [Authorize(Roles=RoleConsts.UserRoleName)]

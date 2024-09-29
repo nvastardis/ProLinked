@@ -74,6 +74,24 @@ public class ResumeService: ProLinkedServiceBase, IResumeService
             cancellationToken);
     }
 
+    public async Task UpdateIsFollowingStatusAsync(
+        SkillToResumeDto input,
+        Guid userId,
+        bool isFollowing,
+        CancellationToken cancellationToken = default)
+    {
+        var item = await ResumeManager.GetResumeSkillAsync(
+            input.ResumeId,
+            input.SkillId,
+            userId,
+            cancellationToken);
+
+        await ResumeManager.SetFollowingFlagOnSkillAsync(
+            item,
+            isFollowing,
+            cancellationToken);
+    }
+
     public async Task DeleteResumeSkillAsync(
         SkillToResumeDto input,
         Guid userId,

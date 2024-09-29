@@ -4,8 +4,8 @@ using ProLinked.Infrastructure;
 
 //TODO : Fix dockerized api -> https
 //TODO : recommendation system!!!
+//TODO : Notifications!!!
 //TODO : manual
-//TODO : Roles + Authorization
 
 namespace ProLinked.API;
 
