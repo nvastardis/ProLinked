@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Jobs;
 using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
@@ -49,6 +50,26 @@ public class JobController: ProLinkedController
                     AdvertisementStatus = advertisementStatus ?? AdvertisementStatus.UNDEFINED,
                     IncludeDetails = false,
                     Sorting = sorting,
+                    SkipCount = skipCount ?? ProLinkedConsts.SkipCountDefaultValue,
+                    MaxResultCount = maxResultCount ?? ProLinkedConsts.MaxResultCountDefaultValue,
+                },
+                cancellationToken)
+        );
+    }
+
+    [HttpGet]
+    [Route("advertisement/recommended")]
+    public async Task<Results<Ok<PagedAndSortedResultList<AdvertisementDto>>, BadRequest<string>, ProblemHttpResult>>
+        GetRecommendedAsync(
+            [FromQuery] int? skipCount,
+            [FromQuery] int? maxResultCount,
+            CancellationToken cancellationToken = default)
+    {
+        return await OkWithStandardExceptionHandling(
+            _jobService.GetRecommendedJobListAsync(
+                new UserFilterDto()
+                {
+                    UserId = GetCurrentUserId(),
                     SkipCount = skipCount ?? ProLinkedConsts.SkipCountDefaultValue,
                     MaxResultCount = maxResultCount ?? ProLinkedConsts.MaxResultCountDefaultValue,
                 },

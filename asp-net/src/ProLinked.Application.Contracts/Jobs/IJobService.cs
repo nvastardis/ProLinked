@@ -1,4 +1,5 @@
-﻿using ProLinked.Application.Contracts.Jobs.DTOs;
+﻿using ProLinked.Application.Contracts.Filtering;
+using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
 
 namespace ProLinked.Application.Contracts.Jobs;
@@ -8,6 +9,12 @@ public interface IJobService
     Task<PagedAndSortedResultList<AdvertisementDto>> GetListOfJobAdvertisementsAsync(
         JobListFilter input,
         CancellationToken cancellationToken = default);
+
+
+    Task<PagedAndSortedResultList<AdvertisementDto>> GetRecommendedJobListAsync(
+        UserFilterDto filter,
+        CancellationToken cancellationToken = default);
+
 
     Task<PagedAndSortedResultList<ApplicationDto>> GetListOfApplicationsAsync(
         Guid advertisementId,

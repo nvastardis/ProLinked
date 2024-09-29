@@ -15,4 +15,10 @@ public interface IAdvertisementRepository: IRepository<Advertisement, Guid>
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default);
+
+    Task<List<Advertisement>> GetRecommendedAsync(
+        Guid userId,
+        int skipCount = ProLinkedConsts.SkipCountDefaultValue,
+        int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
+        CancellationToken cancellationToken = default);
 }

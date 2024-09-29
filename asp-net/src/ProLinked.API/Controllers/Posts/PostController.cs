@@ -57,6 +57,26 @@ public class PostController: ProLinkedController
         );
     }
 
+    /* Posts */
+    [HttpGet]
+    [Route("recommended")]
+    public async Task<Results<Ok<PagedAndSortedResultList<PostLookUpDto>>, BadRequest<string>, ProblemHttpResult>> GetPostListAsync(
+        [FromQuery] int? skipCount,
+        [FromQuery] int? maxResultCount,
+        CancellationToken cancellationToken = default)
+    {
+        return await OkWithStandardExceptionHandling(
+            _postService.GetRecommendedPostListAsync(
+                new UserFilterDto()
+                {
+                    UserId = GetCurrentUserId(),
+                    SkipCount = skipCount ?? ProLinkedConsts.SkipCountDefaultValue,
+                    MaxResultCount = maxResultCount ?? ProLinkedConsts.MaxResultCountDefaultValue
+                },
+                cancellationToken)
+        );
+    }
+
     [HttpGet]
     [Route("{id}")]
     public async Task<Results<Ok<PostWithDetailsDto>, BadRequest<string>, ProblemHttpResult>> GetWithDetailsAsync(

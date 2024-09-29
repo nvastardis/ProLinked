@@ -7,6 +7,7 @@ using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Entities.Jobs;
 using ProLinked.Domain.Entities.Notifications;
 using ProLinked.Domain.Entities.Posts;
+using ProLinked.Domain.Entities.Recommendations;
 using ProLinked.Domain.Entities.Resumes;
 using ProLinked.Domain.Shared.Chats;
 using ProLinked.Domain.Shared.Jobs;
@@ -377,6 +378,41 @@ public static class ProLinkedDbContextModelBuilderExtensions
                 .HasForeignKey(x => x.TargetUserId);
 
             b.HasIndex(x => x.Id);
+        });
+    }
+
+    public static void ConfigureRecommendations(this ModelBuilder builder)
+    {
+        builder.Entity<PostRecommendation>(b =>
+        {
+            b.ToTable(ProLinkedConsts.DbTablePrefix + "PostRecommendations", ProLinkedConsts.DbSchema);
+            b.HasKey(x => new {x.UserId,x.PostId});
+            b.HasIndex(x => new {x.UserId,x.PostId});
+
+            b.HasOne(e => e.Post)
+                .WithMany()
+                .HasForeignKey(x => x.PostId);
+
+            b.HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        builder.Entity<JobRecommendation>(b =>
+        {
+            b.ToTable(ProLinkedConsts.DbTablePrefix + "JobRecommendations", ProLinkedConsts.DbSchema);
+            b.HasKey(x => new {x.UserId,x.AdvertisementId});
+            b.HasIndex(x => new {x.UserId,x.AdvertisementId});
+
+            b.HasOne(e => e.Advertisement)
+                .WithMany()
+                .HasForeignKey(x => x.AdvertisementId);
+
+            b.HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         });
     }
 }

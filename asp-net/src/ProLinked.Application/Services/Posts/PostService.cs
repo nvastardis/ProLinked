@@ -51,6 +51,21 @@ public class PostService: ProLinkedServiceBase, IPostService
         return new PagedAndSortedResultList<PostLookUpDto>(itemCount, items);
     }
 
+    public async Task<PagedAndSortedResultList<PostLookUpDto>> GetRecommendedPostListAsync(
+        UserFilterDto filter,
+        CancellationToken cancellationToken = default)
+    {
+        var queryResult = await PostRepository.GetRecommendedAsync(
+            filter.UserId,
+            filter.SkipCount,
+            filter.MaxResultCount,
+            cancellationToken);
+
+        var items = ObjectMapper.Map<List<PostLookUp>, List<PostLookUpDto>>(queryResult);
+        var itemCount = items.Count;
+        return new PagedAndSortedResultList<PostLookUpDto>(itemCount, items);
+    }
+
     public async Task<PostWithDetailsDto> GetWithDetailsAsync(
         Guid id,
         CancellationToken cancellationToken = default)

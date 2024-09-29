@@ -12,6 +12,10 @@ public interface IPostService
         PostListFilterDto filter,
         CancellationToken cancellationToken = default);
 
+    Task<PagedAndSortedResultList<PostLookUpDto>> GetRecommendedPostListAsync(
+        UserFilterDto filter,
+        CancellationToken cancellationToken = default);
+
     Task<PostWithDetailsDto> GetWithDetailsAsync(
         Guid id,
         CancellationToken cancellationToken = default);

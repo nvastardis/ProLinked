@@ -4,9 +4,11 @@ using ProLinked.Domain.Contracts.Posts;
 using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Entities.Posts;
+using ProLinked.Domain.Entities.Recommendations;
 using ProLinked.Domain.Shared.Exceptions;
 using ProLinked.Domain.Shared.Posts;
 using ProLinked.Domain.Shared.Utils;
+using System.Linq.Dynamic.Core;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Posts;
 
@@ -94,32 +96,38 @@ public class PostRepository : ProLinkedBaseRepository<Post, Guid>, IPostReposito
         return postResult;
     }
 
-    public async Task<List<Post>> GetListAsync(
-        Guid? userId,
-        DateTime? fromDate = null,
-        DateTime? toDate = null,
-        PostVisibilityEnum visibilityEnum = PostVisibilityEnum.UNDEFINED,
-        bool includeDetails = false,
-        string? sorting = null,
+    public async Task<List<PostLookUp>> GetRecommendedAsync(
+        Guid userId,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default)
     {
-        var filteredQuery = await FilterQueryableAsync(
-            userId,
-            fromDate,
-            toDate,
-            visibilityEnum,
-            includeDetails,
-            cancellationToken);
+        var recommendationQueryable = (await GetDbContextAsync(cancellationToken)).Set<PostRecommendation>().AsQueryable();
+        var userQueryable = (await GetDbContextAsync(cancellationToken)).Set<AppUser>().AsQueryable();
+        var queryable = await WithDetailsAsync(cancellationToken);
 
-        filteredQuery = ApplyPagination(
-            filteredQuery,
-            sorting,
-            skipCount,
-            maxResultCount);
+        var result =
+            from recommendation in recommendationQueryable
+            join post in queryable on recommendation.PostId equals post.Id
+            join user in userQueryable on recommendation.UserId equals user.Id
+            where recommendation.UserId == userId
+            select new PostLookUp
+            {
+                Id = post.Id,
+                CreatorId = post.CreatorId,
+                CreatorFullName = $"{user.Name} {user.Surname}",
+                CreatorProfilePhotoId = user.PhotographId,
+                CreationTime = post.CreationTime,
+                ReactionCount = post.Reactions.Count,
+                CommentCount = post.Comments.Count,
+                Text = post.Text,
+                MediaIds = post.Media == null ? null : post.Media!.Select(e => e.BlobId).ToList(),
+                LastModificationTime = post.LastModificationDate,
+            };
 
-        return await filteredQuery.ToListAsync(cancellationToken);
+        result = result.PageBy(skipCount, maxResultCount);
+
+        return await result.ToListAsync(cancellationToken);
     }
 
     public async Task<List<PostLookUp>> GetLookUpListAsync(

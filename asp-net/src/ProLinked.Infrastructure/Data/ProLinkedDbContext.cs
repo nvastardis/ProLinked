@@ -8,6 +8,7 @@ using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Entities.Jobs;
 using ProLinked.Domain.Entities.Notifications;
 using ProLinked.Domain.Entities.Posts;
+using ProLinked.Domain.Entities.Recommendations;
 using ProLinked.Domain.Entities.Resumes;
 
 namespace ProLinked.Infrastructure.Data;
@@ -33,6 +34,8 @@ public class ProLinkedDbContext: IdentityDbContext<AppUser, IdentityRole<Guid>, 
     public DbSet<Advertisement> JobAdvertisements { get; set; }
     public DbSet<Application> JobApplications { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<PostRecommendation> PostRecommendations { get; set; }
+    public DbSet<JobRecommendation> JobRecommendations { get; set; }
 
     public ProLinkedDbContext(
         DbContextOptions<ProLinkedDbContext> dbContextOptions)
@@ -51,5 +54,6 @@ public class ProLinkedDbContext: IdentityDbContext<AppUser, IdentityRole<Guid>, 
         builder.ConfigureResumeEntities();
         builder.ConfigureConnectionEntities();
         builder.ConfigureJobEntities();
+        builder.ConfigureRecommendations();
     }
 }

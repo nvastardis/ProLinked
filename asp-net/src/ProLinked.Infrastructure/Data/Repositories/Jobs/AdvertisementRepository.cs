@@ -2,10 +2,9 @@
 using ProLinked.Domain;
 using ProLinked.Domain.Contracts.Jobs;
 using ProLinked.Domain.Entities.Jobs;
-using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Entities.Recommendations;
 using ProLinked.Domain.Shared.Jobs;
 using ProLinked.Domain.Shared.Utils;
-using ProLinked.Infrastructure.Data;
 
 namespace ProLinked.Infrastructure.Data.Repositories.Jobs;
 
@@ -32,6 +31,26 @@ public class AdvertisementRepository: ProLinkedBaseRepository<Advertisement, Gui
         var filteredQueryable = await FilterQueryableAsync(userId, from, to, status, includeDetails, cancellationToken);
         filteredQueryable = ApplyPagination(filteredQueryable, sorting, skipCount, maxResultCount);
         return await filteredQueryable.ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<Advertisement>> GetRecommendedAsync(
+        Guid userId,
+        int skipCount = ProLinkedConsts.SkipCountDefaultValue,
+        int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
+        CancellationToken cancellationToken = default)
+    {
+        var recommendationQueryable = (await GetDbContextAsync(cancellationToken)).Set<JobRecommendation>().AsQueryable();
+        var queryable = await WithDetailsAsync(cancellationToken);
+
+        var result =
+            from recommendation in recommendationQueryable
+            join job in queryable on recommendation.AdvertisementId equals job.Id
+            where recommendation.UserId == userId
+            select job;
+
+        result = result.PageBy(skipCount, maxResultCount);
+
+        return await result.ToListAsync(cancellationToken);
     }
 
     public override async Task<IQueryable<Advertisement>> WithDetailsAsync(CancellationToken cancellationToken = default)

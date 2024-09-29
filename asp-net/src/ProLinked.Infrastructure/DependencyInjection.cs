@@ -21,12 +21,24 @@ using ProLinked.Infrastructure.Data.Repositories.Jobs;
 using ProLinked.Infrastructure.Data.Repositories.Notifications;
 using ProLinked.Infrastructure.Data.Repositories.Posts;
 using ProLinked.Infrastructure.Data.Repositories.Resumes;
+using ProLinked.Infrastructure.Recommendation;
+using ProLinked.Infrastructure.Timing;
 using PostRepository = ProLinked.Infrastructure.Data.Repositories.Posts.PostRepository;
 
 namespace ProLinked.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static void AddBackgroundServices(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddTransient<IPeriodicTimer, DailyPeriodicTimer>();
+        serviceCollection.Configure<HostOptions>(options =>
+        {
+            options.ServicesStartConcurrently = true;
+        });
+        serviceCollection.AddHostedService<RecommendationService>();
+    }
+
     public static void AddRepositories(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddTransient<IChatRepository, ChatRepository>();

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
+using ProLinked.Application.Contracts.Filtering;
 using ProLinked.Application.Contracts.Jobs;
 using ProLinked.Application.Contracts.Jobs.DTOs;
 using ProLinked.Application.DTOs;
@@ -40,6 +40,22 @@ public class JobService: ProLinkedServiceBase, IJobService
             input.Sorting,
             input.SkipCount,
             input.MaxResultCount,
+            cancellationToken);
+
+        var items = ObjectMapper.Map<List<Advertisement>, List<AdvertisementDto>>(queryResult);
+        var itemCount = items.Count;
+
+        return new PagedAndSortedResultList<AdvertisementDto>(itemCount,items.AsReadOnly());
+    }
+
+    public async Task<PagedAndSortedResultList<AdvertisementDto>> GetRecommendedJobListAsync(
+        UserFilterDto filter,
+        CancellationToken cancellationToken = default)
+    {
+        var queryResult = await AdvertisementRepository.GetRecommendedAsync(
+            filter.UserId,
+            filter.SkipCount,
+            filter.MaxResultCount,
             cancellationToken);
 
         var items = ObjectMapper.Map<List<Advertisement>, List<AdvertisementDto>>(queryResult);

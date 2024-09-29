@@ -1,5 +1,6 @@
 ﻿using ProLinked.Domain.DTOs.Posts;
 using ProLinked.Domain.Entities.Posts;
+using ProLinked.Domain.Entities.Recommendations;
 using ProLinked.Domain.Shared.Posts;
 
 namespace ProLinked.Domain.Contracts.Posts;
@@ -12,13 +13,8 @@ public interface IPostRepository: IRepository<Post, Guid>
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default);
 
-    Task<List<Post>> GetListAsync(
-        Guid? userId,
-        DateTime? fromDate = null,
-        DateTime? toDate = null,
-        PostVisibilityEnum visibilityEnum = PostVisibilityEnum.UNDEFINED,
-        bool includeDetails = false,
-        string? sorting = null,
+    Task<List<PostLookUp>> GetRecommendedAsync(
+        Guid userId,
         int skipCount = ProLinkedConsts.SkipCountDefaultValue,
         int maxResultCount = ProLinkedConsts.MaxResultCountDefaultValue,
         CancellationToken cancellationToken = default);
