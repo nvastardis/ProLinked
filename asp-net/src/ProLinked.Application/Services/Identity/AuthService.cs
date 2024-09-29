@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using ProLinked.Application.Contracts.Identity;
 using ProLinked.Application.Contracts.Identity.DTOs;
-using ProLinked.Domain.Contracts.Blobs;
 using ProLinked.Domain.Entities.Identity;
 using ProLinked.Domain.Extensions;
+using ProLinked.Domain.Shared.Identity;
 using ProLinked.Domain.Shared.Utils;
 using System.Security.Claims;
 using LoginRequest = ProLinked.Application.Contracts.Identity.DTOs.LoginRequest;
@@ -31,8 +31,7 @@ public class AuthService: IAuthService
         SignInManager<AppUser> signInManager,
         IUserStore<AppUser> userStore,
         IJwtTokenService jwtTokenService,
-        IStringLocalizer l,
-        IBlobManager blobManager)
+        IStringLocalizer l)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -85,11 +84,16 @@ public class AuthService: IAuthService
             await phoneNumberStore.SetPhoneNumberAsync(user, phoneNumber, cancellationToken);
         }
 
-        var result = await _userManager.CreateAsync(user, input.Password);
-
-        if (!result.Succeeded)
+        var createResult = await _userManager.CreateAsync(user, input.Password);
+        if (!createResult.Succeeded)
         {
-            return ResponseGenerator.CreateValidationProblem(result);
+            return ResponseGenerator.CreateValidationProblem(createResult);
+        }
+
+        var roleAssignmentResult = await _userManager.AddToRoleAsync(user, RoleConsts.UserRoleName);
+        if (!roleAssignmentResult.Succeeded)
+        {
+            return ResponseGenerator.CreateValidationProblem(createResult);
         }
 
         return TypedResults.Ok(

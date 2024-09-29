@@ -33,6 +33,19 @@ public class Program
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         ConfigureSwagger(builder.Services);
+        // Add CORS policy
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin",
+                corsPolicyBuilder =>
+                {
+                    corsPolicyBuilder.
+                        WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+        });
 
         var app = builder.Build();
 
@@ -48,8 +61,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        app.UseCors("AllowSpecificOrigin");
         app.MapControllers();
-
         app.UseAuthentication();
         app.UseAuthorization();
 
