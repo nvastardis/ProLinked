@@ -3,7 +3,6 @@ using ProLinked.Application;
 using ProLinked.Infrastructure;
 
 //TODO : Fix dockerized api -> https
-//TODO : recommendation system!!!
 //TODO : Notifications!!!
 //TODO : manual
 

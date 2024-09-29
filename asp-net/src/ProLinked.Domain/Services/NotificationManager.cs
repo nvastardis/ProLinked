@@ -186,6 +186,7 @@ public class NotificationManager: INotificationManager
             targetUserId,
             sourceId,
             notificationType);
+        await NotificationRepository.InsertAsync(newNotification, autoSave: true, cancellationToken);
 
         return newNotification;
     }
