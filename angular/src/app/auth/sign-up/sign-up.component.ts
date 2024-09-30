@@ -1,17 +1,23 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormGroup, Validators, ReactiveFormsModule, NonNullableFormBuilder, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../openapi/api/auth.service';
 import { RegisterRequest } from '../../../openapi/model/registerRequest';
 import { CommonModule } from '@angular/common';
+import { ErrorAlertComponent } from "../../components/error-alert/error-alert.component";
+import { SuccessAlertComponent } from "../../components/success-alert/success-alert.component";
+import { InputComponent } from "../../components/input/input.component";
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
-  ],
+    ReactiveFormsModule,
+    ErrorAlertComponent,
+    SuccessAlertComponent,
+    InputComponent
+],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
 })
@@ -77,8 +83,16 @@ export class SignUpComponent{
 
   onSubmit() {
     let signUpForm = this.signUpForm;
+    this.successMessage = null;
+    this.errorMessage = null;
+    this.errors = [];
+
     this.signUpForm.markAllAsTouched();
     if (signUpForm.valid) {
+      let errorAlert = document.getElementsByTagName('app-error-alert');
+      if(errorAlert.length > 0){
+        errorAlert[0].remove();
+      }
       const body: RegisterRequest = {
         name: signUpForm.value.name,
         surname: signUpForm.value.surname,
@@ -95,77 +109,141 @@ export class SignUpComponent{
       this.authService.register(body).subscribe({
           next: response => {
             this.successMessage = 'Registration successful! Redirecting to login...';
-            this.errorMessage = null; 
             setTimeout(() => {
               this.router.navigate(['/sign-in']);
-            }, 3000);
+            }, 1000);
           },
           error: error => {
             this.errors = Object.keys(error.error.errors).map(function (key) { return error.error.errors[key]+'\r\n'; });
             this.errorMessage = 'Registration failed';
-            this.successMessage = null;
           }
       });
     }
   }
 
-  get nameRequiredError(){
-    return this.signUpForm.hasError('required', 'name') && this.signUpForm.controls['name'].touched;
+  get nameValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'name') && this.signUpForm.controls['name'].touched){
+      errorsToMessages.push({key:'required',value:'Name is required'});
+    }
+    return errorsToMessages;
   }
 
-  get surnameRequiredError(){
-    return this.signUpForm.hasError('required', 'surname') && this.signUpForm.controls['surname'].touched;
+  get surnameValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'surname') && this.signUpForm.controls['surname'].touched){
+      errorsToMessages.push({key:'required',value:'Surname is required'});
+    }
+    return errorsToMessages;
   }
 
-  get userNameRequiredError(){
-    return this.signUpForm.hasError('required', 'userName') && this.signUpForm.controls['userName'].touched;
+  get userNameValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'userName') && this.signUpForm.controls['userName'].touched){
+      errorsToMessages.push({key:'required',value:'Username is required'});
+    }
+    return errorsToMessages;
   }
 
-  get emailRequiredError(){
-    return this.signUpForm.hasError('required', 'email') && this.signUpForm.controls['email'].touched;
+  get emailValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'email') && this.signUpForm.controls['email'].touched){
+      errorsToMessages.push({key:'required',value:'Email is required'});
+    }
+    if(this.signUpForm.hasError('email', 'email') && this.signUpForm.controls['email'].touched){
+      errorsToMessages.push({key:'email',value:'Email is not valid'});
+    }
+    return errorsToMessages;
   }
 
-  get emailFormatError(){
-    return this.signUpForm.hasError('email', 'email') && this.signUpForm.controls['email'].touched;
+  get passwordValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'password') && this.signUpForm.controls['password'].touched){
+      errorsToMessages.push({key:'required',value:'Password is required'});
+    }
+    if(this.signUpForm.hasError('passwordStrength', 'password') && this.signUpForm.controls['password'].touched){
+      if(!this.signUpForm.controls['password'].value?.match('^(?=.*[A-Z])'))
+      {
+        errorsToMessages.push({key:'passwordStrength-uppercase',value:'Password requires at least one Uppercase Character'});
+      }
+      if(!this.signUpForm.controls['password'].value?.match('^(?=.*[a-z])'))
+      {
+        errorsToMessages.push({key:'passwordStrength-lowercase',value:'Password requires at least one Lowercase Character'});
+      }
+      if(!this.signUpForm.controls['password'].value?.match('^(?=.*[0-9])'))
+      {
+        errorsToMessages.push({key:'passwordStrength-number',value:'Password requires at least one Number'});
+      }
+      if(!this.signUpForm.controls['password'].value?.match('^(?=.*[!@#$%^&*])'))
+      {
+        errorsToMessages.push({key:'passwordStrength-special',value:'Password requires at least 1 special character from: \'!\', \'@\', \'#\', \'$\',\'%\', \'&\' CharacterData.'});
+      }
+      if(!this.signUpForm.controls['password'].value?.match('.{6,}'))
+      {
+        errorsToMessages.push({key:'passwordStrength-length',value:'Passwrod must be minimum 6 CharactersCharacterData.'});
+      }
+    }
+    return errorsToMessages;
   }
 
-  get passwordRequiredError(){
-    return this.signUpForm.hasError('required', 'password') && this.signUpForm.controls['password'].touched;
+  get confirmPasswordValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'confirmPassword') && this.signUpForm.controls['confirmPassword'].touched){
+      errorsToMessages.push({key:'required',value:'Confirm Password is required'});
+    }
+    if(this.signUpForm.hasError('passwordMismatch') && !this.signUpForm.hasError('required', 'confirmPassword') && this.signUpForm.controls['confirmPassword'].touched){
+      errorsToMessages.push({key:'passwordMismatch',value:'Passwords do not match'});
+    }
+    return errorsToMessages;
   }
 
-  get passwordStrengthError(){
-    return this.signUpForm.hasError('passwordStrength', 'password') && this.signUpForm.controls['password'].touched;
+  get dateOfBirthValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('required', 'dateOfBirth') && this.signUpForm.controls['dateOfBirth'].touched){
+      errorsToMessages.push({key:'required',value:'Date of Birth is required'});
+    }
+    return errorsToMessages;
   }
 
-  get confirmPasswordRequiredError(){
-    return this.signUpForm.hasError('required', 'confirmPassword') && this.signUpForm.controls['confirmPassword'].touched;
+  get phoneNumberValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('pattern', 'phoneNumber') && this.signUpForm.controls['phoneNumber'].touched){
+      errorsToMessages.push({key:'pattern',value:'Phone Number is not valid'});
+    }
+    return errorsToMessages;
   }
 
-  get passwordMismatchError(){
-    return this.signUpForm.hasError('passwordMismatch') && !this.signUpForm.hasError('required', 'confirmPassword') && this.signUpForm.controls['confirmPassword'].touched;
+ 
+  get summaryValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('maxlength', 'summary') && this.signUpForm.controls['summary'].touched){
+      errorsToMessages.push({key:'maxlength',value:'Summary is too long'});
+    }
+    return errorsToMessages;
   }
 
-  get dateOfBirthRequiredError(){
-    return this.signUpForm.hasError('required', 'dateOfBirth') && this.signUpForm.controls['dateOfBirth'].touched;
+  
+  get jobTitleValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('maxlength', 'jobTitle') && this.signUpForm.controls['jobTitle'].touched){
+      errorsToMessages.push({key:'maxlength',value:'Job Title is too long'});
+    }
+    return errorsToMessages;
   }
 
-  get phoneNumberPatternError(){
-    return this.signUpForm.hasError('pattern', 'phoneNumber') && this.signUpForm.controls['phoneNumber'].touched;
+  get companyValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('maxlength', 'company') && this.signUpForm.controls['company'].touched){
+      errorsToMessages.push({key:'maxlength',value:'Company is too long'});
+    }
+    return errorsToMessages;
   }
 
-  get summaryMaxLengthError(){
-    return this.signUpForm.hasError('maxlength', 'summary') && this.signUpForm.controls['summary'].touched;
-  }
-
-  get jobTitleMaxLengthError(){
-    return this.signUpForm.hasError('maxlength', 'jobTitle') && this.signUpForm.controls['jobTitle'].touched;
-  }
-
-  get companyMaxLengthError(){
-    return this.signUpForm.hasError('maxlength', 'company') && this.signUpForm.controls['company'].touched;
-  }
-
-  get cityMaxLengthError(){
-    return this.signUpForm.hasError('maxlength', 'city') && this.signUpForm.controls['city'].touched;
+  get cityValidationErrors(){
+    let errorsToMessages: {key: string, value: string}[] = [];
+    if(this.signUpForm.hasError('maxlength', 'city') && this.signUpForm.controls['city'].touched){
+      errorsToMessages.push({key:'maxlength',value:'City is too long'});
+    }
+    return errorsToMessages;
   }
 }
