@@ -1,7 +1,7 @@
 <div class="flex justify-center items-center">
     <div class="bg-white m-8 p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-        <form (ngSubmit)="onSubmit(signUpForm)" #signUpForm="ngForm">
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
             @if(successMessage){
                 <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                     {{ successMessage }}
@@ -13,48 +13,97 @@
                 </div>
             }
             <div class="mb-4">
-            <label for="name" class="block text-gray-700">Name</label>
-            <input type="text" id="name" name="name" ngModel class="w-full px-3 py-2 border rounded" required>
+                <label for="name" class="block text-gray-700">Name</label>
+                <input type="text" id="name" name="name" formControlName="name" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': nameRequiredError}">
+                @if(nameRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+              </div>
+              <div class="mb-4">
+                <label for="surname" class="block text-gray-700">Surname</label>
+                <input type="text" id="surname" name="surname" formControlName="surname" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': surnameRequiredError}">
+                @if(surnameRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+              </div>
+              <div class="mb-4">
+                <label for="userName" class="block text-gray-700">Username</label>
+                <input type="text" id="userName" name="userName" formControlName="userName" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': userNameRequiredError}">
+                @if(userNameRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+            </div>
+              <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email</label>
+                <input type="email" id="email" name="email" formControlName="email" class="w-full px-3 py-2 border rounded" email [ngClass]="{'border-red-700': emailRequiredError || emailFormatError}">
+                @if(emailRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+                @if(emailFormatError){
+                    <span class="text-sm text-red-700">Invalid email</span>
+                }
+              </div>
+              <div class="mb-4">
+                <label for="password" class="block text-gray-700">Password</label>
+                <input type="password" id="password" name="password" formControlName="password" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': passwordRequiredError || passwordMinLengthError}">
+                @if(passwordRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+                @if(passwordMinLengthError){
+                    <span class="text-sm text-red-700">Passwrod must be minimum 6 Characters</span>
+                }
+              </div>
+              <div class="mb-4">
+                <label for="confirmPassword" class="block text-gray-700">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': confirmPasswordRequiredError || passwordMismatchError}">
+                @if(confirmPasswordRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
+                @if(passwordMismatchError){
+                    <span class="text-sm text-red-700">Passwords must match</span>
+                }
+              </div>
+            <div class="mb-4">
+                <label for="dateOfBirth" class="block text-gray-700">Date of Birth</label>
+                <input type="date" min="2000-01-01" max="2023-12-31" id="dateOfBirth" name="dateOfBirth" formControlName="dateOfBirth" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': dateOfBirthRequiredError}">
+                @if(dateOfBirthRequiredError){
+                    <span class="text-sm text-red-700">Field is required</span>
+                }
             </div>
             <div class="mb-4">
-            <label for="surname" class="block text-gray-700">Surname</label>
-            <input type="text" id="surname" name="surname" ngModel class="w-full px-3 py-2 border rounded" required>
+                <label for="phoneNumber" class="block text-gray-700">Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" formControlName="phoneNumber" class="w-full px-3 py-2 border rounded" [ngClass]="{'border-red-700': phoneNumberPatternError}">
+                @if(phoneNumberPatternError){
+                    <span class="text-sm text-red-700">Invalid  phone number</span>
+                }
             </div>
             <div class="mb-4">
-            <label for="userName" class="block text-gray-700">Username</label>
-            <input type="text" id="userName" name="userName" ngModel class="w-full px-3 py-2 border rounded" required>
+                <label for="summary" class="block text-gray-700">Summary</label>
+                <textarea id="summary" name="summary" formControlName="summary" class="w-full px-3 py-2 border rounded" maxlength="150" [ngClass]="{'border-red-700': summaryMaxLengthError}"></textarea>
+                @if(summaryMaxLengthError){
+                    <span class="text-sm text-red-700">Max characters: 150</span>
+                }
             </div>
             <div class="mb-4">
-            <label for="email" class="block text-gray-700">Email</label>
-            <input type="email" id="email" name="email" ngModel class="w-full px-3 py-2 border rounded" required>
+                <label for="jobTitle" class="block text-gray-700">Job Title</label>
+                <input type="text" id="jobTitle" name="jobTitle" formControlName="jobTitle" class="w-full px-3 py-2 border rounded" maxlength="80" [ngClass]="{'border-red-700': jobTitleMaxLengthError}">
+                @if(jobTitleMaxLengthError){
+                    <span class="text-sm text-red-700">Max character:80</span>
+                }
             </div>
             <div class="mb-4">
-            <label for="password" class="block text-gray-700">Password</label>
-            <input type="password" id="password" name="password" ngModel class="w-full px-3 py-2 border rounded" required>
+                <label for="company" class="block text-gray-700">Company</label>
+                <input type="text" id="company" name="company" formControlName="company" class="w-full px-3 py-2 border rounded" maxlength="80" [ngClass]="{'border-red-700': companyMaxLengthError}">
+                @if(companyMaxLengthError){
+                    <span class="text-sm text-red-700">Max character:80</span>
+                }
             </div>
             <div class="mb-4">
-            <label for="dateOfBirth" class="block text-gray-700">Date of Birth</label>
-            <input type="date" id="dateOfBirth" name="dateOfBirth" ngModel class="w-full px-3 py-2 border rounded" required>
-            </div>
-            <div class="mb-4">
-            <label for="phoneNumber" class="block text-gray-700">Phone Number</label>
-            <input type="text" id="phoneNumber" name="phoneNumber" ngModel class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-            <label for="summary" class="block text-gray-700">Summary</label>
-            <textarea id="summary" name="summary" ngModel class="w-full px-3 py-2 border rounded"></textarea>
-            </div>
-            <div class="mb-4">
-            <label for="jobTitle" class="block text-gray-700">Job Title</label>
-            <input type="text" id="jobTitle" name="jobTitle" ngModel class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-            <label for="company" class="block text-gray-700">Company</label>
-            <input type="text" id="company" name="company" ngModel class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-            <label for="city" class="block text-gray-700">City</label>
-            <input type="text" id="city" name="city" ngModel class="w-full px-3 py-2 border rounded">
+                <label for="city" class="block text-gray-700">City</label>
+                <input type="text" id="city" name="city" formControlName="city" class="w-full px-3 py-2 border rounded" maxlength="80" [ngClass]="{'border-red-700': cityMaxLengthError}">
+                @if(cityMaxLengthError){
+                    <span class="text-sm text-red-700">Max character:80</span>
+                }
             </div>
             <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Sign Up</button>
         </form>
