@@ -67,7 +67,7 @@ public class AuthService: IAuthService
         }
         if (!input.JobTitle.IsNullOrWhiteSpace())
         {
-            await _userStore.SetJobTitleAsync(user, input.Summary, cancellationToken);
+            await _userStore.SetJobTitleAsync(user, input.JobTitle, cancellationToken);
         }
         if (!input.Company.IsNullOrWhiteSpace())
         {
