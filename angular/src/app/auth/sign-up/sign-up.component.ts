@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormGroup, Validators, ReactiveFormsModule, NonNullableFormBuilder, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../openapi/api/auth.service';
@@ -15,21 +15,22 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent{
   successMessage: string | null = null;
   errorMessage: string | null = null;
-  signUpForm!: FormGroup;
+  errors: string[] = [];
+  signUpForm: FormGroup;
   authService = inject(AuthService);
   fb = inject(NonNullableFormBuilder);
   router = inject(Router);
 
-  ngOnInit(): void {
+  constructor() {
     this.signUpForm = this.fb.group({
       name: [null, [Validators.required]],
       surname: [null, [Validators.required]],
       userName: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required, Validators.minLength(6)]],
+      password: [null, [Validators.required, this.passwordStrengthValidator]],
       confirmPassword: [null, [Validators.required]],
       dateOfBirth: [null, [Validators.required]],
       phoneNumber: [null, [Validators.pattern('^[0-9]{10}$')]],
@@ -51,6 +52,27 @@ export class SignUpComponent implements OnInit {
 
     const mismatch = passwordControl.value !== confirmPasswordControl.value;
     return mismatch ? { passwordMismatch: true } : null;
+  }
+
+  private passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control) {
+      return null;
+    }
+
+    const password = control.value;
+    if(!password){
+      return null;
+    }
+    const hasNumber = /\d/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasMinLength = password.length >= 6;
+
+    if (!hasNumber || !hasUpper || !hasLower || !hasSpecial || !hasMinLength) {
+      return { passwordStrength: true };
+    }
+    return null;
   }
 
   onSubmit() {
@@ -79,8 +101,8 @@ export class SignUpComponent implements OnInit {
             }, 3000);
           },
           error: error => {
-            var errors = Object.keys(error.error.errors).map(function (key) { return error.error.errors[key]+'\r\n'; });
-            this.errorMessage = 'Registration failed: \r\n' + errors.join('-');
+            this.errors = Object.keys(error.error.errors).map(function (key) { return error.error.errors[key]+'\r\n'; });
+            this.errorMessage = 'Registration failed';
             this.successMessage = null;
           }
       });
@@ -111,8 +133,8 @@ export class SignUpComponent implements OnInit {
     return this.signUpForm.hasError('required', 'password') && this.signUpForm.controls['password'].touched;
   }
 
-  get passwordMinLengthError(){
-    return this.signUpForm.hasError('minlength', 'password') && this.signUpForm.controls['password'].touched;
+  get passwordStrengthError(){
+    return this.signUpForm.hasError('passwordStrength', 'password') && this.signUpForm.controls['password'].touched;
   }
 
   get confirmPasswordRequiredError(){
