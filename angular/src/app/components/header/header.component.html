@@ -1,53 +1,55 @@
 <header class="sticky top-0 z-50 bg-white">
     @if(isAuthenticated){
-        <div class="py-1 flex items-center justify-between px-10 mx-10">
-            <div class="flex items items-center justify-start ">
+        <nav div class="py-1 flex items-center justify-between px-10 mx-10">
+            <div class="flex items-center justify-start focus-within:flex-grow transition-[all_.5s] ease-linear">
                 <a routerLink="/home">
-                    <img alt="Logo" class=" flex-grow-0 h-8" src="../../favicon.ico"/>
+                    <img alt="Logo" class=" flex-grow-0 h-9" src="../../favicon.ico"/>
                 </a>
-                <form class="flex-1 flex rounded-md border-2 border-gray-500 overflow-hidden ml-1 max-w-md mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px"
-                        class="fill-gray-600 ml-2 mr-3">
-                        <path
-                        d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
-                        </path>
-                    </svg>
-                    <input type="text" placeholder="Search..." class="w-full outline-none bg-transparent text-gray-600 text-sm" />
+                <form class="flex-1 max-w-md mx-auto ml-2">
+                    <div class="flex rounded border-2 border-[#edf3f8] bg-[#edf3f8] focus-within:border-black pl-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px">
+                            <path
+                                stroke="#4b5563"
+                                d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+                            </path>
+                        </svg>
+                        <input type="text" placeholder="Search..." class="p-2 w-full outline-none text-gray-600 text-sm bg-inherit"/>
+                    </div>
                 </form>
             </div>
             <div class="flex">
-                <a routerLink="/home" class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center">
+                <a routerLink="/home" class="header-link">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                             <path d="M23 9v2h-2v7a3 3 0 01-3 3h-4v-6h-4v6H6a3 3 0 01-3-3v-7H1V9l11-7z"></path>
                         </svg>
                         <span>Home</span>
                 </a>
-                <a routerLink="/network" class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center">
+                <a routerLink="/network" class="header-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="M12 16v6H3v-6a3 3 0 013-3h3a3 3 0 013 3zm5.5-3A3.5 3.5 0 1014 9.5a3.5 3.5 0 003.5 3.5zm1 2h-2a2.5 2.5 0 00-2.5 2.5V22h7v-4.5a2.5 2.5 0 00-2.5-2.5zM7.5 2A4.5 4.5 0 1012 6.5 4.49 4.49 0 007.5 2z"></path>
                     </svg>
                     <span>Network</span>
                 </a>
-                <a routerLink="/job" class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center">
+                <a routerLink="/job" class="header-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="M17 6V5a3 3 0 00-3-3h-4a3 3 0 00-3 3v1H2v4a3 3 0 003 3h14a3 3 0 003-3V6zM9 5a1 1 0 011-1h4a1 1 0 011 1v1H9zm10 9a4 4 0 003-1.38V17a3 3 0 01-3 3H5a3 3 0 01-3-3v-4.38A4 4 0 005 14z"></path>
                     </svg>
                     <span>Jobs</span>
                 </a>
-                <a routerLink="/chat" class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center">
+                <a routerLink="/chat" class="header-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="M16 4H8a7 7 0 000 14h4v4l8.16-5.39A6.78 6.78 0 0023 11a7 7 0 00-7-7zm-8 8.25A1.25 1.25 0 119.25 11 1.25 1.25 0 018 12.25zm4 0A1.25 1.25 0 1113.25 11 1.25 1.25 0 0112 12.25zm4 0A1.25 1.25 0 1117.25 11 1.25 1.25 0 0116 12.25z"></path>
                     </svg>
                     <span>Chats</span>
                 </a>
-                <a routerLink="/notifications" class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center">
+                <a routerLink="/notifications" class="header-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="M22 19h-8.28a2 2 0 11-3.44 0H2v-1a4.52 4.52 0 011.17-2.83l1-1.17h15.7l1 1.17A4.42 4.42 0 0122 18zM18.21 7.44A6.27 6.27 0 0012 2a6.27 6.27 0 00-6.21 5.44L5 13h14z"></path>
                     </svg>
                     <span>Notifications</span>
                 </a>
                 <div class="relative" (click)="toggleDropdown($event)">
-                    <div class="text-gray-600 hover:text-gray-900 mr-5 flex flex-col items-center cursor-pointer">
+                    <div class="header-link cursor-pointer">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="
                           M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.71997 11.28 8.71997 9.50998C8.71997 7.69998 10.18 6.22998 12 6.22998C13.81 6.22998 15.28 7.69998 15.28 9.50998C15.27 11.28 13.88 12.72 12.12 12.78Z
@@ -63,20 +65,28 @@
                         </div>
                     }
                   </div>
-                <a routerLink="/settings" class="text-gray-600 hover:text-gray-900 flex flex-col items-center">
+                <a routerLink="/settings" class="header-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" class="mercado-match" width="24" height="24" focusable="false">
                         <path d="M20.991,10H19.42a1.039,1.039,0,0,1-.951-.674l-.005-.013a1.04,1.04,0,0,1,.2-1.146l1.11-1.11a1.01,1.01,0,0,0,0-1.428l-1.4-1.4a1.01,1.01,0,0,0-1.428,0l-1.11,1.11a1.04,1.04,0,0,1-1.146.2l-.013,0A1.04,1.04,0,0,1,14,4.579V3.009A1.009,1.009,0,0,0,12.991,2H11.009A1.009,1.009,0,0,0,10,3.009v1.57a1.04,1.04,0,0,1-.674.952l-.013,0a1.04,1.04,0,0,1-1.146-.2l-1.11-1.11a1.01,1.01,0,0,0-1.428,0l-1.4,1.4a1.01,1.01,0,0,0,0,1.428l1.11,1.11a1.04,1.04,0,0,1,.2,1.146l0,.013A1.039,1.039,0,0,1,4.58,10H3.009A1.009,1.009,0,0,0,2,11.009v1.982A1.009,1.009,0,0,0,3.009,14H4.58a1.039,1.039,0,0,1,.951.674l0,.013a1.04,1.04,0,0,1-.2,1.146l-1.11,1.11a1.01,1.01,0,0,0,0,1.428l1.4,1.4a1.01,1.01,0,0,0,1.428,0l1.11-1.11a1.04,1.04,0,0,1,1.146-.2l.013.005A1.039,1.039,0,0,1,10,19.42v1.571A1.009,1.009,0,0,0,11.009,22h1.982A1.009,1.009,0,0,0,14,20.991V19.42a1.039,1.039,0,0,1,.674-.951l.013-.005a1.04,1.04,0,0,1,1.146.2l1.11,1.11a1.01,1.01,0,0,0,1.428,0l1.4-1.4a1.01,1.01,0,0,0,0-1.428l-1.11-1.11a1.04,1.04,0,0,1-.2-1.146l.005-.013A1.039,1.039,0,0,1,19.42,14h1.571A1.009,1.009,0,0,0,22,12.991V11.009A1.009,1.009,0,0,0,20.991,10ZM12,15a3,3,0,1,1,3-3A3,3,0,0,1,12,15Z"/>
                     </svg>
                     <span>Settings</span>
                 </a>
             </div>
-        </div>
+        </nav>
     }
     @else{
         <div class="py-1 flex items-center justify-between px-10 mx-10">
-            <div class="flex items items-center justify-start ">
+            <div class="flex items-center justify-start ">
                 <img alt="Logo" class=" flex-grow-0 h-8 mr-2" src="../../favicon.ico"/>
                 <h1 class="text-gray-600 text-3xl font-bold">ProLinked</h1>
+            </div>
+            <div class="flex items-center justify-center border-l-2 border-l-gray-300">
+                <a routerLink="/sign-in" class="mx-2">
+                    <button type="button" class="default-hollow-button">Sign In</button>
+                </a>
+                <a routerLink="/sign-up" class="mx-2">
+                    <button type="button" class="default-button">Sign Up</button>
+                </a>
             </div>
         </div>
     }

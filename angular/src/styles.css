@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Header Styles */
+.header-link{
+    @apply 
+        text-gray-600
+        hover:text-gray-900
+        mr-5
+        flex
+        flex-col
+        items-center
+}
+
+
 /* Alert styles */
 div.alert-success:hover, div.alert-error:hover{
     @apply 
@@ -77,8 +89,8 @@ input.default-input{
         rounded-md
         shadow-sm
         focus:outline-none
-        focus:ring-blue-500
-        focus:border-blue-500
+        focus:ring-science-blue-700
+        focus:border-science-blue-700
         sm:text-sm;
 }
 textarea.default-textarea{
@@ -93,20 +105,33 @@ textarea.default-textarea{
         rounded-md
         shadow-sm
         focus:outline-none
-        focus:ring-blue-500
-        focus:border-blue-500
+        focus:ring-science-blue-700
+        focus:border-science-blue-700
         sm:text-sm;
 }
 
 /* Button styles */
-button.submit-button{
-    @apply 
+button.default-button{
+    @apply
         w-full
-        bg-blue-500
-        hover:bg-blue-700
+        bg-science-blue-700
+        hover:bg-science-blue-800
         text-white
-        py-2
-        rounded;
+        p-2
+        rounded-3xl;
+}
+button.default-hollow-button{
+    @apply
+        w-full
+        p-2
+        rounded-3xl
+        border-2
+        border-white
+        hover:border-science-blue-800
+        hover:text-black
+        hover:bg-science-blue-100
+        bg-white
+        text-science-blue-700;
 }
 
 button.confirm-button{
