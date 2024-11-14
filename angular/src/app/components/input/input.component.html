@@ -1,0 +1,21 @@
+<div class="mb-4" [formGroup]="formGroup">
+    <label [for]="id" class="default-label">{{ label }}</label>
+    <input
+        [type]="type"
+        [id]="id"
+        [name]="id"
+        [formControlName]="id"
+        [placeholder]="placeholder"
+        [min]="min"
+        [max]="max"
+        class="default-input"
+        [ngClass]="{ '!border-red-700': validationErrors && validationErrors.length > 0 }" 
+    />
+    <ul class="error-list">
+        @for(item of validationErrors; track item.key) {
+            <li>
+                <span class="validation-error">{{item.value}}</span>
+            </li>
+        }
+    </ul>
+  </div>

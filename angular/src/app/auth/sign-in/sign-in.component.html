@@ -1,0 +1,23 @@
+<div class="flex justify-center items-center">
+    <div class="bg-white m-8 p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Sign In</h2>
+        <form (ngSubmit)="onSubmit()" [formGroup]="signInForm">
+            <app-input
+                label="Username"
+                type="text"
+                id="username"
+                [formGroup]="signInForm"
+                [validationErrors]="usernameValidationErrors"/>
+            <app-input
+                label="Password"
+                type="password"
+                id="password"
+                [formGroup]="signInForm"
+                [validationErrors]="passwordValidationErrors"/>
+            <button type="submit" class="default-button">Sign In</button>
+        </form>
+    </div>
+    @if(errorMessage){
+        <app-error-alert [message]="this.errorMessage" [errors]="errors"></app-error-alert>
+    }
+</div>

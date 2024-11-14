@@ -1,0 +1,90 @@
+<div class="flex justify-center items-center">
+    <div class="bg-white m-8 p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+            <app-input
+                id="name"
+                label="Name"
+                type="text"
+                [validationErrors]='nameValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="surname"
+                label="Surname"
+                type="text"
+                [validationErrors]='surnameValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="userName"
+                label="Username"
+                type="text"
+                [validationErrors]='userNameValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="email"
+                label="Email"
+                type="text"
+                [validationErrors]='emailValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="password"
+                label="Password"
+                type="password"
+                [validationErrors]='passwordValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                [validationErrors]='confirmPasswordValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="dateOfBirth"
+                label="Date Of Birth"
+                type="date"
+                min="2000-01-01"
+                max="2021-01-01"
+                [validationErrors]='dateOfBirthValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="phoneNumber"
+                label="Phone Number"
+                type="text"
+                [validationErrors]='phoneNumberValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="summary"
+                label="Summary"
+                type="text"
+                [validationErrors]='summaryValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="jobTitle"
+                label="Job Title"
+                type="text"
+                [validationErrors]='jobTitleValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="company"
+                label="Company"
+                type="text"
+                [validationErrors]='companyValidationErrors'
+                [formGroup]="signUpForm"/>
+            <app-input
+                id="city"
+                label="City"
+                type="text"
+                [validationErrors]='cityValidationErrors'
+                [formGroup]="signUpForm"/>
+            <button type="submit" class="default-button">Sign Up</button>
+        </form>
+    </div>
+    <div>
+    @if(successMessage){
+        <app-success-alert [message]="this.successMessage"></app-success-alert>
+    }
+    @if(errorMessage){
+        <app-error-alert [message]="this.errorMessage" [errors]="errors"></app-error-alert>
+    }
+    </div>
+</div>

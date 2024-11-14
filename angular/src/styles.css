@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Header Styles */
+.header-link{
+    @apply 
+        text-gray-600
+        hover:text-gray-900
+        mr-5
+        flex
+        flex-col
+        items-center
+}
+
+
+/* Alert styles */
+div.alert-success:hover, div.alert-error:hover{
+    @apply 
+        opacity-100
+        animate-[fadeIn_0.5s_forwards];
+}
+div.alert-success, div.alert-error{
+    @apply
+        z-50
+        bottom-0
+        fixed
+        mb-4
+        p-4
+        rounded
+        transition-opacity
+        ease-out
+        duration-1000
+        animate-[fadeOut_5s_forwards];
+}
+div.alert-success{
+    @apply 
+        bg-green-100 border
+        border-green-400
+        text-green-700
+}
+
+div.alert-error{
+    @apply
+        bg-red-100 border
+        border-red-400
+        text-red-700
+}
+
+/* KeyFrames */
+@keyframes fadeOut {
+    0% {
+        @apply opacity-100
+    }
+    50% {
+        @apply opacity-50;
+    }
+    100% {
+        @apply opacity-0;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        @apply opacity-0;
+    }
+    100% {
+        @apply opacity-100;
+    }
+}
+
+/* Form styles */
+label.default-label{
+    @apply
+    block
+    text-sm
+    font-medium
+    text-gray-700;
+}
+input.default-input{
+    @apply 
+        mt-1
+        block
+        w-full
+        px-3
+        py-2
+        border
+        border-gray-300
+        rounded-md
+        shadow-sm
+        focus:outline-none
+        focus:ring-science-blue-700
+        focus:border-science-blue-700
+        sm:text-sm;
+}
+textarea.default-textarea{
+    @apply 
+        mt-1
+        block
+        w-full
+        px-3
+        py-2
+        border
+        border-gray-300
+        rounded-md
+        shadow-sm
+        focus:outline-none
+        focus:ring-science-blue-700
+        focus:border-science-blue-700
+        sm:text-sm;
+}
+
+/* Button styles */
+button.default-button{
+    @apply
+        w-full
+        bg-science-blue-700
+        hover:bg-science-blue-800
+        text-white
+        p-2
+        rounded-3xl;
+}
+button.default-hollow-button{
+    @apply
+        w-full
+        p-2
+        rounded-3xl
+        border-2
+        border-white
+        hover:border-science-blue-800
+        hover:text-black
+        hover:bg-science-blue-100
+        bg-white
+        text-science-blue-700;
+}
+
+button.confirm-button{
+    @apply 
+        w-full
+        bg-green-500
+        hover:bg-green-700
+        text-white
+        py-2
+        rounded;
+}
+button.cancel-button{
+    @apply 
+        w-full
+        bg-gray-500
+        hover:bg-gray-700
+        text-white
+        py-2
+        rounded;
+}
+button.danger-button{
+    @apply 
+        w-full
+        bg-red-500
+        hover:bg-red-700
+        text-white
+        py-2
+        rounded;
+}
+
+/* Error styles */
+ul.error-list{
+    @apply list-disc list-outside text-sm text-red-700 ml-5;
+}
+span.validation-error{
+    @apply text-sm text-red-700;
+}
